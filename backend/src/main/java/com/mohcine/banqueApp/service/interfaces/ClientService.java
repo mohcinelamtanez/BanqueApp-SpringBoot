@@ -1,7 +1,22 @@
-package com.mohcine.banqueApp.service.interfaces;
+package  com.mohcine.banqueApp.service.interfaces;
 
-/**
- * @author USER
- **/
+import com.mohcine.banqueApp.entity.*;
+import java.util.List;
+
 public interface ClientService {
+    boolean ajouterClient(Client client);
+
+    boolean supprimerClient(int id);
+
+    boolean modifierClient(Client client);
+
+    Client getClientById(int id);
+
+    List<Client> getAllClients();
+
+    List<Client> rechercherClients(String critere);
+
+    double calculerTotalPretsClient(int clientId);
+
+    double calculerTauxEndettement(int clientId);
 }
