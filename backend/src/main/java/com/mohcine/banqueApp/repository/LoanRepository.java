@@ -14,4 +14,6 @@ public interface LoanRepository extends JpaRepository<Loan,Integer> {
     List<Loan> getPretsByClientId(Integer clientId);
 
     boolean deletePret(Integer id) ;
+
+    List<Loan> findByClientId(Integer clientId);
 }

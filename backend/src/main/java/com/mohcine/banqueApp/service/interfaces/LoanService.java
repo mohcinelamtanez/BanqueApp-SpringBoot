@@ -19,4 +19,6 @@ public interface LoanService {
 
    List<Loan> getLoansByClientId(Integer clientId) ;
 
+    Loan getLoanById(Integer loanId);
+
 }
