@@ -9,5 +9,14 @@ import java.util.List;
  **/
 public interface LoanService {
 
-    List<Loan> getPretsByClientId(Integer clientId);
+   Loan addLoan(Loan loan) ;
+
+   void deleteLoan(Integer LoanId);
+
+   Loan updateLoan(Loan loan);
+
+   List<Loan> getAllLoans() ;
+
+   List<Loan> getLoansByClientId(Integer clientId) ;
+
 }
