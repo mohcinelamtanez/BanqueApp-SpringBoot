@@ -6,8 +6,10 @@ import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
+
 @Table(name = "pret")
 public class Loan {
 
@@ -153,4 +155,6 @@ public class Loan {
     public void setClient(Client client) {
         this.client = client;
     }
+
+
 }

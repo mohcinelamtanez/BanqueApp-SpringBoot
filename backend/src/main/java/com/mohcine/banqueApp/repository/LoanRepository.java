@@ -1,0 +1,17 @@
+package com.mohcine.banqueApp.repository;
+
+import com.mohcine.banqueApp.entity.Client;
+import com.mohcine.banqueApp.entity.Loan;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
+
+/**
+ * @author USER
+ **/
+public interface LoanRepository extends JpaRepository<Loan,Integer> {
+
+    List<Loan> getPretsByClientId(Integer clientId);
+
+    boolean deletePret(Integer id) ;
+}

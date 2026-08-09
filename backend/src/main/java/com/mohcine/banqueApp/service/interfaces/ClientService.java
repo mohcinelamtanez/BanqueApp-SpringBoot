@@ -1,22 +1,24 @@
 package  com.mohcine.banqueApp.service.interfaces;
 
 import com.mohcine.banqueApp.entity.*;
+
+import java.math.BigDecimal;
 import java.util.List;
-
 public interface ClientService {
-    boolean ajouterClient(Client client);
 
-    boolean supprimerClient(int id);
+    Client addClient(Client client);
 
-    boolean modifierClient(Client client);
+    void deleteClient(Integer id);
 
-    Client getClientById(int id);
+    Client updateClient(Client client);
+
+    Client getClientById(Integer id);
 
     List<Client> getAllClients();
 
     List<Client> rechercherClients(String critere);
 
-    double calculerTotalPretsClient(int clientId);
+    BigDecimal calculerTotalPretsClient(Integer clientId);
 
-    double calculerTauxEndettement(int clientId);
+
 }
