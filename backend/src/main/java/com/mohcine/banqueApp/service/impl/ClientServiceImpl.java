@@ -5,6 +5,7 @@ import com.mohcine.banqueApp.entity.Loan;
 import com.mohcine.banqueApp.repository.ClientRepository;
 import com.mohcine.banqueApp.repository.LoanRepository;
 import com.mohcine.banqueApp.service.interfaces.ClientService;
+import com.mohcine.banqueApp.service.interfaces.LoanService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -40,17 +41,17 @@ public class ClientServiceImpl implements ClientService {
         return clientRepository.save(client) ;
     }
 
-    @Override
+   /* @Override
     public void deleteClient(Integer id) {
         // delete all client loans
-        List<Loan> clientLoans = loanRepository.getPretsByClientId(id);
+        List<Loan> clientLoans = loanRepository.getLoansByClientId(id);
         for (Loan loan : clientLoans) {
-            loanRepository.deletePret(loan.getId());
+            loanService.deleteLoan(loan.getId());
         }
 
         // delete the client
          clientRepository.deleteById(id);
-    }
+    } */
 
 
     @Override
@@ -66,12 +67,12 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public List<Client> rechercherClients(String critere) {
-        return clientRepository.findByNomContaining(critere);
+        return clientRepository.findByLastNameContaining(critere);
     }
 
     @Override
     public BigDecimal calculerTotalPretsClient(Integer clientId) {
-        List<Loan> loans = loanRepository.getPretsByClientId(clientId);
+        List<Loan> loans = loanRepository.getLoansByClientId(clientId);
 
         BigDecimal total = BigDecimal.ZERO;
 

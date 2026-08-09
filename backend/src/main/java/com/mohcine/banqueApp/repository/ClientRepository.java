@@ -9,5 +9,5 @@ import java.util.List;
  * @author USER
  **/
 public interface ClientRepository extends JpaRepository<Client,Integer> {
-    List<Client> findByNomContaining(String critere);
+    List<Client> findByLastNameContaining(String critere);
 }

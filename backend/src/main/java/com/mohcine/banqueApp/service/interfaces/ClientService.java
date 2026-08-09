@@ -8,7 +8,7 @@ public interface ClientService {
 
     Client addClient(Client client);
 
-    void deleteClient(Integer id);
+   // void deleteClient(Integer id);
 
     Client updateClient(Client client);
 

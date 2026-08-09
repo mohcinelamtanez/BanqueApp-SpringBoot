@@ -22,10 +22,10 @@ public class LoanServiceImpl implements LoanService {
         return loanRepository.save(loan);
     }
 
-    @Override
-    public void deleteLoan(Integer loanId) {
+  /*  @Override
+    public boolean deleteLoan(Integer loanId) {
         loanRepository.deleteById(loanId);
-    }
+    }*/
 
     @Override
     public Loan updateLoan(Loan loan) {

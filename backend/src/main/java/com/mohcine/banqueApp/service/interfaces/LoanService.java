@@ -11,7 +11,7 @@ public interface LoanService {
 
    Loan addLoan(Loan loan) ;
 
-   void deleteLoan(Integer LoanId);
+  // boolean deleteLoan(Integer LoanId);
 
    Loan updateLoan(Loan loan);
 
