@@ -20,9 +20,12 @@ import java.util.List;
 public class ClientServiceImpl implements ClientService {
 
     private final ClientRepository clientRepository ;
+    private final LoanService loanService ;
 
-    public ClientServiceImpl(ClientRepository clientRepository) {
+    public ClientServiceImpl(ClientRepository clientRepository ,
+                             LoanService loanService ) {
         this.clientRepository = clientRepository;
+        this.loanService = loanService;
     }
 
     @Override
@@ -41,7 +44,7 @@ public class ClientServiceImpl implements ClientService {
         return clientRepository.save(client) ;
     }
 
-   /* @Override
+   @Override
     public void deleteClient(Integer id) {
         // delete all client loans
         List<Loan> clientLoans = loanRepository.getLoansByClientId(id);
@@ -51,7 +54,7 @@ public class ClientServiceImpl implements ClientService {
 
         // delete the client
          clientRepository.deleteById(id);
-    } */
+    }
 
 
     @Override

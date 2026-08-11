@@ -53,10 +53,10 @@ public class ClientController {
         return clientMapper.toDTO(savedClient);
       }
 
-    /* @DeleteMapping("/{id}")
+     @DeleteMapping("/{id}")
      public void deleteClient(@PathVariable Integer id) {
         clientService.deleteClient(id);
-     }*/
+     }
 
     @PutMapping("/{id}")
     public ClientResponseDTO updateClient(

@@ -3,17 +3,23 @@ package com.mohcine.banqueApp.service.impl;
 import com.mohcine.banqueApp.entity.Loan;
 import com.mohcine.banqueApp.repository.LoanRepository;
 import com.mohcine.banqueApp.service.interfaces.LoanService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 /**
  * @author USER
  **/
+@Service
 public class LoanServiceImpl implements LoanService {
 
     private final LoanRepository loanRepository;
 
-    public LoanServiceImpl(LoanRepository loanRepository) {
+
+
+    public LoanServiceImpl(LoanRepository loanRepository ,
+                           LoanService loanService) {
+
         this.loanRepository = loanRepository;
     }
 
@@ -22,10 +28,12 @@ public class LoanServiceImpl implements LoanService {
         return loanRepository.save(loan);
     }
 
-  /*  @Override
-    public boolean deleteLoan(Integer loanId) {
+    @Override
+    public void deleteLoan(Integer loanId) {
         loanRepository.deleteById(loanId);
-    }*/
+    }
+
+
 
     @Override
     public Loan updateLoan(Loan loan) {
