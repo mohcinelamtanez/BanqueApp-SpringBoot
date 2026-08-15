@@ -1,6 +1,8 @@
 package com.mohcine.banqueApp.mapper;
 
+import com.mohcine.banqueApp.dto.LoanCreateDto;
 import com.mohcine.banqueApp.dto.LoanResponseDTO;
+import com.mohcine.banqueApp.dto.LoanUpdateDTO;
 import com.mohcine.banqueApp.entity.Loan;
 import org.springframework.stereotype.Component;
 
@@ -26,5 +28,41 @@ public class LoanMapper {
 
         return dto;
 
+    }
+
+    public Loan toEntity(LoanCreateDto loanCreateDto) {
+        Loan loan = new Loan();
+
+        loan.setLoanAmount(loanCreateDto.getLoanAmount());
+        loan.setDuration(loanCreateDto.getDuration());
+        loan.setEndDate(loanCreateDto.getEndDate());
+        loan.setLoanType(loanCreateDto.getLoanType());
+        loan.setRiskLevel(loanCreateDto.getRiskLevel());
+        loan.setAnnualInterestRate(loanCreateDto.getAnnualInterestRate());
+        loan.setApprovalDate(loanCreateDto.getApprovalDate());
+        loan.setStatus(loanCreateDto.getStatus());
+        loan.setMonthlyPayment(loanCreateDto.getMonthlyPayment());
+
+         return loan  ;
+    }
+
+
+
+
+    public Loan updateEntity(LoanUpdateDTO loanUpdateDTO) {
+        Loan loan = new Loan();
+
+        loan.setLoanAmount(loanUpdateDTO.getLoanAmount());
+        loan.setDuration(loanUpdateDTO.getDuration());
+        loan.setEndDate(loanUpdateDTO.getEndDate());
+        loan.setLoanType(loanUpdateDTO.getLoanType());
+        loan.setRiskLevel(loanUpdateDTO.getRiskLevel());
+        loan.setAnnualInterestRate(loanUpdateDTO.getAnnualInterestRate());
+        loan.setApprovalDate(loanUpdateDTO.getApprovalDate());
+        loan.setStatus(loanUpdateDTO.getStatus());
+        loan.setMonthlyPayment(loanUpdateDTO.getMonthlyPayment());
+        loan.setClientId(loanUpdateDTO.getClientId());
+
+        return loan  ;
     }
 }
