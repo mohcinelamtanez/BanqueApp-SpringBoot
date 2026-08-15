@@ -23,7 +23,7 @@ public class ClientController {
 
     ClientController(ClientService clientService, ClientMapper clientMapper) {
          this.clientService = clientService;
-        this.clientMapper = clientMapper;
+         this.clientMapper = clientMapper;
     }
 
 

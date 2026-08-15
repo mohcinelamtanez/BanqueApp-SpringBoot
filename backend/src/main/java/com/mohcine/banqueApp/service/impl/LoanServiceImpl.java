@@ -17,8 +17,7 @@ public class LoanServiceImpl implements LoanService {
 
 
 
-    public LoanServiceImpl(LoanRepository loanRepository ,
-                           LoanService loanService) {
+    public LoanServiceImpl(LoanRepository loanRepository) {
 
         this.loanRepository = loanRepository;
     }
@@ -47,7 +46,7 @@ public class LoanServiceImpl implements LoanService {
 
     @Override
     public List<Loan> getLoansByClientId(Integer clientId) {
-        return loanRepository.findByClientId(clientId);
+        return loanRepository.findByClient_Id(clientId);
     }
 
     @Override

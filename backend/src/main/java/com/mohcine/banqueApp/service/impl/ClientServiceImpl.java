@@ -21,11 +21,14 @@ public class ClientServiceImpl implements ClientService {
 
     private final ClientRepository clientRepository ;
     private final LoanService loanService ;
+    private final LoanRepository loanRepository ;
 
     public ClientServiceImpl(ClientRepository clientRepository ,
-                             LoanService loanService ) {
+                             LoanService loanService,
+                            LoanRepository loanRepository) {
         this.clientRepository = clientRepository;
         this.loanService = loanService;
+        this.loanRepository = loanRepository;
     }
 
     @Override
@@ -34,10 +37,8 @@ public class ClientServiceImpl implements ClientService {
                 .orElseThrow();
     }
 
-    private LoanRepository loanRepository ;
-    public LoanRepository getLoanRepository() {
-        return loanRepository;
-    }
+
+
 
     @Override
     public Client addClient(Client client) {
@@ -47,10 +48,11 @@ public class ClientServiceImpl implements ClientService {
    @Override
     public void deleteClient(Integer id) {
         // delete all client loans
-        List<Loan> clientLoans = loanRepository.getLoansByClientId(id);
+        List<Loan> clientLoans = loanRepository.findByClient_Id(id);
         for (Loan loan : clientLoans) {
             loanService.deleteLoan(loan.getId());
         }
+
 
         // delete the client
          clientRepository.deleteById(id);
