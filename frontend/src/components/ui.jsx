@@ -1,0 +1,15 @@
+import { X, AlertTriangle, ChevronRight, Check, LoaderCircle, Building2 } from 'lucide-react'
+export function Logo({ small=false, inverse=false }) { return <div className={`brand ${inverse?'inverse':''}`}><span className="brand-mark"><Building2 size={small?18:22}/></span>{!small&&<span><b>BanqueApp</b><em>ADMIN PORTAL</em></span>}</div> }
+export function Button({ children, variant='primary', className='', ...props }) { return <button className={`btn ${variant} ${className}`} {...props}>{children}</button> }
+export function Card({ children, className='' }) { return <section className={`card ${className}`}>{children}</section> }
+export function Badge({ children, type='' }) { return <span className={`badge ${type || String(children).toLowerCase().replaceAll(' ','-')}`}>{children}</span> }
+export function Input({ label, error, ...props }) { return <label className="field">{label&&<span>{label}</span>}<input {...props}/>{error&&<small className="error">{error}</small>}</label> }
+export function Select({ label, children, ...props }) { return <label className="field">{label&&<span>{label}</span>}<select {...props}>{children}</select></label> }
+export function Modal({ title, children, onClose }) { return <div className="overlay" role="presentation"><section className="modal" role="dialog" aria-modal="true" aria-label={title}><header><h2>{title}</h2><button className="icon-button" onClick={onClose} aria-label="Close dialog"><X size={20}/></button></header>{children}</section></div> }
+export function ConfirmationDialog({ title='Confirm deletion', message, onClose, onConfirm }) { return <Modal title={title} onClose={onClose}><div className="confirmation"><span className="warning"><AlertTriangle/></span><p>{message}</p><div className="actions"><Button variant="secondary" onClick={onClose}>Cancel</Button><Button variant="danger" onClick={onConfirm}>Delete</Button></div></div></Modal> }
+export function Breadcrumbs({ items=[] }) { return <nav className="breadcrumbs" aria-label="Breadcrumb">{items.map((item,i)=><span key={item.label}>{item.to?<a href={item.to}>{item.label}</a>:<b>{item.label}</b>}{i<items.length-1&&<ChevronRight size={15}/>}</span>)}</nav> }
+export function Stepper({ step }) { return <div className="stepper">{['Select Client','Loan Details','Risk Assessment','Decision'].map((name,index)=><div className={index+1<=step?'done':''} key={name}><i>{index+1<step?<Check size={14}/>:index+1}</i><span>{name}</span></div>)}</div> }
+export function DataTable({ columns, children }) { return <div className="table-wrap"><table><thead><tr>{columns.map(column=><th key={column}>{column}</th>)}</tr></thead><tbody>{children}</tbody></table></div> }
+export function LoadingState({ label='Loading data…' }) { return <div className="state"><LoaderCircle className="spin"/><p>{label}</p></div> }
+export function EmptyState({ title='Nothing to display', detail }) { return <div className="state"><Building2/><h3>{title}</h3><p>{detail}</p></div> }
+export function ErrorState({ detail='Please try again.' }) { return <div className="state error-state"><AlertTriangle/><h3>Unable to load data</h3><p>{detail}</p></div> }
