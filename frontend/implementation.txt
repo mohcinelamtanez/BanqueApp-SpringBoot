@@ -1,0 +1,91 @@
+src/
+├── components/
+│   ├── ui/
+│   │   ├── Button.jsx
+│   │   ├── Card.jsx
+│   │   ├── Badge.jsx
+│   │   ├── Input.jsx
+│   │   ├── Select.jsx
+│   │   ├── Modal.jsx
+│   │   ├── ConfirmationDialog.jsx
+│   │   ├── DataTable.jsx
+│   │   ├── Breadcrumbs.jsx
+│   │   ├── Stepper.jsx
+│   │   ├── LoadingState.jsx
+│   │   ├── EmptyState.jsx
+│   │   └── ErrorState.jsx
+│   │
+│   ├── layout/
+│   │   ├── AdminLayout.jsx
+│   │   ├── Sidebar.jsx
+│   │   ├── Header.jsx
+│   │   └── Logo.jsx
+│   │
+│   ├── clients/
+│   │   ├── ClientTable.jsx
+│   │   ├── ClientForm.jsx
+│   │   ├── ClientProfileCard.jsx
+│   │   └── ClientLoanHistory.jsx
+│   │
+│   ├── loans/
+│   │   ├── LoanTable.jsx
+│   │   ├── LoanForm.jsx
+│   │   ├── LoanSummary.jsx
+│   │   ├── LoanStatusBadge.jsx
+│   │   └── PaymentTable.jsx
+│   │
+│   └── notifications/
+│       └── NotificationCenter.jsx
+│
+├── pages/
+│   ├── DashboardPage.jsx
+│   ├── ClientsPage.jsx
+│   ├── ClientDetailsPage.jsx
+│   ├── AddClientPage.jsx
+│   ├── EditClientPage.jsx
+│   ├── LoansPage.jsx
+│   ├── LoanDetailsPage.jsx
+│   ├── AddLoanPage.jsx
+│   ├── PaymentHistoryPage.jsx
+│   ├── ReportsPage.jsx
+│   ├── SecurityPage.jsx
+│   └── SettingsPage.jsx
+│
+├── hooks/
+│   ├── useClients.js
+│   ├── useLoans.js
+│   ├── usePayments.js
+│   └── useRiskAssessment.js
+│
+├── services/
+│   ├── clientService.js
+│   ├── loanService.js
+│   ├── paymentService.js
+│   ├── riskService.js
+│   └── reportService.js
+│
+├── api/
+│   └── axiosClient.js
+│
+├── data/
+│   └── mock/
+│       ├── clients.js
+│       ├── loans.js
+│       ├── payments.js
+│       └── dashboard.js
+│
+├── utils/
+│   ├── loanCalculations.js
+│   ├── currency.js
+│   └── date.js
+│
+├── routes/
+│   └── AppRoutes.jsx
+│
+├── assets/
+│   └── styles/
+│       ├── globals.css
+│       └── tokens.css
+│
+├── App.jsx
+└── main.jsx

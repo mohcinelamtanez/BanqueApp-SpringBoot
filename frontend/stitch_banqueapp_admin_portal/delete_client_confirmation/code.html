@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>BanqueApp Admin - Delete Client</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-fixed": "#dae2fd",
+                        "on-tertiary-container": "#818486",
+                        "on-background": "#111c2d",
+                        "surface-container-highest": "#d8e3fb",
+                        "secondary-fixed": "#d3e4fe",
+                        "outline": "#76777d",
+                        "on-primary": "#ffffff",
+                        "tertiary-fixed": "#e0e3e5",
+                        "tertiary-fixed-dim": "#c4c7c9",
+                        "on-error-container": "#93000a",
+                        "tertiary": "#000000",
+                        "primary-container": "#131b2e",
+                        "secondary-container": "#d0e1fb",
+                        "inverse-on-surface": "#ecf1ff",
+                        "primary": "#000000",
+                        "on-tertiary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "on-primary-fixed": "#131b2e",
+                        "on-tertiary-fixed": "#191c1e",
+                        "surface": "#f9f9ff",
+                        "secondary-fixed-dim": "#b7c8e1",
+                        "secondary": "#505f76",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-dim": "#cfdaf2",
+                        "surface-container-high": "#dee8ff",
+                        "on-surface-variant": "#45464d",
+                        "tertiary-container": "#191c1e",
+                        "surface-variant": "#d8e3fb",
+                        "primary-fixed-dim": "#bec6e0",
+                        "on-primary-fixed-variant": "#3f465c",
+                        "surface-container-low": "#f0f3ff",
+                        "on-surface": "#111c2d",
+                        "surface-tint": "#565e74",
+                        "surface-bright": "#f9f9ff",
+                        "on-secondary": "#ffffff",
+                        "on-secondary-fixed-variant": "#38485d",
+                        "on-secondary-fixed": "#0b1c30",
+                        "surface-container": "#e7eeff",
+                        "on-tertiary-fixed-variant": "#444749",
+                        "inverse-primary": "#bec6e0",
+                        "on-error": "#ffffff",
+                        "inverse-surface": "#263143",
+                        "error-container": "#ffdad6",
+                        "on-primary-container": "#7c839b",
+                        "background": "#f9f9ff",
+                        "outline-variant": "#c6c6cd",
+                        "on-secondary-container": "#54647a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "container-padding": "32px",
+                        "unit": "4px",
+                        "section-margin": "48px",
+                        "card-gap": "24px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "data-mono": ["JetBrains Mono"],
+                        "headline-lg-mobile": ["Inter"],
+                        "label-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "display-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "data-mono": ["14px", { "lineHeight": "20px", "fontWeight": "500" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Blur effect for background */
+        .modal-backdrop-blur {
+            backdrop-filter: blur(4px);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen relative overflow-hidden">
+<!-- Mock Background Content (Client Management Page) -->
+<div class="fixed inset-0 z-0 pointer-events-none opacity-40 blur-[2px]">
+<!-- SideNav Mock -->
+<div class="fixed left-0 top-0 h-full z-50 flex flex-col bg-primary text-on-primary w-[280px] border-r border-outline-variant">
+<div class="p-6">
+<div class="font-display-lg text-display-lg text-on-primary mb-2">BanqueApp</div>
+<div class="font-body-md text-on-primary/70">Admin Portal</div>
+</div>
+<div class="flex-1 mt-8">
+<div class="flex items-center gap-4 px-6 py-4 text-on-primary/70"><span class="material-symbols-outlined">dashboard</span>Dashboard</div>
+<div class="flex items-center gap-4 px-6 py-4 bg-secondary-container text-on-secondary-container border-l-4 border-inverse-primary"><span class="material-symbols-outlined">group</span>Clients</div>
+<div class="flex items-center gap-4 px-6 py-4 text-on-primary/70"><span class="material-symbols-outlined">payments</span>Loans</div>
+</div>
+</div>
+<!-- TopNav Mock -->
+<div class="fixed top-0 right-0 left-[280px] z-40 flex justify-between items-center px-8 h-16 bg-surface border-b border-outline-variant">
+<div class="font-headline-md text-headline-md font-bold text-primary">BanqueApp Admin</div>
+<div class="flex gap-4">
+<span class="text-on-surface-variant">Overview</span>
+<span class="text-primary font-bold border-b-2 border-primary pb-1">Management</span>
+</div>
+</div>
+<!-- Main Content Area Mock -->
+<main class="ml-[280px] mt-16 p-container-padding">
+<h1 class="font-headline-lg text-headline-lg mb-8">Client Management</h1>
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-6 shadow-sm">
+<!-- Mock Table -->
+<div class="w-full">
+<div class="flex border-b border-outline-variant pb-2 mb-4">
+<div class="w-1/4 font-label-md text-label-md text-on-surface-variant uppercase">Client ID</div>
+<div class="w-1/2 font-label-md text-label-md text-on-surface-variant uppercase">Name</div>
+<div class="w-1/4 font-label-md text-label-md text-on-surface-variant uppercase text-right">Actions</div>
+</div>
+<div class="flex items-center py-4 border-b border-outline-variant">
+<div class="w-1/4 font-data-mono text-data-mono">#79</div>
+<div class="w-1/2">Jane Doe</div>
+<div class="w-1/4 text-right text-outline">Edit | Delete</div>
+</div>
+<div class="flex items-center py-4 border-b border-outline-variant bg-surface-container-low">
+<div class="w-1/4 font-data-mono text-data-mono">#80</div>
+<div class="w-1/2">Mohcine Lamtanez</div>
+<div class="w-1/4 text-right text-primary font-bold">Edit | Delete</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- Modal Overlay Backdrop -->
+<div class="fixed inset-0 z-[100] bg-on-background/50 modal-backdrop-blur flex items-center justify-center p-4 transition-opacity duration-300">
+<!-- Destructive Confirmation Modal -->
+<div aria-labelledby="modal-title" aria-modal="true" class="bg-surface-container-lowest rounded-xl shadow-[0_20px_25px_-5px_rgba(0,0,0,0.1)] w-full max-w-[480px] overflow-hidden transform scale-100 transition-transform duration-200" role="dialog">
+<!-- Modal Header -->
+<div class="p-6 pb-4 border-b border-outline-variant/30 flex items-start gap-4">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-error-container flex items-center justify-center">
+<span class="material-symbols-outlined text-error" data-icon="warning" style="font-variation-settings: 'FILL' 1;">warning</span>
+</div>
+<div class="flex-1 pt-1">
+<h2 class="font-headline-md text-headline-md text-on-surface m-0" id="modal-title">⚠ Delete Client?</h2>
+</div>
+</div>
+<!-- Modal Body -->
+<div class="p-6">
+<!-- Target Identification -->
+<div class="mb-6 p-4 bg-surface-container-low rounded-lg border border-outline-variant/50">
+<div class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mb-1">Target Client</div>
+<div class="font-body-lg text-body-lg font-medium text-on-surface flex items-center gap-2">
+                        Mohcine Lamtanez <span class="font-data-mono text-data-mono text-on-surface-variant ml-2 bg-surface-container px-2 py-0.5 rounded">(Client #80)</span>
+</div>
+</div>
+<!-- Warning Message -->
+<div class="font-body-md text-body-md text-on-surface-variant">
+                    This action is permanent and cannot be undone. Deleting this client will also delete all loans and associated data belonging to this client.
+                </div>
+</div>
+<!-- Modal Footer / Actions -->
+<div class="p-6 pt-4 bg-surface-container-low/50 flex flex-col-reverse sm:flex-row justify-end gap-3 rounded-b-xl border-t border-outline-variant/30">
+<button class="w-full sm:w-auto px-6 py-2.5 rounded-md border border-outline text-on-surface hover:bg-surface-container-highest transition-colors duration-200 font-label-md text-label-md uppercase tracking-wider" type="button">
+                    Cancel
+                </button>
+<button class="w-full sm:w-auto px-6 py-2.5 rounded-md bg-error text-on-error hover:bg-error/90 transition-colors duration-200 font-label-md text-label-md uppercase tracking-wider shadow-sm flex items-center justify-center gap-2 focus:ring-2 focus:ring-error/20 focus:outline-none" type="button">
+<span class="material-symbols-outlined text-[18px]" data-icon="delete">delete</span>
+                    Delete Client
+                </button>
+</div>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>BanqueApp Admin - Client Details</title>
+<!-- Fonts and Icons -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-error": "#ffffff",
+                      "inverse-on-surface": "#ecf1ff",
+                      "on-tertiary": "#ffffff",
+                      "on-primary": "#ffffff",
+                      "on-tertiary-fixed": "#191c1e",
+                      "secondary-fixed-dim": "#b7c8e1",
+                      "primary": "#000000",
+                      "surface-container-high": "#dee8ff",
+                      "tertiary-fixed": "#e0e3e5",
+                      "on-error-container": "#93000a",
+                      "on-background": "#111c2d",
+                      "tertiary": "#000000",
+                      "on-surface": "#111c2d",
+                      "on-secondary-fixed": "#0b1c30",
+                      "on-primary-fixed-variant": "#3f465c",
+                      "primary-fixed": "#dae2fd",
+                      "surface-variant": "#d8e3fb",
+                      "on-secondary": "#ffffff",
+                      "secondary-fixed": "#d3e4fe",
+                      "surface-container-highest": "#d8e3fb",
+                      "inverse-surface": "#263143",
+                      "surface": "#f9f9ff",
+                      "primary-fixed-dim": "#bec6e0",
+                      "on-primary-fixed": "#131b2e",
+                      "outline-variant": "#c6c6cd",
+                      "surface-bright": "#f9f9ff",
+                      "on-tertiary-container": "#818486",
+                      "tertiary-container": "#191c1e",
+                      "surface-container-lowest": "#ffffff",
+                      "tertiary-fixed-dim": "#c4c7c9",
+                      "background": "#f9f9ff",
+                      "secondary-container": "#d0e1fb",
+                      "on-primary-container": "#7c839b",
+                      "on-surface-variant": "#45464d",
+                      "outline": "#76777d",
+                      "on-secondary-container": "#54647a",
+                      "primary-container": "#131b2e",
+                      "inverse-primary": "#bec6e0",
+                      "surface-container": "#e7eeff",
+                      "surface-dim": "#cfdaf2",
+                      "surface-tint": "#565e74",
+                      "error-container": "#ffdad6",
+                      "error": "#ba1a1a",
+                      "secondary": "#505f76",
+                      "on-tertiary-fixed-variant": "#444749",
+                      "on-secondary-fixed-variant": "#38485d",
+                      "surface-container-low": "#f0f3ff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "container-padding": "32px",
+                      "gutter": "24px",
+                      "unit": "4px",
+                      "card-gap": "24px",
+                      "section-margin": "48px"
+              },
+              "fontFamily": {
+                      "display-lg": [
+                              "Inter"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "headline-lg": [
+                              "Inter"
+                      ],
+                      "headline-lg-mobile": [
+                              "Inter"
+                      ],
+                      "headline-md": [
+                              "Inter"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "label-md": [
+                              "Inter"
+                      ],
+                      "data-mono": [
+                              "JetBrains Mono"
+                      ]
+              },
+              "fontSize": {
+                      "display-lg": [
+                              "36px",
+                              {
+                                      "lineHeight": "44px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg": [
+                              "28px",
+                              {
+                                      "lineHeight": "36px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-md": [
+                              "20px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-lg": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-md": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "data-mono": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "500"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+    </script>
+<style>
+        body {
+            background-color: theme('colors.background');
+            color: theme('colors.on-background');
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen font-body-md text-body-md flex">
+<!-- SideNavBar -->
+<nav class="fixed left-0 top-0 h-full z-50 flex flex-col w-[280px] bg-primary text-on-primary border-r border-outline-variant font-body-md text-body-md">
+<div class="p-6">
+<h1 class="font-display-lg text-display-lg text-on-primary mb-1">BanqueApp</h1>
+<p class="text-on-primary/70 font-label-md text-label-md uppercase tracking-wider">Admin Portal</p>
+</div>
+<div class="flex-1 overflow-y-auto mt-4 flex flex-col gap-2">
+<!-- Inactive -->
+<a class="flex items-center gap-4 px-6 py-4 text-on-primary/70 hover:text-on-primary hover:bg-on-primary/10 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span>Dashboard</span>
+</a>
+<!-- Active: Clients -->
+<a class="flex items-center gap-4 px-6 py-4 bg-secondary-container text-on-secondary-container border-l-4 border-inverse-primary hover:bg-on-primary/10 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="group" data-weight="fill" style="font-variation-settings: 'FILL' 1;">group</span>
+<span class="font-semibold">Clients</span>
+</a>
+<!-- Inactive -->
+<a class="flex items-center gap-4 px-6 py-4 text-on-primary/70 hover:text-on-primary hover:bg-on-primary/10 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span>Loans</span>
+</a>
+<a class="flex items-center gap-4 px-6 py-4 text-on-primary/70 hover:text-on-primary hover:bg-on-primary/10 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="assessment">assessment</span>
+<span>Reports</span>
+</a>
+<a class="flex items-center gap-4 px-6 py-4 text-on-primary/70 hover:text-on-primary hover:bg-on-primary/10 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="security">security</span>
+<span>Security</span>
+</a>
+<a class="flex items-center gap-4 px-6 py-4 text-on-primary/70 hover:text-on-primary hover:bg-on-primary/10 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span>Settings</span>
+</a>
+</div>
+<div class="p-4 mt-auto border-t border-outline-variant/20">
+<a class="flex items-center gap-4 px-6 py-4 text-on-primary/70 hover:text-on-primary hover:bg-on-primary/10 transition-colors duration-200 rounded" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span>Logout</span>
+</a>
+</div>
+</nav>
+<!-- TopNavBar -->
+<header class="fixed top-0 right-0 left-[280px] z-40 flex justify-between items-center px-8 h-16 bg-surface border-b border-outline-variant shadow-sm font-label-md text-label-md">
+<div class="flex items-center gap-6">
+<h2 class="font-headline-md text-headline-md font-bold text-primary mr-4 hidden lg:block">BanqueApp Admin</h2>
+<!-- Search on left as requested by JSON -->
+<div class="relative hidden md:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-sm" data-icon="search">search</span>
+<input class="pl-9 pr-4 py-1.5 bg-surface-container-low border border-outline-variant rounded-full text-body-md focus:border-primary focus:ring-1 focus:ring-primary outline-none w-64 transition-all placeholder:text-on-surface-variant" placeholder="Search..." type="text"/>
+</div>
+<nav class="hidden md:flex gap-6 items-center h-full">
+<a class="text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors duration-200 py-1 px-2 rounded" href="#">Overview</a>
+<a class="text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors duration-200 py-1 px-2 rounded" href="#">Analytics</a>
+<a class="text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors duration-200 py-1 px-2 rounded" href="#">Management</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:text-primary hover:bg-surface-container-high p-2 rounded-full transition-colors duration-200">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary hover:bg-surface-container-high p-2 rounded-full transition-colors duration-200">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+</button>
+<div class="h-8 w-8 rounded-full bg-primary-container border border-outline overflow-hidden ml-2">
+<img alt="Admin Avatar" class="w-full h-full object-cover" data-alt="A small circular avatar placeholder image showing a professional corporate headshot of an admin user. The lighting is soft and neutral, fitting a corporate modern fintech dashboard." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBvA2GFZbeWIlSwWvB2nGnFFw_j5D9AFes3x2XDkZqE2uFzP_O34Ib2NCU6K7CQ8sBWraFbGchiXrc_bgqeQOPsaGfFazdnpoTUpI12PxYTOE37VwztCqs2AGtgLG7zwmYbbPOEryNgAL8KNkSNcrDCr0GBW8dPpln5UteUg4aHuZFaAKmEusFGq8i0kPkKcEvm90pYe9aPApQcSr9GBW8oYJe3urNLUNvwInw3Q5VbgtoNpK0osqXOKA"/>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="ml-[280px] mt-16 p-container-padding flex-1 max-w-[1440px] w-full mx-auto">
+<!-- Breadcrumbs -->
+<nav class="flex items-center gap-2 font-label-md text-label-md text-on-surface-variant mb-6 uppercase tracking-wider">
+<a class="hover:text-primary transition-colors" href="#">Clients</a>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span class="text-primary font-bold">Jean Dupont</span>
+</nav>
+<!-- Profile Header (Bento-style card) -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-8 mb-card-gap shadow-[0_4px_6px_-1px_rgba(0,0,0,0.05)] flex flex-col md:flex-row items-start md:items-center justify-between gap-6"><div class="flex items-center gap-6"><div class="w-20 h-20 rounded-full bg-primary text-on-primary flex items-center justify-center text-headline-lg font-bold shrink-0">JD</div><div><h1 class="font-headline-lg text-headline-lg text-primary mb-1">Jean Dupont</h1><div class="flex flex-wrap items-center gap-x-4 gap-y-2 font-body-sm text-on-surface-variant"><div class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">badge</span><span class="font-data-mono text-data-mono">Client #9824</span></div><div class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">location_on</span><span>Paris · 75001</span></div></div></div></div><div class="flex items-center gap-3 w-full md:w-auto"><button class="flex-1 md:flex-none px-4 py-2 bg-transparent border border-outline text-primary font-label-md text-label-md rounded hover:bg-surface-container-high transition-colors">Edit Client</button><button class="flex-1 md:flex-none px-4 py-2 bg-error text-on-error font-label-md text-label-md rounded hover:bg-error/90 transition-colors shadow-sm">Delete Client</button></div></div>
+<!-- Statistics Bento Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter mb-section-margin">
+<!-- Financial Summary Card (Spans 2 cols) -->
+<div class="col-span-1 md:col-span-2 bg-primary text-on-primary rounded-xl p-6 shadow-sm flex flex-col justify-between"><div><p class="font-label-md text-label-md text-on-primary/70 uppercase tracking-wider mb-2">Total Outstanding Balance</p><h3 class="font-display-lg text-display-lg font-data-mono tracking-tight">120,000 MAD</h3></div><div class="grid grid-cols-2 gap-4 mt-6 pt-6 border-t border-on-primary/20"><div><p class="font-label-md text-label-md text-on-primary/70 mb-1">Total Borrowed</p><p class="font-headline-md text-headline-md font-data-mono text-data-mono">230,000 MAD</p></div><div><p class="font-label-md text-label-md text-on-primary/70 mb-1">Total Repaid</p><p class="font-headline-md text-headline-md font-data-mono text-data-mono text-inverse-primary">110,000 MAD</p></div></div></div>
+<!-- Stats Mini Cards -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-[0_4px_6px_-1px_rgba(0,0,0,0.05)] flex flex-col justify-center"><div class="flex items-center justify-between mb-4"><p class="font-label-md text-label-md text-on-surface-variant uppercase">Total Loans</p><span class="material-symbols-outlined text-primary">folder_open</span></div><p class="font-headline-lg text-headline-lg font-data-mono text-primary">4</p><div class="flex gap-2 mt-4 font-label-md text-[10px] text-on-surface-variant"><span class="bg-surface-container px-2 py-1 rounded">2 Active</span><span class="bg-surface-container px-2 py-1 rounded">2 Completed</span></div></div>
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-[0_4px_6px_-1px_rgba(0,0,0,0.05)] flex flex-col justify-center">
+<div class="flex items-center justify-between mb-4">
+<p class="font-label-md text-label-md text-on-surface-variant uppercase">Applications</p>
+<span class="material-symbols-outlined text-primary">task</span>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex justify-between items-center">
+<span class="font-body-sm text-on-surface-variant">Approved</span>
+<span class="font-data-mono font-bold text-primary">3</span>
+</div>
+<div class="w-full bg-surface-container-high h-1.5 rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[75%]"></div>
+</div>
+<div class="flex justify-between items-center mt-2">
+<span class="font-body-sm text-on-surface-variant">Rejected</span>
+<span class="font-data-mono font-bold text-error">1</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Loan History Table Section -->
+<section class="bg-surface-container-lowest border border-outline-variant rounded-xl shadow-[0_4px_6px_-1px_rgba(0,0,0,0.05)] overflow-hidden">
+<div class="px-6 py-5 border-b border-outline-variant flex justify-between items-center bg-surface-bright">
+<h3 class="font-headline-md text-headline-md text-primary">Loan History</h3>
+<button class="text-primary font-label-md text-label-md hover:underline flex items-center gap-1">
+                    Export CSV <span class="material-symbols-outlined text-[16px]">download</span>
+</button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse"><thead class="bg-[#F8FAFC]"><tr class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider border-b border-outline-variant"><th class="px-6 py-4 font-semibold">Loan ID &amp; Type</th><th class="px-6 py-4 font-semibold text-right">Amount</th><th class="px-6 py-4 font-semibold text-right">Terms</th><th class="px-6 py-4 font-semibold">Risk / Status</th><th class="px-6 py-4 font-semibold">Dates</th><th class="px-6 py-4 font-semibold text-center">Action</th></tr></thead><tbody class="font-body-md"><tr class="border-b border-outline-variant hover:bg-[#F1F5F9] transition-colors group"><td class="px-6 py-4"><p class="font-data-mono font-bold text-primary mb-1">#1042 · Auto</p></td><td class="px-6 py-4 text-right font-data-mono">100,000 MAD</td><td class="px-6 py-4 text-right"><p class="font-data-mono text-primary mb-1">48 months · 4.2%</p><p class="text-sm text-on-surface-variant font-data-mono">793.50 MAD / month</p></td><td class="px-6 py-4"><div class="flex flex-col items-start gap-2"><span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-[#10b981]/10 text-[#047857]">LOW</span><span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-[#f59e0b]/10 text-[#b45309]">Active</span></div></td><td class="px-6 py-4 text-sm text-on-surface-variant font-data-mono"><p>Approved: 12 Mar 2026</p><p>End: 12 Mar 2030</p></td><td class="px-6 py-4 text-center"><div class="relative inline-block text-left">
+<button class="text-primary bg-surface-container-high p-2 rounded transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+<div class="absolute right-0 mt-2 w-48 bg-surface-container-lowest border border-outline-variant rounded-lg shadow-lg z-50 py-2">
+<a class="flex items-center px-4 py-2 text-body-md text-on-surface hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined mr-3 text-[20px]">visibility</span>
+      View Details
+    </a>
+<a class="flex items-center px-4 py-2 text-body-md text-on-surface hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined mr-3 text-[20px]">payments</span>
+      View Payments
+    </a>
+<a class="flex items-center px-4 py-2 text-body-md text-on-surface hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined mr-3 text-[20px]">edit</span>
+      Edit Loan
+    </a>
+<div class="border-t border-outline-variant/20 my-1"></div>
+<a class="flex items-center px-4 py-2 text-body-md text-error hover:bg-error/10 transition-colors" href="#">
+<span class="material-symbols-outlined mr-3 text-[20px]">delete</span>
+      Delete Loan
+    </a>
+</div>
+</div></td></tr><tr class="border-b border-outline-variant hover:bg-[#F1F5F9] transition-colors group"><td class="px-6 py-4"><p class="font-data-mono font-bold text-primary mb-1">#0988 · Home</p></td><td class="px-6 py-4 text-right font-data-mono">25,000 MAD</td><td class="px-6 py-4 text-right"><p class="font-data-mono text-primary mb-1">36 months · 3.5%</p><p class="text-sm text-on-surface-variant font-data-mono">732.60 MAD / month</p></td><td class="px-6 py-4"><div class="flex flex-col items-start gap-2"><span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-[#10b981]/10 text-[#047857]">LOW</span><span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-[#10b981]/10 text-[#047857]">Completed</span></div></td><td class="px-6 py-4 text-sm text-on-surface-variant font-data-mono"><p>Approved: 10 Jan 2020</p><p>End: 10 Jan 2023</p></td><td class="px-6 py-4 text-center"><button class="text-primary hover:bg-surface-container-high p-2 rounded transition-colors"><span class="material-symbols-outlined">more_vert</span></button></td></tr></tbody></table>
+</div>
+<div class="px-6 py-4 border-t border-outline-variant bg-surface flex justify-center">
+<button class="text-on-surface-variant hover:text-primary font-label-md text-label-md transition-colors">
+                    Load More History
+                </button>
+</div>
+</section>
+</main>
+</body></html>

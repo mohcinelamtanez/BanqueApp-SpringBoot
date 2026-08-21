@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>BanqueApp Admin - Reports</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-error": "#ffffff",
+                      "inverse-on-surface": "#ecf1ff",
+                      "on-tertiary": "#ffffff",
+                      "on-primary": "#ffffff",
+                      "on-tertiary-fixed": "#191c1e",
+                      "secondary-fixed-dim": "#b7c8e1",
+                      "primary": "#000000",
+                      "surface-container-high": "#dee8ff",
+                      "tertiary-fixed": "#e0e3e5",
+                      "on-error-container": "#93000a",
+                      "on-background": "#111c2d",
+                      "tertiary": "#000000",
+                      "on-surface": "#111c2d",
+                      "on-secondary-fixed": "#0b1c30",
+                      "on-primary-fixed-variant": "#3f465c",
+                      "primary-fixed": "#dae2fd",
+                      "surface-variant": "#d8e3fb",
+                      "on-secondary": "#ffffff",
+                      "secondary-fixed": "#d3e4fe",
+                      "surface-container-highest": "#d8e3fb",
+                      "inverse-surface": "#263143",
+                      "surface": "#f9f9ff",
+                      "primary-fixed-dim": "#bec6e0",
+                      "on-primary-fixed": "#131b2e",
+                      "outline-variant": "#c6c6cd",
+                      "surface-bright": "#f9f9ff",
+                      "on-tertiary-container": "#818486",
+                      "tertiary-container": "#191c1e",
+                      "surface-container-lowest": "#ffffff",
+                      "tertiary-fixed-dim": "#c4c7c9",
+                      "background": "#f9f9ff",
+                      "secondary-container": "#d0e1fb",
+                      "on-primary-container": "#7c839b",
+                      "on-surface-variant": "#45464d",
+                      "outline": "#76777d",
+                      "on-secondary-container": "#54647a",
+                      "primary-container": "#131b2e",
+                      "inverse-primary": "#bec6e0",
+                      "surface-container": "#e7eeff",
+                      "surface-dim": "#cfdaf2",
+                      "surface-tint": "#565e74",
+                      "error-container": "#ffdad6",
+                      "error": "#ba1a1a",
+                      "secondary": "#505f76",
+                      "on-tertiary-fixed-variant": "#444749",
+                      "on-secondary-fixed-variant": "#38485d",
+                      "surface-container-low": "#f0f3ff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "container-padding": "32px",
+                      "gutter": "24px",
+                      "unit": "4px",
+                      "card-gap": "24px",
+                      "section-margin": "48px"
+              },
+              "fontFamily": {
+                      "display-lg": [
+                              "Inter"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "headline-lg": [
+                              "Inter"
+                      ],
+                      "headline-lg-mobile": [
+                              "Inter"
+                      ],
+                      "headline-md": [
+                              "Inter"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "label-md": [
+                              "Inter"
+                      ],
+                      "data-mono": [
+                              "JetBrains Mono"
+                      ]
+              },
+              "fontSize": {
+                      "display-lg": [
+                              "36px",
+                              {
+                                      "lineHeight": "44px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg": [
+                              "28px",
+                              {
+                                      "lineHeight": "36px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-md": [
+                              "20px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-lg": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-md": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "data-mono": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "500"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+    </script>
+<style>
+        body { background-color: #F8FAFC; } /* Canvas color */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid #E2E8F0;
+            box-shadow: 0px 4px 6px -1px rgba(0,0,0,0.05);
+        }
+        .report-preview-container {
+            aspect-ratio: 1 / 1.414; /* A4 aspect ratio approximation */
+            max-width: 800px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body class="font-body-md text-on-background antialiased flex">
+<!-- SideNavBar -->
+<nav class="fixed left-0 top-0 h-full z-50 flex flex-col docked left-0 h-full w-[280px] bg-primary text-on-primary font-body-md text-body-md border-r border-outline-variant flat no shadows">
+<div class="p-6">
+<h1 class="font-display-lg text-display-lg text-on-primary mb-1">BanqueApp</h1>
+<p class="text-on-primary/70 font-label-md text-label-md uppercase tracking-wider">Admin Portal</p>
+</div>
+<div class="flex flex-col mt-4 flex-grow">
+<a class="flex items-center gap-4 px-6 py-4 text-on-primary/70 hover:text-on-primary hover:bg-on-primary/10 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center gap-4 px-6 py-4 text-on-primary/70 hover:text-on-primary hover:bg-on-primary/10 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span>Clients</span>
+</a>
+<a class="flex items-center gap-4 px-6 py-4 text-on-primary/70 hover:text-on-primary hover:bg-on-primary/10 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span>Loans</span>
+</a>
+<a class="flex items-center gap-4 px-6 py-4 bg-secondary-container text-on-secondary-container border-l-4 border-inverse-primary hover:bg-on-primary/10 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="assessment">assessment</span>
+<span>Reports</span>
+</a>
+<a class="flex items-center gap-4 px-6 py-4 text-on-primary/70 hover:text-on-primary hover:bg-on-primary/10 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="security">security</span>
+<span>Security</span>
+</a>
+<a class="flex items-center gap-4 px-6 py-4 text-on-primary/70 hover:text-on-primary hover:bg-on-primary/10 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span>Settings</span>
+</a>
+</div>
+<div class="mt-auto mb-6">
+<a class="flex items-center gap-4 px-6 py-4 text-on-primary/70 hover:text-on-primary hover:bg-on-primary/10 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span>Logout</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<div class="ml-[280px] w-full flex flex-col min-h-screen">
+<!-- TopNavBar -->
+<header class="fixed top-0 right-0 left-[280px] z-40 flex justify-between items-center px-8 h-16 docked top-0 full-width bg-surface text-primary font-label-md text-label-md border-b border-outline-variant shadow-sm">
+<div class="flex items-center gap-6">
+<h2 class="font-headline-md text-headline-md font-bold text-primary">BanqueApp Admin</h2>
+<nav class="flex gap-4">
+<a class="text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors duration-200 px-2 py-1 rounded" href="#">Overview</a>
+<a class="text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors duration-200 px-2 py-1 rounded" href="#">Analytics</a>
+<a class="text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors duration-200 px-2 py-1 rounded" href="#">Management</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:text-primary p-2 rounded-full hover:bg-surface-container-high transition-colors duration-200 flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary p-2 rounded-full hover:bg-surface-container-high transition-colors duration-200 flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+</button>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-outline-variant">
+<img alt="Admin Avatar" class="w-full h-full object-cover" data-alt="A small, professional headshot of an executive in a well-lit corporate office environment. The image serves as an admin avatar for a high-end fintech application. The subject is wearing formal business attire, and the background is slightly blurred to keep focus on the face." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCoAzvRZnGhIm0cWbwqkOc2htjAbF7Dm4_qopR48YhHtAsMZxRAHmEouCq-AY1sQkdcEUqofIi50pEctPkC15cupr1vE7FpoQ2xd3lC3IYDVX4vziBLWnBNO17ekGthjQzpB0jXuhpl3EErGNbkBiz-Gx5u_u3w6yVBhJGrE9qD_2qOTc1gfiX7jQu77wk0ATbXa4-jVIAhn3jWiKgLoQamK7RcpSv6s4N4P5f3wXdiPK3MOnDlO_TuJA"/>
+</div>
+</div>
+</header>
+<!-- Page Canvas -->
+<main class="flex-grow pt-[80px] px-container-padding pb-container-padding flex gap-gutter">
+<!-- Left Column: Filters (Sticky) -->
+<aside class="w-1/4 min-w-[250px] flex flex-col gap-6 sticky top-[96px] h-[calc(100vh-128px)] overflow-y-auto pr-2">
+<div class="glass-card rounded-lg p-6 flex flex-col gap-4">
+<h3 class="font-headline-md text-headline-md font-bold text-on-surface mb-2">Report Configuration</h3>
+<div class="flex flex-col gap-1">
+<label class="font-label-md text-label-md text-on-surface-variant">Date Range</label>
+<select class="w-full border border-outline-variant rounded-md py-2 px-3 text-body-md focus:border-primary focus:ring-2 focus:ring-primary/10 bg-surface">
+<option>Q3 2023</option>
+<option>Q2 2023</option>
+<option>YTD 2023</option>
+<option>Custom Range</option>
+</select>
+</div>
+<div class="flex flex-col gap-1">
+<label class="font-label-md text-label-md text-on-surface-variant">Client Group</label>
+<select class="w-full border border-outline-variant rounded-md py-2 px-3 text-body-md focus:border-primary focus:ring-2 focus:ring-primary/10 bg-surface">
+<option>All Commercial</option>
+<option>Enterprise</option>
+<option>SME</option>
+<option>Private Wealth</option>
+</select>
+</div>
+<div class="flex flex-col gap-1">
+<label class="font-label-md text-label-md text-on-surface-variant">Loan Type</label>
+<select class="w-full border border-outline-variant rounded-md py-2 px-3 text-body-md focus:border-primary focus:ring-2 focus:ring-primary/10 bg-surface">
+<option>Corporate Mortgages</option>
+<option>Revolving Credit</option>
+<option>Term Loans</option>
+</select>
+</div>
+<div class="flex flex-col gap-1">
+<label class="font-label-md text-label-md text-on-surface-variant">Status</label>
+<select class="w-full border border-outline-variant rounded-md py-2 px-3 text-body-md focus:border-primary focus:ring-2 focus:ring-primary/10 bg-surface">
+<option>Performing</option>
+<option>At Risk</option>
+<option>Defaulted</option>
+</select>
+</div>
+<button class="mt-4 w-full bg-primary text-on-primary py-2 px-4 rounded-md font-body-md text-body-md font-bold hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="refresh">refresh</span> Update Preview
+                    </button>
+</div>
+</aside>
+<!-- Right Column: Preview Area -->
+<div class="flex-grow flex flex-col gap-6">
+<!-- Action Bar -->
+<div class="flex justify-between items-center bg-surface-container-lowest p-4 rounded-lg border border-outline-variant shadow-sm">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="visibility">visibility</span>
+<span class="font-label-md text-label-md uppercase tracking-wider">Live Preview</span>
+</div>
+<div class="flex gap-3">
+<button class="px-4 py-2 border border-outline text-on-surface font-body-md text-body-md rounded-md hover:bg-surface-variant transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="print">print</span> Print
+                        </button>
+<button class="px-4 py-2 border border-outline text-on-surface font-body-md text-body-md rounded-md hover:bg-surface-variant transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="download">download</span> Download PDF
+                        </button>
+<button class="px-4 py-2 bg-primary text-on-primary font-body-md text-body-md rounded-md hover:opacity-90 transition-opacity flex items-center gap-2 font-bold">
+                             Generate Report
+                        </button>
+</div>
+</div>
+<!-- Document Preview -->
+<div class="glass-card rounded-xl p-8 report-preview-container overflow-hidden flex flex-col relative bg-white">
+<!-- Subtle watermark or branding pattern -->
+<div class="absolute inset-0 opacity-5 pointer-events-none" style="background-image: radial-gradient(#111c2d 1px, transparent 1px); background-size: 24px 24px;"></div>
+<!-- Report Header -->
+<header class="flex justify-between items-end border-b-2 border-primary pb-6 mb-8 relative z-10">
+<div>
+<h1 class="font-display-lg text-display-lg text-primary font-bold tracking-tight">Portfolio Performance Report</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant mt-1">Commercial Lending Division</p>
+</div>
+<div class="text-right">
+<div class="font-headline-md text-headline-md text-primary font-bold mb-1">BanqueApp</div>
+<p class="font-body-md text-body-md text-on-surface-variant">Q3 2023 Summary</p>
+<p class="font-body-md text-body-md text-on-surface-variant">Generated: Oct 15, 2023</p>
+</div>
+</header>
+<!-- Financial Summaries (Bento-ish) -->
+<section class="grid grid-cols-3 gap-6 mb-8 relative z-10">
+<div class="bg-surface-container-low p-4 rounded-lg border border-outline-variant/50">
+<h4 class="font-label-md text-label-md text-on-surface-variant uppercase mb-2">Total Exposure</h4>
+<div class="font-headline-lg text-headline-lg font-bold text-on-surface">$1.24B</div>
+<div class="font-body-md text-body-md text-[#15803d] flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-[16px]">trending_up</span> +4.2% YoY
+                            </div>
+</div>
+<div class="bg-surface-container-low p-4 rounded-lg border border-outline-variant/50">
+<h4 class="font-label-md text-label-md text-on-surface-variant uppercase mb-2">Yield Average</h4>
+<div class="font-headline-lg text-headline-lg font-bold text-on-surface">6.8%</div>
+<div class="font-body-md text-body-md text-on-surface-variant flex items-center gap-1 mt-1">
+<span>Stable Q/Q</span>
+</div>
+</div>
+<div class="bg-surface-container-low p-4 rounded-lg border border-outline-variant/50">
+<h4 class="font-label-md text-label-md text-on-surface-variant uppercase mb-2">Non-Performing</h4>
+<div class="font-headline-lg text-headline-lg font-bold text-on-surface">1.1%</div>
+<div class="font-body-md text-body-md text-[#b45309] flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-[16px]">warning</span> Watchlist Active
+                            </div>
+</div>
+</section>
+<!-- Detailed Table -->
+<section class="flex-grow relative z-10">
+<h3 class="font-headline-md text-headline-md text-on-surface font-semibold mb-4">Top Client Exposures</h3>
+<div class="border border-outline-variant rounded-lg overflow-hidden">
+<table class="w-full text-left border-collapse">
+<thead class="bg-surface-dim font-label-md text-label-md text-on-surface-variant uppercase">
+<tr>
+<th class="py-3 px-4 border-b border-outline-variant font-semibold">Client Name</th>
+<th class="py-3 px-4 border-b border-outline-variant font-semibold">Sector</th>
+<th class="py-3 px-4 border-b border-outline-variant font-semibold text-right">Commitment</th>
+<th class="py-3 px-4 border-b border-outline-variant font-semibold text-right">Drawn</th>
+<th class="py-3 px-4 border-b border-outline-variant font-semibold">Status</th>
+</tr>
+</thead>
+<tbody class="font-data-mono text-data-mono text-on-surface">
+<tr class="hover:bg-surface-container-low transition-colors border-b border-outline-variant/50">
+<td class="py-3 px-4 font-body-md">Acme Heavy Industries</td>
+<td class="py-3 px-4 font-body-md text-on-surface-variant">Manufacturing</td>
+<td class="py-3 px-4 text-right">$150.0M</td>
+<td class="py-3 px-4 text-right">$125.5M</td>
+<td class="py-3 px-4">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-[#dcfce7] text-[#166534]">Performing</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors border-b border-outline-variant/50">
+<td class="py-3 px-4 font-body-md">Global Logistics Corp</td>
+<td class="py-3 px-4 font-body-md text-on-surface-variant">Transportation</td>
+<td class="py-3 px-4 text-right">$85.0M</td>
+<td class="py-3 px-4 text-right">$40.0M</td>
+<td class="py-3 px-4">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-[#dcfce7] text-[#166534]">Performing</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors border-b border-outline-variant/50">
+<td class="py-3 px-4 font-body-md">Apex Commercial Real Estate</td>
+<td class="py-3 px-4 font-body-md text-on-surface-variant">Real Estate</td>
+<td class="py-3 px-4 text-right">$210.0M</td>
+<td class="py-3 px-4 text-right">$210.0M</td>
+<td class="py-3 px-4">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-[#fef3c7] text-[#92400e]">Watchlist</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-3 px-4 font-body-md">TechNova Solutions</td>
+<td class="py-3 px-4 font-body-md text-on-surface-variant">Technology</td>
+<td class="py-3 px-4 text-right">$45.5M</td>
+<td class="py-3 px-4 text-right">$10.2M</td>
+<td class="py-3 px-4">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-[#dcfce7] text-[#166534]">Performing</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<!-- Footer -->
+<footer class="mt-8 pt-4 border-t border-outline-variant/50 flex justify-between font-label-md text-label-md text-on-surface-variant relative z-10">
+<span>CONFIDENTIAL - Internal Use Only</span>
+<span>Page 1 of 12</span>
+</footer>
+</div>
+</div>
+</main>
+</div>
+</body></html>

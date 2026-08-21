@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Edit Client - BanqueApp Admin</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-fixed": "#dae2fd",
+                        "on-tertiary-container": "#818486",
+                        "on-background": "#111c2d",
+                        "surface-container-highest": "#d8e3fb",
+                        "secondary-fixed": "#d3e4fe",
+                        "outline": "#76777d",
+                        "on-primary": "#ffffff",
+                        "tertiary-fixed": "#e0e3e5",
+                        "tertiary-fixed-dim": "#c4c7c9",
+                        "on-error-container": "#93000a",
+                        "tertiary": "#000000",
+                        "primary-container": "#131b2e",
+                        "secondary-container": "#d0e1fb",
+                        "inverse-on-surface": "#ecf1ff",
+                        "primary": "#000000",
+                        "on-tertiary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "on-primary-fixed": "#131b2e",
+                        "on-tertiary-fixed": "#191c1e",
+                        "surface": "#f9f9ff",
+                        "secondary-fixed-dim": "#b7c8e1",
+                        "secondary": "#505f76",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-dim": "#cfdaf2",
+                        "surface-container-high": "#dee8ff",
+                        "on-surface-variant": "#45464d",
+                        "tertiary-container": "#191c1e",
+                        "surface-variant": "#d8e3fb",
+                        "primary-fixed-dim": "#bec6e0",
+                        "on-primary-fixed-variant": "#3f465c",
+                        "surface-container-low": "#f0f3ff",
+                        "on-surface": "#111c2d",
+                        "surface-tint": "#565e74",
+                        "surface-bright": "#f9f9ff",
+                        "on-secondary": "#ffffff",
+                        "on-secondary-fixed-variant": "#38485d",
+                        "on-secondary-fixed": "#0b1c30",
+                        "surface-container": "#e7eeff",
+                        "on-tertiary-fixed-variant": "#444749",
+                        "inverse-primary": "#bec6e0",
+                        "on-error": "#ffffff",
+                        "inverse-surface": "#263143",
+                        "error-container": "#ffdad6",
+                        "on-primary-container": "#7c839b",
+                        "background": "#f9f9ff",
+                        "outline-variant": "#c6c6cd",
+                        "on-secondary-container": "#54647a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "container-padding": "32px",
+                        "unit": "4px",
+                        "section-margin": "48px",
+                        "card-gap": "24px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "data-mono": ["JetBrains Mono"],
+                        "headline-lg-mobile": ["Inter"],
+                        "label-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "display-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "data-mono": ["14px", { "lineHeight": "20px", "fontWeight": "500" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface antialiased overflow-hidden">
+<!-- Dimmed Background Overlay -->
+<div class="fixed inset-0 bg-primary-container/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+<!-- Modal Container -->
+<div class="bg-surface-container-lowest rounded-xl shadow-[0px_20px_25px_-5px_rgba(0,0,0,0.1)] w-full max-w-[600px] flex flex-col max-h-[90vh] overflow-hidden border border-outline-variant/30">
+<!-- Modal Header -->
+<div class="px-6 py-5 border-b border-outline-variant/30 flex justify-between items-center bg-surface">
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Edit Client</h2>
+<p class="font-data-mono text-data-mono text-on-surface-variant mt-1">Client ID: #80</p>
+</div>
+<button aria-label="Close modal" class="text-on-surface-variant hover:text-primary transition-colors p-2 rounded-full hover:bg-surface-container-high">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<!-- Modal Body (Form) -->
+<div class="p-6 overflow-y-auto flex-1">
+<form class="space-y-6">
+<!-- Name Fields (Grid) -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="flex flex-col gap-1.5">
+<label class="font-label-md text-label-md text-on-surface-variant" for="firstName">First Name</label>
+<input class="w-full px-4 py-2.5 rounded-lg border border-outline-variant bg-surface-container-lowest text-on-surface font-body-md text-body-md focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none" id="firstName" type="text" value="Mohcine"/>
+</div>
+<div class="flex flex-col gap-1.5">
+<label class="font-label-md text-label-md text-on-surface-variant" for="lastName">Last Name</label>
+<input class="w-full px-4 py-2.5 rounded-lg border border-outline-variant bg-surface-container-lowest text-on-surface font-body-md text-body-md focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none" id="lastName" type="text" value="Lamtanez"/>
+</div>
+</div>
+<!-- Location Fields (Grid) -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="flex flex-col gap-1.5">
+<label class="font-label-md text-label-md text-on-surface-variant" for="city">City</label>
+<input class="w-full px-4 py-2.5 rounded-lg border border-outline-variant bg-surface-container-lowest text-on-surface font-body-md text-body-md focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none" id="city" type="text" value="Casablanca"/>
+</div>
+<div class="flex flex-col gap-1.5">
+<label class="font-label-md text-label-md text-on-surface-variant" for="postalCode">Postal Code</label>
+<input class="w-full px-4 py-2.5 rounded-lg border border-outline-variant bg-surface-container-lowest text-on-surface font-body-md text-body-md focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none" id="postalCode" type="text" value="25001"/>
+</div>
+</div>
+<!-- Financial Fields -->
+<div class="flex flex-col gap-1.5">
+<label class="font-label-md text-label-md text-on-surface-variant" for="annualIncome">Annual Income</label>
+<div class="relative">
+<span class="absolute left-4 top-1/2 -translate-y-1/2 font-data-mono text-data-mono text-on-surface-variant">MAD</span>
+<input class="w-full pl-14 pr-16 py-2.5 rounded-lg border border-outline-variant bg-surface-container-lowest text-on-surface font-data-mono text-data-mono focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none text-right" id="annualIncome" type="text" value="60,000"/>
+<span class="absolute right-4 top-1/2 -translate-y-1/2 font-body-md text-body-md text-on-surface-variant">/ year</span>
+</div>
+</div>
+</form>
+</div>
+<!-- Modal Footer (Actions) -->
+<div class="px-6 py-5 border-t border-outline-variant/30 bg-surface flex justify-end gap-3">
+<button class="px-5 py-2.5 rounded-lg border border-outline-variant bg-transparent text-on-surface font-label-md text-label-md hover:bg-surface-container-high transition-colors active:scale-95" type="button">
+                    Cancel
+                </button>
+<button class="px-5 py-2.5 rounded-lg border border-transparent bg-primary text-on-primary font-label-md text-label-md hover:bg-primary/90 transition-colors active:scale-95 shadow-sm shadow-primary/20" type="button">
+                    Save Changes
+                </button>
+</div>
+</div>
+</div>
+</body></html>
