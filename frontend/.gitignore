@@ -13,3 +13,10 @@ dist/
 Thumbs.db
 .vscode/
 !.vscode/extensions.json
+
+# useless files and folders 
+.gitkeep.txt 
+.implementation.txt 
+prompt1.txt 
+prompt2.txt 
+stitch_banqueapp_admin_portal/
