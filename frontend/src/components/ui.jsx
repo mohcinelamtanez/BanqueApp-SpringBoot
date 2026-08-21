@@ -18,7 +18,7 @@ export function Logo({ small = false, inverse = false }) {
           <em>ADMIN PORTAL</em>
         </span>
       )}
-    </div>
+    </div> 
   );
 }
 export function Button({

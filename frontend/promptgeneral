@@ -1,0 +1,58 @@
+We are working on the branch:
+chore/stitch-design-refinement
+
+For this task, focus ONLY on the application's Sidebar.
+
+Do not modify other pages or unrelated components.
+
+Use the Google Stitch export as the visual source of truth:
+- DESIGN.md
+- the relevant Stitch code.html
+- the corresponding screen.png when available
+
+First inspect the current React Sidebar implementation and compare it carefully with the Stitch version.
+
+Then refine the Sidebar so that it matches the Stitch design as closely as possible.
+
+Pay attention to:
+
+- exact sidebar width
+- height and fixed positioning
+- background color
+- logo/branding placement
+- logo size and proportions
+- logo spacing
+- navigation item dimensions
+- navigation item spacing
+- icons and their sizes
+- icon alignment
+- text typography
+- font size and weight
+- active navigation state
+- active indicator
+- hover state
+- padding and margins
+- section spacing
+- bottom/user area if present
+- borders and separators
+- overall vertical alignment
+
+Use the same logo/branding representation as the Stitch design and make it reusable rather than duplicating it.
+
+Keep the existing React architecture and existing routing/navigation behavior.
+
+The objective is visual fidelity, not a redesign.
+
+Before modifying anything, briefly tell me:
+1. What is currently different from Stitch.
+2. What files you intend to modify.
+
+Then implement the refinement.
+
+After implementation:
+- run the application;
+- verify the Sidebar visually;
+- check that all existing navigation links still work;
+- report exactly which files were changed and what was improved.
+
+Do not commit anything.

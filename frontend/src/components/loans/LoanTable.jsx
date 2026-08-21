@@ -5,7 +5,7 @@ import { money, loanSummary } from "../../utils/finance";
 import { StatusBadge } from "../../pages/pageShared";
 export default function LoanTable({ loans, onDelete }) {
   const navigate = useNavigate();
-  return;
+  return(
   <DataTable
     columns={[
       "Loan ID & type",
@@ -58,6 +58,6 @@ export default function LoanTable({ loans, onDelete }) {
         </td>
       </tr>
     ))}
-  </DataTable>;
+  </DataTable>);
 }
 export { LoanTable };

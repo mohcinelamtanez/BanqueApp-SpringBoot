@@ -1,6 +1,6 @@
 import { DataTable } from "../ui";
 export default function ClientTable({ clients = [], children }) {
-  return;
+  return(
   <DataTable
     columns={[
       "Client name",
@@ -20,5 +20,5 @@ export default function ClientTable({ clients = [], children }) {
           <td />
         </tr>
       ))}
-  </DataTable>;
+  </DataTable>);
 }
