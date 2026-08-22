@@ -47,6 +47,9 @@ public class Loan {
     @Column(name = "end_date")
     private LocalDateTime endDate;
 
+    @Column(name = "rejection_reason" , nullable = true , length = 255)
+    private String rejectionReason;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "client_id", nullable = false)
     private Client client;
@@ -150,6 +153,14 @@ public class Loan {
 
     public Client getClient() {
         return client;
+    }
+
+    public String getRejectionReason() {
+        return this.rejectionReason;
+    }
+
+    public void setRejectionReason(String rejectionReason) {
+        this.rejectionReason = rejectionReason;
     }
 
     public void setClient(Client client) {

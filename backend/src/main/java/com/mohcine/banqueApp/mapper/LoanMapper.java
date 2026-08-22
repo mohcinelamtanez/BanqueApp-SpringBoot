@@ -25,7 +25,7 @@ public class LoanMapper {
         dto.setApprovalDate(loan.getApprovalDate());
         dto.setStatus(loan.getStatus());
         dto.setMonthlyPayment(loan.getMonthlyPayment());
-
+        dto.setRejectionReason(loan.getRejectionReason());
         return dto;
 
     }
@@ -42,7 +42,7 @@ public class LoanMapper {
         loan.setApprovalDate(loanCreateDto.getApprovalDate());
         loan.setStatus(loanCreateDto.getStatus());
         loan.setMonthlyPayment(loanCreateDto.getMonthlyPayment());
-
+        loan.setRejectionReason(loanCreateDto.getRejectionReason());
          return loan  ;
     }
 
@@ -61,7 +61,8 @@ public class LoanMapper {
         loan.setApprovalDate(loanUpdateDTO.getApprovalDate());
         loan.setStatus(loanUpdateDTO.getStatus());
         loan.setMonthlyPayment(loanUpdateDTO.getMonthlyPayment());
-        loan.setClientId(loanUpdateDTO.getClientId());
+        loan.setRejectionReason(loanUpdateDTO.getRejectionReason());
+       // loan.setClientId(loanUpdateDTO.getClientId());
 
         return loan  ;
     }

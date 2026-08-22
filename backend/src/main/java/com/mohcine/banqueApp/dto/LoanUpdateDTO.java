@@ -21,6 +21,7 @@ public class LoanUpdateDTO {
     private LoanStatus status;
     private LocalDateTime approvalDate;
     private LocalDateTime endDate;
+    private String rejectionReason;
     private Integer clientId;
 
     public LoanType getLoanType() {
@@ -97,6 +98,14 @@ public class LoanUpdateDTO {
 
     public Integer getClientId() {
         return clientId;
+    }
+
+    public String getRejectionReason() {
+        return rejectionReason ;
+    }
+
+    public void setRejectionReason(String rejectionReason) {
+        this.rejectionReason = rejectionReason;
     }
 
     public void setClientId(Integer clientId) {

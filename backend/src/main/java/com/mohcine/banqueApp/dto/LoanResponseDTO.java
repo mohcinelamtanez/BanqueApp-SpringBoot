@@ -21,6 +21,7 @@ public class LoanResponseDTO {
    private LoanStatus status;
    private LocalDateTime approvalDate;
    private LocalDateTime endDate;
+   private String rejectionReason;
 
     public Integer getId() {
         return id;
@@ -96,6 +97,14 @@ public class LoanResponseDTO {
 
     public LocalDateTime getApprovalDate() {
         return approvalDate;
+    }
+
+    public String getRejectionReason() {
+        return rejectionReason;
+    }
+
+    public void setRejectionReason(String rejectionReason) {
+        this.rejectionReason = rejectionReason;
     }
 
     public void setApprovalDate(LocalDateTime approvalDate) {
