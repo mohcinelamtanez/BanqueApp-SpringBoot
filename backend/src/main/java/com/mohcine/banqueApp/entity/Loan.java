@@ -54,6 +54,9 @@ public class Loan {
     @JoinColumn(name = "client_id", nullable = false)
     private Client client;
 
+    @OneToMany(mappedBy = "loan")
+    private List<Payment> payments;
+
     public Loan() {
     }
 
@@ -161,6 +164,14 @@ public class Loan {
 
     public void setRejectionReason(String rejectionReason) {
         this.rejectionReason = rejectionReason;
+    }
+
+    public List<Payment> getPayments(){
+        return this.payments ;
+    }
+
+    public void setPayment(List<Payment> payments ){
+        this.payments = payments ;
     }
 
     public void setClient(Client client) {

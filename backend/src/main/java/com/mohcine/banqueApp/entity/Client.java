@@ -3,6 +3,7 @@ package com.mohcine.banqueApp.entity;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Entity
 @Table(name = "client")
@@ -27,6 +28,10 @@ public class Client {
 
     @Column(name = "Revenue", nullable = false, precision = 12, scale = 2)
     private BigDecimal annualIncome;
+
+    @OneToMany(mappedBy = "client")
+    private List<Loan> loans ;
+
 
     public Client() {
     }
@@ -84,6 +89,13 @@ public class Client {
         return annualIncome;
     }
 
+    public List<Loan> getLoans() {
+        return loans ;
+    }
+
+    public void setLoans(List<Loan> loans) {
+        this.loans = loans ;
+    }
     public void setAnnualIncome(BigDecimal annualIncome) {
         this.annualIncome = annualIncome;
     }
