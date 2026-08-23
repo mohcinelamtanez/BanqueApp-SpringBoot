@@ -29,6 +29,9 @@ public class Client {
     @Column(name = "Revenue", nullable = false, precision = 12, scale = 2)
     private BigDecimal annualIncome;
 
+    @Column(name = "email" , nullable = false )
+    private String email ;
+
     @OneToMany(mappedBy = "client")
     private List<Loan> loans ;
 
@@ -37,12 +40,13 @@ public class Client {
     }
 
     public Client(String firstName, String lastName, String city,
-                  String postalCode, BigDecimal annualIncome) {
+                  String postalCode, BigDecimal annualIncome , String email) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.city = city;
         this.postalCode = postalCode;
         this.annualIncome = annualIncome;
+        this.email = email ;
     }
 
     public Integer getId() {
@@ -87,6 +91,14 @@ public class Client {
 
     public BigDecimal getAnnualIncome() {
         return annualIncome;
+    }
+
+    public String getEmail() {
+        return email ;
+    }
+
+    public void setEmail(String email) {
+        this.email = email ;
     }
 
     public List<Loan> getLoans() {

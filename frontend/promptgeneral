@@ -1,58 +1,89 @@
-We are working on the branch:
-chore/stitch-design-refinement
+# Sidebar Refinement — BanqueApp
 
-For this task, focus ONLY on the application's Sidebar.
+You are working on the BanqueApp React frontend.
 
-Do not modify other pages or unrelated components.
+Your task is to **refine and finalize only the Sidebar component** based on the existing Google Stitch design.
 
-Use the Google Stitch export as the visual source of truth:
-- DESIGN.md
-- the relevant Stitch code.html
-- the corresponding screen.png when available
+## Source of truth
 
-First inspect the current React Sidebar implementation and compare it carefully with the Stitch version.
+Use **only the `Admin Dashboard` interface from the existing Stitch design** as the visual reference for the Sidebar.
 
-Then refine the Sidebar so that it matches the Stitch design as closely as possible.
+Analyze the Admin Dashboard carefully and reproduce its existing visual system:
 
-Pay attention to:
+* dimensions and proportions
+* spacing and padding
+* typography
+* font sizes and weights
+* colors
+* borders
+* border radius
+* icons
+* icon sizing and alignment
+* navigation item height
+* active navigation state
+* hover state
+* sidebar background
+* logo placement
+* logo sizing
+* vertical alignment
+* spacing between navigation sections
+* bottom/user section if present
+* responsive/mobile behavior if represented in the design
 
-- exact sidebar width
-- height and fixed positioning
-- background color
-- logo/branding placement
-- logo size and proportions
-- logo spacing
-- navigation item dimensions
-- navigation item spacing
-- icons and their sizes
-- icon alignment
-- text typography
-- font size and weight
-- active navigation state
-- active indicator
-- hover state
-- padding and margins
-- section spacing
-- bottom/user area if present
-- borders and separators
-- overall vertical alignment
+Do not invent a new visual style.
 
-Use the same logo/branding representation as the Stitch design and make it reusable rather than duplicating it.
+## Logo
 
-Keep the existing React architecture and existing routing/navigation behavior.
+Keep **the exact same logo that was already generated for the project**.
 
-The objective is visual fidelity, not a redesign.
+Do not replace it with another logo, Lucide icon, text-based logo, placeholder, or newly generated alternative.
 
-Before modifying anything, briefly tell me:
-1. What is currently different from Stitch.
-2. What files you intend to modify.
+Use the existing logo asset already present in the project and reproduce its placement, dimensions, spacing, and visual treatment according to the Admin Dashboard design.
 
-Then implement the refinement.
+## Implementation
 
-After implementation:
-- run the application;
-- verify the Sidebar visually;
-- check that all existing navigation links still work;
-- report exactly which files were changed and what was improved.
+Refine the existing Sidebar implementation rather than creating an unrelated replacement.
 
-Do not commit anything.
+Keep the component reusable and maintainable.
+
+The Sidebar should receive its navigation/content through the existing React structure instead of hardcoding page-specific business logic inside the component.
+
+Preserve the existing routing behavior with `react-router-dom`.
+
+Make sure the active navigation item is visually consistent with the Admin Dashboard design.
+
+Keep the implementation compatible with the current project architecture and dependencies.
+
+## Scope
+
+For this task, **focus exclusively on the Sidebar**.
+
+Do not redesign or refactor:
+
+* Dashboard content
+* Client pages
+* Loan pages
+* Payment pages
+* Header
+* Tables
+* Cards
+* Forms
+* Backend integration
+* API services
+* Business logic
+
+Only make changes that are necessary for the Sidebar to correctly reproduce the Admin Dashboard design.
+
+## Code quality
+
+Before finishing:
+
+1. Inspect the existing Sidebar and related layout components.
+2. Reuse existing project components, utilities, styles, and assets where appropriate.
+3. Avoid duplicated styles or unnecessary abstractions.
+4. Keep the component easy to understand for another developer.
+5. Make sure the application still builds successfully.
+6. Make sure existing routes continue to work.
+7. Do not introduce new dependencies unless absolutely necessary.
+
+The final result should make the Sidebar look and behave as closely as possible to the **Admin Dashboard Stitch design**, while remaining clean, reusable, and consistent with the existing React architecture.

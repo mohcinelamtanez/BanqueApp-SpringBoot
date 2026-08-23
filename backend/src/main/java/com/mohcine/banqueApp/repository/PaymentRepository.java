@@ -3,5 +3,5 @@ package com.mohcine.banqueApp.repository;
 /**
  * @author USER
  **/
-public interface PayementRepository {
+public interface PaymentRepository {
 }

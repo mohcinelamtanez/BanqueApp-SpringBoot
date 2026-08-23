@@ -20,7 +20,6 @@ public class LoanMapper {
         dto.setDuration(loan.getDuration());
         dto.setEndDate(loan.getEndDate());
         dto.setLoanType(loan.getLoanType());
-        dto.setRiskLevel(loan.getRiskLevel());
         dto.setAnnualInterestRate(loan.getAnnualInterestRate());
         dto.setApprovalDate(loan.getApprovalDate());
         dto.setStatus(loan.getStatus());
@@ -37,7 +36,6 @@ public class LoanMapper {
         loan.setDuration(loanCreateDto.getDuration());
         loan.setEndDate(loanCreateDto.getEndDate());
         loan.setLoanType(loanCreateDto.getLoanType());
-        loan.setRiskLevel(loanCreateDto.getRiskLevel());
         loan.setAnnualInterestRate(loanCreateDto.getAnnualInterestRate());
         loan.setApprovalDate(loanCreateDto.getApprovalDate());
         loan.setStatus(loanCreateDto.getStatus());
@@ -56,7 +54,6 @@ public class LoanMapper {
         loan.setDuration(loanUpdateDTO.getDuration());
         loan.setEndDate(loanUpdateDTO.getEndDate());
         loan.setLoanType(loanUpdateDTO.getLoanType());
-        loan.setRiskLevel(loanUpdateDTO.getRiskLevel());
         loan.setAnnualInterestRate(loanUpdateDTO.getAnnualInterestRate());
         loan.setApprovalDate(loanUpdateDTO.getApprovalDate());
         loan.setStatus(loanUpdateDTO.getStatus());

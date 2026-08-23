@@ -33,9 +33,6 @@ public class Loan {
     @Column(name = "monthly_payment", precision = 15, scale = 2)
     private BigDecimal monthlyPayment;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "risk_level", length = 50)
-    private RiskLevel riskLevel;
 
     @Enumerated(EnumType.STRING)
     @Column(length = 50)
@@ -128,14 +125,6 @@ public class Loan {
 
     public void setStatus(LoanStatus status) {
         this.status = status;
-    }
-
-    public RiskLevel getRiskLevel() {
-        return riskLevel;
-    }
-
-    public void setRiskLevel(RiskLevel riskLevel) {
-        this.riskLevel = riskLevel;
     }
 
     public LocalDateTime getApprovalDate() {
