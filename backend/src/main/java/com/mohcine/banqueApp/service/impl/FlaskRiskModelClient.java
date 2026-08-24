@@ -26,12 +26,15 @@ public class FlaskRiskModelClient implements RiskModelClient {
             BigDecimal monthlyPayment,
             Integer duration,
             BigDecimal annualInterestRate) {
-
+        System.out.println("annualIncome = " + annualIncome);
+        System.out.println("monthlyPayment = " + monthlyPayment);
+        System.out.println("duration = " + duration);
+        System.out.println("annualInterestRate = " + annualInterestRate);
         Map<String, Object> request = Map.of(
-                "annualIncome", annualIncome,
-                "monthlyPayment", monthlyPayment,
-                "duration", duration,
-                "annualInterestRate", annualInterestRate
+                "revenu", annualIncome,
+                "remboursement", monthlyPayment,
+                "duree", duration,
+                "taux", annualInterestRate
         );
 
         return restClient.post()

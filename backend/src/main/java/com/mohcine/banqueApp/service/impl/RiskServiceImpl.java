@@ -9,6 +9,8 @@ import com.mohcine.banqueApp.service.interfaces.RiskModelClient;
 import com.mohcine.banqueApp.service.interfaces.RiskService;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+
 /**
  * @author USER
  **/
@@ -28,24 +30,19 @@ public class RiskServiceImpl implements RiskService {
         this.riskAssessmentRepository = riskAssessmentRepository;
     }
 
+
     @Override
-    public RiskAssessment assessRisk(Integer loanId) {
+    public RiskAssessment assessRisk(
+            BigDecimal annualIncome,
+            BigDecimal monthlyPayment,
+            Integer duration,
+            BigDecimal annualInterestRate) {
 
-        Loan loan = loanRepository.findById(loanId)
-                .orElseThrow(() ->
-                        new RuntimeException("Loan not found"));
-
-        Client client = loan.getClient();
-
-        RiskAssessment assessment = riskModelClient.predict(
-                client.getAnnualIncome(),
-                loan.getMonthlyPayment(),
-                loan.getDuration(),
-                loan.getAnnualInterestRate()
+        return riskModelClient.predict(
+                annualIncome,
+                monthlyPayment,
+                duration,
+                annualInterestRate
         );
-
-        assessment.setLoan(loan);
-
-        return riskAssessmentRepository.save(assessment);
     }
 }
