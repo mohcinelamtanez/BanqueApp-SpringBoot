@@ -3,12 +3,14 @@ package com.mohcine.banqueApp.service.impl;
 import com.mohcine.banqueApp.entity.Role;
 import com.mohcine.banqueApp.repository.RoleRepository;
 import com.mohcine.banqueApp.service.interfaces.RoleService;
+import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 
 /**
  * @author USER
  **/
+@Service
 public class RoleServiceImpl implements RoleService {
 
         private RoleRepository roleRepository;
