@@ -1,14 +1,21 @@
 package com.mohcine.banqueApp.entity;
 
-import com.mohcine.banqueApp.enums.Role;
 import jakarta.persistence.*;
+import org.jspecify.annotations.Nullable;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
+import java.util.List;
 
 /**
  * @author USER
  **/
 @Entity
-@Table(name = "Users")
-public class User {
+@Table(name = "users")
+public class User implements UserDetails {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -19,13 +26,33 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    @Enumerated(EnumType.STRING)
+    @ManyToMany
+    @JoinTable(
+            name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Collection<Role> authorities;
+
     @Column(nullable = false)
-    private Role role;
+    private boolean accountNonExpired = true;
+    @Column(nullable = false)
+    private boolean accountNonLocked = true;
+    @Column(nullable = false)
+    private boolean credentialsNonExpired = true;
+    @Column(nullable = false)
+    private boolean enabled = true ;
+
+
+
+
 
     @OneToOne
     @JoinColumn(name = "client_id", unique = true)
     private Client client;
+
+    public User() {
+    }
 
     public Integer getId() {
         return id;
@@ -35,20 +62,67 @@ public class User {
         this.id = id;
     }
 
-    public String getEmail() {
+    @Override
+    public String getUsername() {
         return email;
     }
 
-    public void setEmail(String email) {
+    public void setUsername(String email) {
         this.email = email;
     }
 
-    public String getPassword() {
+    @Override
+    public @Nullable String getPassword() {
         return password;
     }
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    @Override
+    public Collection<Role> getAuthorities() {
+        return authorities;
+    }
+
+    public void setAuthorities(Collection<Role> authorities) {
+        this.authorities = authorities;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return accountNonExpired;
+    }
+
+    public void setAccountNonExpired(boolean accountNonExpired) {
+        this.accountNonExpired = accountNonExpired;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return accountNonLocked;
+    }
+
+    public void setAccountNonLocked(boolean accountNonLocked) {
+        this.accountNonLocked = accountNonLocked;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return credentialsNonExpired;
+    }
+
+    public void setCredentialsNonExpired(boolean credentialsNonExpired) {
+        this.credentialsNonExpired = credentialsNonExpired;
     }
 
     public Client getClient() {
@@ -57,13 +131,5 @@ public class User {
 
     public void setClient(Client client) {
         this.client = client;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
     }
 }
