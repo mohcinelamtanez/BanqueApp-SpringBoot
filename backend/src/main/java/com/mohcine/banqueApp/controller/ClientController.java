@@ -7,6 +7,8 @@ import com.mohcine.banqueApp.entity.Client;
 import com.mohcine.banqueApp.mapper.ClientMapper;
 import com.mohcine.banqueApp.service.impl.ClientServiceImpl;
 import com.mohcine.banqueApp.service.interfaces.ClientService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,6 +16,7 @@ import java.util.List;
 /**
  * @author USER
  **/
+@Tag(name = "cette endpoint permet de gerer les clients")
 @RestController
 @RequestMapping("api/v1/clients")
 public class ClientController {
@@ -35,6 +38,7 @@ public class ClientController {
 
      }
 
+     @Operation(summary = "cette methode permet de récupérer tous les clients présents dans la base de donnée")
     @GetMapping
     public List<ClientResponseDTO> getAllClients() {
 

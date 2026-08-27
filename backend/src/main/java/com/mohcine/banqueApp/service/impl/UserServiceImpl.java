@@ -6,6 +6,7 @@ import com.mohcine.banqueApp.service.interfaces.RoleService;
 import com.mohcine.banqueApp.service.interfaces.UserService;
 import com.mohcine.banqueApp.service.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,7 +26,9 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
     @Autowired private RoleService roleService;
     @Autowired private PasswordEncoder passwordEncoder;
-    @Autowired private AuthenticationManager authenticationManager;
+    @Lazy
+    @Autowired
+    private AuthenticationManager authenticationManager;
     @Autowired private JwtUtil jwtUtil;
 
     @Override

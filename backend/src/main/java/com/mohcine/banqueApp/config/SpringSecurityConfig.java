@@ -3,6 +3,7 @@ package com.mohcine.banqueApp.config;
 import com.mohcine.banqueApp.filter.JwtAuthenticationFilter;
 import com.mohcine.banqueApp.filter.JwtAutorisationFilter;
 import com.mohcine.banqueApp.service.interfaces.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,18 +24,19 @@ public class SpringSecurityConfig {
 
     private final UserService userService;
     private final JwtAutorisationFilter jwtAutorisationFilter;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public SpringSecurityConfig(
             UserService userService,
-            JwtAutorisationFilter jwtAutorisationFilter) {
+            JwtAutorisationFilter jwtAutorisationFilter ,
+            PasswordEncoder passwordEncoder
+    ) {
         this.userService = userService;
         this.jwtAutorisationFilter = jwtAutorisationFilter;
+        this.passwordEncoder = passwordEncoder;
     }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
 
 
     @Bean
@@ -50,7 +52,7 @@ public class SpringSecurityConfig {
         DaoAuthenticationProvider provider =
                 new DaoAuthenticationProvider(userService);
 
-        provider.setPasswordEncoder(passwordEncoder());
+        provider.setPasswordEncoder(passwordEncoder);
 
         return provider;
     }
@@ -72,6 +74,9 @@ public class SpringSecurityConfig {
 
                         // Routes publiques
                         .requestMatchers(
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/v3/api-docs/**",
                                 "/v1/api/authentification/**",
                                 "/login/**",
                                 "/v1/api/pub/**",

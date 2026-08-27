@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
  * @author USER
  **/
 @Entity
+@Table(name = "Notification")
 public class Notification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,10 +18,11 @@ public class Notification {
     private String message;
 
     @Enumerated(EnumType.STRING)
+    @Column
     private NotificationType type;
 
-    @Column
-    private boolean read ;
+    @Column(name = "is_read")
+    private boolean isRead ;
     @Column
     private LocalDateTime createdAt;
 
@@ -52,11 +54,11 @@ public class Notification {
     }
 
     public boolean isRead() {
-        return read;
+        return isRead;
     }
 
-    public void setRead(boolean read) {
-        this.read = read;
+    public void setRead(boolean isRead) {
+        this.isRead = isRead;
     }
 
     public User getUser() {

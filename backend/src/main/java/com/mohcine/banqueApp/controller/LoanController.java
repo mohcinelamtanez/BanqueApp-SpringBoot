@@ -6,6 +6,7 @@ import com.mohcine.banqueApp.dto.LoanUpdateDTO;
 import com.mohcine.banqueApp.entity.Loan;
 import com.mohcine.banqueApp.mapper.LoanMapper;
 import com.mohcine.banqueApp.service.interfaces.LoanService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.List;
 /**
  * @author USER
  **/
+@Tag(name  = "cette endpoint permet la gestion des prets bancaire")
 @RestController
 @RequestMapping("api/v1/loans")
 
