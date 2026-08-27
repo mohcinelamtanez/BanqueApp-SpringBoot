@@ -12,25 +12,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class LoanMapper {
 
-    public LoanResponseDTO toDTO(Loan loan){
-        LoanResponseDTO dto = new LoanResponseDTO();
-
-        dto.setId(loan.getId());
-        dto.setLoanAmount(loan.getLoanAmount());
-        dto.setDuration(loan.getDuration());
-        dto.setEndDate(loan.getEndDate());
-        dto.setLoanType(loan.getLoanType());
-        dto.setAnnualInterestRate(loan.getAnnualInterestRate());
-        dto.setApprovalDate(loan.getApprovalDate());
-        dto.setStatus(loan.getStatus());
-        dto.setMonthlyPayment(loan.getMonthlyPayment());
-        dto.setRejectionReason(loan.getRejectionReason());
-        return dto;
-
-    }
-
     public Loan toEntity(LoanCreateDto loanCreateDto) {
         Loan loan = new Loan();
+
 
         loan.setLoanAmount(loanCreateDto.getLoanAmount());
         loan.setDuration(loanCreateDto.getDuration());
@@ -41,8 +25,44 @@ public class LoanMapper {
         loan.setStatus(loanCreateDto.getStatus());
         loan.setMonthlyPayment(loanCreateDto.getMonthlyPayment());
         loan.setRejectionReason(loanCreateDto.getRejectionReason());
-         return loan  ;
+        return loan  ;
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public LoanResponseDTO toDTO(Loan loan){
+          LoanResponseDTO dto = new LoanResponseDTO();
+
+            dto.setId(loan.getId());
+            dto.setLoanAmount(loan.getLoanAmount());
+            dto.setDuration(loan.getDuration());
+            dto.setEndDate(loan.getEndDate());
+            dto.setLoanType(loan.getLoanType());
+            dto.setAnnualInterestRate(loan.getAnnualInterestRate());
+            dto.setApprovalDate(loan.getApprovalDate());
+            dto.setStatus(loan.getStatus());
+            dto.setMonthlyPayment(loan.getMonthlyPayment());
+            dto.setRejectionReason(loan.getRejectionReason());
+           return dto;
+
+   }
+
+
 
 
 

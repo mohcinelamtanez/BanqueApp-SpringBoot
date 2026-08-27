@@ -1,5 +1,6 @@
 package com.mohcine.banqueApp.service.impl;
 
+import com.mohcine.banqueApp.dto.RiskPredictionResponseDTO;
 import com.mohcine.banqueApp.entity.RiskAssessment;
 import com.mohcine.banqueApp.service.interfaces.RiskModelClient;
 import org.springframework.stereotype.Component;
@@ -21,15 +22,12 @@ public class FlaskRiskModelClient implements RiskModelClient {
     }
 
     @Override
-    public RiskAssessment predict(
+    public RiskPredictionResponseDTO predict(
             BigDecimal annualIncome,
             BigDecimal monthlyPayment,
             Integer duration,
             BigDecimal annualInterestRate) {
-        System.out.println("annualIncome = " + annualIncome);
-        System.out.println("monthlyPayment = " + monthlyPayment);
-        System.out.println("duration = " + duration);
-        System.out.println("annualInterestRate = " + annualInterestRate);
+
         Map<String, Object> request = Map.of(
                 "revenu", annualIncome,
                 "remboursement", monthlyPayment,
@@ -37,10 +35,11 @@ public class FlaskRiskModelClient implements RiskModelClient {
                 "taux", annualInterestRate
         );
 
-        return restClient.post()
+        return  restClient.post()
                 .uri("/predict")
                 .body(request)
                 .retrieve()
-                .body(RiskAssessment.class);
+                .body(RiskPredictionResponseDTO.class);
+
     }
 }

@@ -1,5 +1,7 @@
 package com.mohcine.banqueApp.service.impl;
 
+import com.mohcine.banqueApp.dto.RiskInputDTO;
+import com.mohcine.banqueApp.dto.RiskPredictionResponseDTO;
 import com.mohcine.banqueApp.entity.Client;
 import com.mohcine.banqueApp.entity.Loan;
 import com.mohcine.banqueApp.entity.RiskAssessment;
@@ -32,17 +34,13 @@ public class RiskServiceImpl implements RiskService {
 
 
     @Override
-    public RiskAssessment assessRisk(
-            BigDecimal annualIncome,
-            BigDecimal monthlyPayment,
-            Integer duration,
-            BigDecimal annualInterestRate) {
+    public RiskPredictionResponseDTO assessRisk(RiskInputDTO input) {
 
         return riskModelClient.predict(
-                annualIncome,
-                monthlyPayment,
-                duration,
-                annualInterestRate
+                input.getAnnualIncome(),
+                input.getMonthlyPayment(),
+                input.getDuration(),
+                input.getAnnualInterestRate()
         );
     }
 }

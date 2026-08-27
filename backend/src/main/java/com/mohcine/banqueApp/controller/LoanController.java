@@ -51,8 +51,7 @@ public class LoanController {
 
    @PostMapping
     public LoanResponseDTO createLoan(@RequestBody LoanCreateDto loanCreateDto) {
-       Loan loan =   loanMapper.toEntity(loanCreateDto)  ;
-        Loan addedLoan  =  loanService.addLoan(loan);
+        Loan addedLoan  =  loanService.createLoan(loanCreateDto);
          return loanMapper.toDTO(addedLoan);
    }
 

@@ -20,22 +20,23 @@ public class Payment {
     @JoinColumn(name = "loan_id", nullable = false)
     private Loan loan;
 
-    @Column(nullable = false)
+    @Column(name = "installment_number" , nullable = true)
     private Integer installmentNumber;
 
-    @Column(nullable = false, precision = 15, scale = 2)
+    @Column(name = "amount"  , nullable = true, precision = 15, scale = 2)
     private BigDecimal amount;
 
-    @Column(nullable = false)
+    @Column(name = "due_date"  , nullable = true)
     private LocalDate dueDate;
 
+    @Column(name = "payment_date" ,  nullable = true)
     private LocalDate paymentDate;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "status" , nullable = true)
     private PaymentStatus status;
 
-    @Column(length = 500)
+    @Column(name = "description" , length = 500)
     private String description;
 
     public Payment() {

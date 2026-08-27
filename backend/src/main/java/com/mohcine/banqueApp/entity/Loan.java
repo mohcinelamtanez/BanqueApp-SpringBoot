@@ -24,7 +24,7 @@ public class Loan {
     @Column(name = "loan_amount", nullable = false, precision = 15, scale = 2)
     private BigDecimal loanAmount;
 
-    @Column(nullable = false)
+    @Column(name = "duration" , nullable = false)
     private Integer duration;
 
     @Column(name = "annual_interest_rate", nullable = false, precision = 5, scale = 2)
@@ -35,10 +35,10 @@ public class Loan {
 
 
     @Enumerated(EnumType.STRING)
-    @Column(length = 50)
+    @Column(name = "status" , length = 50)
     private LoanStatus status;
 
-    @Column(name = "approval_date")
+    @Column(name = "approval_date" , nullable = false)
     private LocalDateTime approvalDate;
 
     @Column(name = "end_date")

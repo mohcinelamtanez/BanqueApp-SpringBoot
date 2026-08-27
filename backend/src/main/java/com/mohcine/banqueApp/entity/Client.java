@@ -1,5 +1,6 @@
 package com.mohcine.banqueApp.entity;
 
+import com.mohcine.banqueApp.enums.ClientStatus;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -28,6 +29,9 @@ public class Client {
 
     @Column(name = "Revenue", nullable = false, precision = 12, scale = 2)
     private BigDecimal annualIncome;
+
+    @Column(name = "status" , nullable = false )
+    private ClientStatus clientStatus;
 
     @Column(name = "email" , nullable = false )
     private String email ;
@@ -91,6 +95,14 @@ public class Client {
 
     public BigDecimal getAnnualIncome() {
         return annualIncome;
+    }
+
+    public ClientStatus getClientStatus(){
+        return clientStatus ;
+    }
+
+    public void setStatus(ClientStatus clientStatus) {
+        this.clientStatus = clientStatus;
     }
 
     public String getEmail() {

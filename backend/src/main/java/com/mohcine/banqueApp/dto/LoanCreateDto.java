@@ -12,17 +12,20 @@ import java.time.LocalDateTime;
  * @author USER
  **/
 public class LoanCreateDto {
+
+    private Integer clientId ;
     private LoanType loanType ;
     private BigDecimal loanAmount ;
     private Integer duration ;
     private BigDecimal annualInterestRate ;
     private BigDecimal monthlyPayment;
     private RiskLevel riskLevel;
+    private BigDecimal score;
     private LoanStatus status;
     private LocalDateTime approvalDate;
     private LocalDateTime endDate;
     private String rejectionReason ;
-    private Client client ;
+
 
     public LoanType getLoanType() {
         return loanType;
@@ -32,12 +35,12 @@ public class LoanCreateDto {
         this.loanType = loanType;
     }
 
-    public Client getClient() {
-        return client;
+        public Integer getClientId() {
+        return clientId;
     }
 
-    public void setClient(Client client) {
-        this.client = client;
+    public void setClient(Integer clientId) {
+        this.clientId = clientId;
     }
 
     public LocalDateTime getEndDate() {
@@ -111,4 +114,16 @@ public class LoanCreateDto {
     public void setDuration(Integer duration) {
         this.duration = duration;
     }
+
+
+    public BigDecimal getScore() {
+        return this.score ;
+    }
+
+    public void setScore(BigDecimal score) {
+        this.score = score;
+    }
+
+
 }
+

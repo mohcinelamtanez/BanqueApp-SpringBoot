@@ -19,7 +19,7 @@ public class ClientMapper {
         client.setLastName(dto.getLastName()) ;
         client.setCity(dto.getCity()) ;
         client.setAnnualIncome(dto.getAnnualIncome());
-
+        client.setEmail(dto.getEmail());
         return client ;
     }
 

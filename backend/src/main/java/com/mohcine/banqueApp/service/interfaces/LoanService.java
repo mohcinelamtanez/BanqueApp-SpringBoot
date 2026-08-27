@@ -1,5 +1,6 @@
 package com.mohcine.banqueApp.service.interfaces;
 
+import com.mohcine.banqueApp.dto.LoanCreateDto;
 import com.mohcine.banqueApp.entity.Loan;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +12,7 @@ import java.util.List;
 
 public interface LoanService {
 
-   Loan addLoan(Loan loan) ;
+   Loan createLoan(LoanCreateDto loan) ;
 
    void deleteLoan(Integer LoanId);
 
