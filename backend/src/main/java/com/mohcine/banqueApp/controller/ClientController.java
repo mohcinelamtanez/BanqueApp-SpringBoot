@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * @author USER
  **/
-@Tag(name = "cette endpoint permet de gerer les clients")
+@Tag(name = "this endpoint allows to manage client")
 @RestController
 @RequestMapping("api/v1/clients")
 public class ClientController {
@@ -38,7 +38,7 @@ public class ClientController {
 
      }
 
-     @Operation(summary = "cette methode permet de récupérer tous les clients présents dans la base de donnée")
+     @Operation(summary = "this method return all the client present in the database")
     @GetMapping
     public List<ClientResponseDTO> getAllClients() {
 

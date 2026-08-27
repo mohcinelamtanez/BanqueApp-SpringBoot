@@ -80,7 +80,8 @@ public class SpringSecurityConfig {
                                 "/v1/api/authentification/**",
                                 "/login/**",
                                 "/v1/api/pub/**",
-                                "/v1/api/admin/user/sign-in/**"
+                                "/v1/api/admin/user/sign-in/**",
+                                "/api/v1/clients"
                         ).permitAll()
 
                         // ADMIN

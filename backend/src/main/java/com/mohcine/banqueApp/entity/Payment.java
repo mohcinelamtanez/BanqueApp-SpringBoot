@@ -16,6 +16,9 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(name = "payment_reference" )
+    private String paymentReference ;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "loan_id", nullable = false)
     private Loan loan;
@@ -62,6 +65,14 @@ public class Payment {
 
     public Loan getLoan() {
         return loan;
+    }
+
+    public String getPaymentReference() {
+        return paymentReference;
+    }
+
+    public void setPaymentReference(String paymentReference){
+        this.paymentReference = paymentReference;
     }
 
     public void setLoan(Loan loan) {

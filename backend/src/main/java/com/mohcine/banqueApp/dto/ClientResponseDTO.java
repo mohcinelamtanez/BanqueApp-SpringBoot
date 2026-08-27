@@ -9,7 +9,7 @@ import java.math.BigDecimal;
  **/
 
 @JsonPropertyOrder({
-        "id",
+        "clientReference",
         "firstName",
         "lastName",
         "city",
@@ -17,17 +17,23 @@ import java.math.BigDecimal;
         "annualIncome"
 })
 public class ClientResponseDTO {
-    private Integer id;
+    private String clientReference;
     private String firstName;
     private String lastName;
     private String city;
     private String postalCode;
     private BigDecimal annualIncome;
+    private String email ;
 
-    public Integer getId() {
-        return id;
+
+
+    public String getClientReference(){
+        return clientReference ;
     }
 
+    public void setClientReference(String clientReference) {
+        this.clientReference = clientReference ;
+    }
     public String getPostalCode() {
         return postalCode;
     }
@@ -36,9 +42,7 @@ public class ClientResponseDTO {
         this.postalCode = postalCode;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+
 
     public String getFirstName() {
         return firstName;
@@ -70,5 +74,13 @@ public class ClientResponseDTO {
 
     public void setAnnualIncome(BigDecimal annualIncome) {
         this.annualIncome = annualIncome;
+    }
+
+    public String getEmail(){
+        return email ;
+    }
+
+    public void setEmail(String email){
+        this.email = email ;
     }
 }

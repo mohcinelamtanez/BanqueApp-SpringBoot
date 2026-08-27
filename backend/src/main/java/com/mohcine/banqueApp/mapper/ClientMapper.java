@@ -26,12 +26,13 @@ public class ClientMapper {
     public ClientResponseDTO  toDTO(Client client) {
         ClientResponseDTO clientResponseDTO = new ClientResponseDTO();
 
-        clientResponseDTO.setId(client.getId());
+        clientResponseDTO.setClientReference(client.getClientReference());
         clientResponseDTO.setFirstName(client.getFirstName());
         clientResponseDTO.setLastName(client.getLastName());
         clientResponseDTO.setCity(client.getCity());
         clientResponseDTO.setPostalCode(client.getPostalCode());
         clientResponseDTO.setAnnualIncome(client.getAnnualIncome());
+        clientResponseDTO.setEmail(client.getEmail());
 
         return clientResponseDTO;
     }

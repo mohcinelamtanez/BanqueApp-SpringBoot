@@ -15,6 +15,9 @@ public class Client {
     @Column(name = "Id")
     private Integer id;
 
+    @Column(name = "client_reference" , nullable = false)
+    private String clientReference;
+
     @Column(name = "Nom", nullable = false, length = 100)
     private String firstName;
 
@@ -30,6 +33,7 @@ public class Client {
     @Column(name = "Revenue", nullable = false, precision = 12, scale = 2)
     private BigDecimal annualIncome;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status" , nullable = false )
     private ClientStatus clientStatus;
 
@@ -59,6 +63,14 @@ public class Client {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getClientReference() {
+        return clientReference ;
+    }
+
+    public void setClientReference(String clientReference) {
+        this.clientReference = clientReference;
     }
 
     public String getFirstName() {
