@@ -1,5 +1,8 @@
 package com.mohcine.banqueApp.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.mohcine.banqueApp.enums.ClientStatus;
+
 import java.math.BigDecimal;
 
 /**
@@ -7,10 +10,12 @@ import java.math.BigDecimal;
  **/
 public class ClientCreateDTO {
 
+
     private String firstName;
     private String lastName;
     private String city;
     private String postalCode;
+
     private BigDecimal annualIncome;
     private String email ;
 
@@ -61,4 +66,6 @@ public class ClientCreateDTO {
     public void setEmail(String email) {
         this.email = email ;
     }
+
+
 }

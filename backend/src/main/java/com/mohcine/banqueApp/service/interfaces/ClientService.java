@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 public interface ClientService {
 
@@ -14,7 +15,7 @@ public interface ClientService {
 
     Client updateClient(Client client);
 
-    Client getClientById(Integer id);
+    Client getClientByRef(String clientReference);
 
     List<Client> getAllClients();
 

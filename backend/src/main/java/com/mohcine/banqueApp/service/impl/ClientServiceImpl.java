@@ -2,6 +2,7 @@ package com.mohcine.banqueApp.service.impl;
 
 import com.mohcine.banqueApp.entity.Client;
 import com.mohcine.banqueApp.entity.Loan;
+import com.mohcine.banqueApp.enums.ClientStatus;
 import com.mohcine.banqueApp.repository.ClientRepository;
 import com.mohcine.banqueApp.repository.LoanRepository;
 import com.mohcine.banqueApp.service.interfaces.ClientService;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author USER
@@ -32,16 +34,20 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public Client getClientById(Integer id) {
-        return clientRepository.findById(id)
-                .orElseThrow();
+    public Client getClientByRef(String clientReference) {
+        return clientRepository.findByClientReference(clientReference);
     }
-
 
 
 
     @Override
     public Client addClient(Client client) {
+        long count = clientRepository.count();
+        String reference = "CLI-" + (count + 1);
+        client.setClientReference(reference);
+
+        client.setStatus(ClientStatus.ACTIVE);
+
         return clientRepository.save(client) ;
     }
 

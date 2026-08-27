@@ -1,5 +1,7 @@
 package com.mohcine.banqueApp.dto;
 
+import com.mohcine.banqueApp.enums.ClientStatus;
+
 import java.math.BigDecimal;
 
 /**
@@ -10,7 +12,9 @@ public class ClientUpdateDTO {
     private String lastName;
     private String city;
     private String postalCode;
+    private ClientStatus clientStatus;
     private BigDecimal annualIncome;
+
 
     public String getFirstName() {
         return firstName;
@@ -47,6 +51,15 @@ public class ClientUpdateDTO {
     public BigDecimal getAnnualIncome() {
         return annualIncome;
     }
+
+    public void setClientStatus(ClientStatus clientStatus){
+        this.clientStatus = clientStatus;
+    }
+
+    public ClientStatus getClientStatus() {
+        return clientStatus ;
+    }
+
 
     public void setAnnualIncome(BigDecimal annualIncome) {
         this.annualIncome = annualIncome;

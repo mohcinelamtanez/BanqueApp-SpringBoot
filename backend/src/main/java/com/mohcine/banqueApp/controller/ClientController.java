@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author USER
@@ -30,9 +31,10 @@ public class ClientController {
     }
 
 
-     @GetMapping("/{id}")
-     public ClientResponseDTO getClient(@PathVariable Integer id) {
-       Client client = clientService.getClientById(id);
+    @Operation(summary = "this method returns the client based on the reference")
+     @GetMapping("reference/{reference}")
+     public ClientResponseDTO getClient(@PathVariable String reference) {
+       Client client = clientService.getClientByRef(reference);
 
        return clientMapper.toDTO(client);
 
@@ -50,6 +52,7 @@ public class ClientController {
     }
 
 
+    @Operation(summary = "this method create a new Client")
      @PostMapping
      public ClientResponseDTO createClient(@RequestBody ClientCreateDTO clientCreateDTO) {
         Client client = clientMapper.toEntity(clientCreateDTO);
@@ -62,12 +65,12 @@ public class ClientController {
         clientService.deleteClient(id);
      }
 
-    @PutMapping("/{id}")
+    @PutMapping("reference/{reference}")
     public ClientResponseDTO updateClient(
-            @PathVariable Integer id,
+            @PathVariable String  reference,
             @RequestBody ClientUpdateDTO dto
     ) {
-        Client client = clientMapper.updateEntity(id, dto);
+        Client client = clientMapper.updateEntity(reference, dto);
 
         Client updatedClient = clientService.updateClient(client);
 
