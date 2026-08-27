@@ -49,8 +49,9 @@ public class ClientMapper {
         client.setLastName(dto.getLastName());
         client.setCity(dto.getCity());
         client.setPostalCode(dto.getPostalCode());
-        client.setStatus(dto.getClientStatus());
         client.setAnnualIncome(dto.getAnnualIncome());
+        client.setEmail(dto.getEmail());
+        client.setStatus(dto.getClientStatus());
 
         return client;
     }

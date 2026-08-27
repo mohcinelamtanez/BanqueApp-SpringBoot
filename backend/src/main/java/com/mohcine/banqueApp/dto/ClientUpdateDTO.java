@@ -14,6 +14,7 @@ public class ClientUpdateDTO {
     private String postalCode;
     private ClientStatus clientStatus;
     private BigDecimal annualIncome;
+    private String email ;
 
 
     public String getFirstName() {
@@ -63,5 +64,13 @@ public class ClientUpdateDTO {
 
     public void setAnnualIncome(BigDecimal annualIncome) {
         this.annualIncome = annualIncome;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getEmail(){
+        return email ;
     }
 }

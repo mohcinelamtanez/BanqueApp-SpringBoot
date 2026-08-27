@@ -67,7 +67,9 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public Client updateClient(Client client) {
-      return clientRepository.save(client);
+        Client clientToUpdate = clientRepository.findByClientReference(client.getClientReference());
+
+        return clientRepository.save(clientToUpdate);
     }
 
 
