@@ -29,4 +29,17 @@ public class GlobalExceptionHandler {
 
     }
 
+    @ExceptionHandler(EmailAlreadyUsedException.class)
+    public ResponseEntity<ApiError> handleEmailAlreadyUsedException(EmailAlreadyUsedException exception , HttpServletRequest request) {
+        HttpStatus status = HttpStatus.CONFLICT;
+
+        ApiError apiError = new ApiError(LocalDateTime.now() ,
+                status.value() ,
+                status.name() ,
+                exception.getMessage(),
+                request.getRequestURI());
+
+        return  ResponseEntity.status(HttpStatus.CONFLICT).body(apiError) ;
+    }
+
 }

@@ -5,6 +5,7 @@ import com.mohcine.banqueApp.entity.Client;
 import com.mohcine.banqueApp.entity.Loan;
 import com.mohcine.banqueApp.enums.ClientStatus;
 import com.mohcine.banqueApp.exception.ClientNotFoundException;
+import com.mohcine.banqueApp.exception.EmailAlreadyUsedException;
 import com.mohcine.banqueApp.mapper.ClientMapper;
 import com.mohcine.banqueApp.repository.ClientRepository;
 import com.mohcine.banqueApp.repository.LoanRepository;
@@ -56,11 +57,17 @@ public class ClientServiceImpl implements ClientService {
         long count = clientRepository.count();
         String reference = "CLI-" + (count + 1);
 
-        client.setClientReference(reference);
+        List<Client> existingClients = clientRepository.findAll();
+        for(Client c : existingClients) {
+            if (c.getEmail().equals(client.getEmail())) {
+                throw new EmailAlreadyUsedException();
+            };
+        }
+            client.setClientReference(reference);
 
-        client.setStatus(ClientStatus.ACTIVE);
+            client.setStatus(ClientStatus.ACTIVE);
 
-        return clientRepository.save(client) ;
+            return clientRepository.save(client);
 
     }
 
