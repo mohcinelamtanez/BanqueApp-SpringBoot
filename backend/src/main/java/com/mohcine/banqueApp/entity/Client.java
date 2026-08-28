@@ -37,7 +37,7 @@ public class Client {
     @Column(name = "status" , nullable = false )
     private ClientStatus clientStatus;
 
-    @Column(name = "email" , nullable = false )
+    @Column(name = "email" , nullable = false, unique = true  )
     private String email ;
 
     @OneToMany(mappedBy = "client")

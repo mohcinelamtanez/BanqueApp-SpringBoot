@@ -4,6 +4,7 @@ import com.mohcine.banqueApp.dto.ClientUpdateDTO;
 import com.mohcine.banqueApp.entity.Client;
 import com.mohcine.banqueApp.entity.Loan;
 import com.mohcine.banqueApp.enums.ClientStatus;
+import com.mohcine.banqueApp.exception.ClientNotFoundException;
 import com.mohcine.banqueApp.mapper.ClientMapper;
 import com.mohcine.banqueApp.repository.ClientRepository;
 import com.mohcine.banqueApp.repository.LoanRepository;
@@ -40,7 +41,12 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public Client getClientByRef(String clientReference) {
-        return clientRepository.findByClientReference(clientReference);
+
+        Client client = clientRepository.findByClientReference(clientReference) ;
+        if(client == null ) {
+            throw new ClientNotFoundException(clientReference) ;
+        }
+            return client ;
     }
 
 
@@ -49,11 +55,13 @@ public class ClientServiceImpl implements ClientService {
     public Client addClient(Client client) {
         long count = clientRepository.count();
         String reference = "CLI-" + (count + 1);
+
         client.setClientReference(reference);
 
         client.setStatus(ClientStatus.ACTIVE);
 
         return clientRepository.save(client) ;
+
     }
 
    @Override

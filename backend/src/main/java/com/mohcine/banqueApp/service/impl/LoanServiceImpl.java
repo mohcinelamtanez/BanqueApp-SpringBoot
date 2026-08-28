@@ -47,13 +47,16 @@ public class LoanServiceImpl implements LoanService {
 
     }
 
-    @Override
+   @Override
     @Transactional
     public Loan createLoan(LoanCreateDto dto) {
 
-        Client client = clientRepository.findById(dto.getClientId())
-                .orElseThrow(() -> new ClientNotFoundException(dto.getClientId()));
+        Client client = clientRepository.findByClientReference(dto.getClientReference());
 
+        if(client == null) {
+            throw new ClientNotFoundException(dto.getClientReference());
+        }else
+        {
         Loan loan = loanMapper.toEntity(dto);
         loan.setClient(client);
 
@@ -66,6 +69,7 @@ public class LoanServiceImpl implements LoanService {
         paymentService.createPayments(savedLoan);
 
         return savedLoan;
+        }
     }
 
 
