@@ -42,4 +42,17 @@ public class GlobalExceptionHandler {
         return  ResponseEntity.status(HttpStatus.CONFLICT).body(apiError) ;
     }
 
+
+    @ExceptionHandler(AnnualIncomeException.class)
+    public ResponseEntity<ApiError> handleAnnualIncomeException(AnnualIncomeException exception , HttpServletRequest request) {
+        HttpStatus status = HttpStatus.CONFLICT;
+
+        ApiError apiError = new ApiError(LocalDateTime.now() ,
+                status.value() ,
+                status.name() ,
+                exception.getMessage(),
+                request.getRequestURI());
+
+        return  ResponseEntity.status(HttpStatus.CONFLICT).body(apiError) ;
+    }
 }

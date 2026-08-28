@@ -132,6 +132,7 @@ public class Client {
     public void setLoans(List<Loan> loans) {
         this.loans = loans ;
     }
+
     public void setAnnualIncome(BigDecimal annualIncome) {
         this.annualIncome = annualIncome;
     }

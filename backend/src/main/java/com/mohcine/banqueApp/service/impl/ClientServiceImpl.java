@@ -4,6 +4,7 @@ import com.mohcine.banqueApp.dto.ClientUpdateDTO;
 import com.mohcine.banqueApp.entity.Client;
 import com.mohcine.banqueApp.entity.Loan;
 import com.mohcine.banqueApp.enums.ClientStatus;
+import com.mohcine.banqueApp.exception.AnnualIncomeException;
 import com.mohcine.banqueApp.exception.ClientNotFoundException;
 import com.mohcine.banqueApp.exception.EmailAlreadyUsedException;
 import com.mohcine.banqueApp.mapper.ClientMapper;
@@ -62,6 +63,9 @@ public class ClientServiceImpl implements ClientService {
             if (c.getEmail().equals(client.getEmail())) {
                 throw new EmailAlreadyUsedException();
             };
+        }
+        if(client.getAnnualIncome().intValue() < 0) {
+             throw new AnnualIncomeException() ;
         }
             client.setClientReference(reference);
 
