@@ -1,5 +1,6 @@
 package  com.mohcine.banqueApp.service.interfaces;
 
+import com.mohcine.banqueApp.dto.ClientUpdateDTO;
 import com.mohcine.banqueApp.entity.*;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +14,7 @@ public interface ClientService {
 
     void deleteClient(Integer id);
 
-    Client updateClient(Client client);
+    public Client updateClient(String reference , ClientUpdateDTO dto);
 
     Client getClientByRef(String clientReference);
 

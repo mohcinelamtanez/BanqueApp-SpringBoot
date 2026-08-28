@@ -1,5 +1,6 @@
 package com.mohcine.banqueApp.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.mohcine.banqueApp.enums.ClientStatus;
 
@@ -15,8 +16,8 @@ import java.math.BigDecimal;
         "lastName",
         "city",
         "postalCode",
-        "annualIncome" ,
-        "status"
+        "annualIncome",
+        "ClientStatus"
 })
 public class ClientResponseDTO {
     private String clientReference;
@@ -87,7 +88,13 @@ public class ClientResponseDTO {
         this.email = email ;
     }
 
-    public void setClientStatus(ClientStatus clientStatus) {
-        this.status = clientStatus;
+    public ClientStatus getClientStatus(){
+        return status ;
+    }
+
+
+    public void setClientStatus(ClientStatus status) {
+        this.status = status;
     }
 }
+

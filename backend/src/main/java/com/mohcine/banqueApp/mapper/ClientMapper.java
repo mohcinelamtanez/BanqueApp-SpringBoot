@@ -36,26 +36,18 @@ public class ClientMapper {
         clientResponseDTO.setAnnualIncome(client.getAnnualIncome());
         clientResponseDTO.setEmail(client.getEmail());
         clientResponseDTO.setClientStatus(client.getClientStatus());
-
         return clientResponseDTO;
     }
 
-    public Client updateEntity(String  reference, ClientUpdateDTO dto) {
+    public void updateEntity( ClientUpdateDTO dto , Client client) {
 
-        Client client = new Client();
-
-        client.setClientReference(reference);
         client.setFirstName(dto.getFirstName());
         client.setLastName(dto.getLastName());
         client.setCity(dto.getCity());
         client.setPostalCode(dto.getPostalCode());
         client.setAnnualIncome(dto.getAnnualIncome());
         client.setEmail(dto.getEmail());
-        client.setStatus(dto.getClientStatus());
 
-        return client;
     }
-
-
 
 }

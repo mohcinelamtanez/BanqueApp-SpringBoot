@@ -1,8 +1,10 @@
 package com.mohcine.banqueApp.service.impl;
 
+import com.mohcine.banqueApp.dto.ClientUpdateDTO;
 import com.mohcine.banqueApp.entity.Client;
 import com.mohcine.banqueApp.entity.Loan;
 import com.mohcine.banqueApp.enums.ClientStatus;
+import com.mohcine.banqueApp.mapper.ClientMapper;
 import com.mohcine.banqueApp.repository.ClientRepository;
 import com.mohcine.banqueApp.repository.LoanRepository;
 import com.mohcine.banqueApp.service.interfaces.ClientService;
@@ -24,13 +26,16 @@ public class ClientServiceImpl implements ClientService {
     private final ClientRepository clientRepository ;
     private final LoanService loanService ;
     private final LoanRepository loanRepository ;
+    private final ClientMapper clientMapper ;
 
     public ClientServiceImpl(ClientRepository clientRepository ,
                              LoanService loanService,
-                            LoanRepository loanRepository) {
+                            LoanRepository loanRepository ,
+                             ClientMapper clientMapper) {
         this.clientRepository = clientRepository;
         this.loanService = loanService;
         this.loanRepository = loanRepository;
+        this.clientMapper = clientMapper ;
     }
 
     @Override
@@ -66,10 +71,15 @@ public class ClientServiceImpl implements ClientService {
 
 
     @Override
-    public Client updateClient(Client client) {
-        Client clientToUpdate = clientRepository.findByClientReference(client.getClientReference());
+    public Client updateClient(String reference ,  ClientUpdateDTO dto) {
 
-        return clientRepository.save(clientToUpdate);
+
+        Client client = clientRepository.findByClientReference(reference);
+        clientMapper.updateEntity(dto , client);
+
+       return clientRepository.save(client) ;
+
+
     }
 
 

@@ -70,10 +70,8 @@ public class ClientController {
             @PathVariable String  reference,
             @RequestBody ClientUpdateDTO dto
     ) {
-        Client client = clientMapper.updateEntity(reference, dto);
-
-        Client updatedClient = clientService.updateClient(client);
-
-        return clientMapper.toDTO(updatedClient);
+        return   clientMapper.
+                  toDTO(clientService.
+                          updateClient(reference , dto)) ;
     }
 }
