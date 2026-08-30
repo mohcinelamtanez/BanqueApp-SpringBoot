@@ -501,6 +501,218 @@ td span {
   background: #ffdad6;
   color: #ba1a1a;
 }
+/* Client management table (Stitch: client_management_actions_menu_open) */
+.card.table-card {
+  padding: 0;
+  border-radius: 8px;
+  border-color: #e2e8f0;
+}
+.ct-toolbar {
+  padding: 24px;
+  border-bottom: 1px solid #e2e8f0;
+  border-radius: 8px 8px 0 0;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.ct-toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.export-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  border: 1px solid #c6c6cd;
+  border-radius: 4px;
+  background: #fff;
+  font-size: 14px;
+  color: #111c2d;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.export-btn:hover {
+  background: #f0f3ff;
+}
+.results-count {
+  font-size: 14px;
+  color: #45464d;
+  white-space: nowrap;
+}
+.table-card .state {
+  padding: 40px 24px;
+}
+.client-table th,
+.client-table td {
+  padding: 16px;
+  border-color: #e2e8f0;
+}
+.client-table th {
+  background: #f8fafc;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #45464d;
+}
+.client-table td {
+  font-size: 14px;
+  color: #111c2d;
+}
+.client-table td.cell-strong {
+  font-weight: 600;
+}
+.client-table th:first-child,
+.client-table td:first-child {
+  padding-left: 24px;
+}
+.client-table th:last-child,
+.client-table td:last-child {
+  padding-right: 24px;
+}
+.client-table th:nth-child(4),
+.client-table td:nth-child(4),
+.client-table th:last-child,
+.client-table td:last-child {
+  text-align: right;
+}
+.client-table tbody tr:hover {
+  background: #f1f5f9;
+}
+.status-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.status-chip.actif {
+  background: #e6f4ea;
+  color: #137333;
+}
+.status-chip.inactif {
+  background: #fce8e6;
+  color: #c5221f;
+}
+.actions-cell {
+  position: relative;
+  display: inline-flex;
+}
+.actions-btn {
+  background: transparent;
+  border: 0;
+  padding: 4px;
+  border-radius: 4px;
+  color: #45464d;
+  display: inline-flex;
+  cursor: pointer;
+}
+.actions-btn:hover,
+.actions-btn.open {
+  color: #000;
+  background: #d8e3fb;
+}
+.actions-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  width: 192px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  padding: 4px 0;
+  z-index: 50;
+  text-align: left;
+  overflow: hidden;
+}
+.actions-menu button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px;
+  background: transparent;
+  border: 0;
+  font-size: 14px;
+  color: #111c2d;
+  text-align: left;
+  cursor: pointer;
+}
+.actions-menu button:hover {
+  background: #f1f5f9;
+}
+.actions-menu button svg {
+  color: #45464d;
+  flex: none;
+}
+.ct-pagination {
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid #e2e8f0;
+  border-radius: 0 0 8px 8px;
+  background: #fff;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.page-btn {
+  padding: 8px 16px;
+  border: 1px solid #c6c6cd;
+  border-radius: 4px;
+  background: #fff;
+  font-size: 14px;
+  color: #111c2d;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.page-btn:hover:not(:disabled) {
+  background: #f0f3ff;
+}
+.page-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.page-numbers {
+  display: flex;
+  gap: 4px;
+}
+.page-num {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #111c2d;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+.page-num:hover {
+  background: #f0f3ff;
+}
+.page-num.active {
+  background: #000;
+  color: #fff;
+}
+.page-ellipsis {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #45464d;
+  font-size: 14px;
+}
 .breadcrumbs {
   display: flex;
   gap: 5px;

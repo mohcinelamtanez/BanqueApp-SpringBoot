@@ -51,6 +51,10 @@ export function Metric({ label, value, icon = <Landmark /> }) {
     </Card>
   );
 }
+export function csvEscape(value) {
+  const text = String(value ?? "");
+  return /[",\n]/.test(text) ? `"${text.replaceAll('"', '""')}"` : text;
+}
 export function downloadCsv(name, rows) {
   const anchor = document.createElement("a");
   anchor.href = URL.createObjectURL(

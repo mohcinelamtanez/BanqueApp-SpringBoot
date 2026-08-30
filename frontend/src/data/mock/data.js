@@ -5,6 +5,8 @@ export const clients = [
     city: "Casablanca",
     postalCode: "20000",
     income: 185000,
+    totalAssets: 1250000,
+    status: "Actif",
     email: "mohcine.lamtanez@example.ma",
   },
   {
@@ -13,6 +15,8 @@ export const clients = [
     city: "Rabat",
     postalCode: "10000",
     income: 142000,
+    totalAssets: 452000.5,
+    status: "Actif",
     email: "salma.bennani@example.ma",
   },
   {
@@ -21,6 +25,8 @@ export const clients = [
     city: "Marrakech",
     postalCode: "40000",
     income: 220000,
+    totalAssets: 8900000,
+    status: "Actif",
     email: "youssef.elamrani@example.ma",
   },
   {
@@ -29,6 +35,8 @@ export const clients = [
     city: "Agadir",
     postalCode: "80000",
     income: 96000,
+    totalAssets: 12050,
+    status: "Inactif",
     email: "nadia.aitlahcen@example.ma",
   },
   {
@@ -37,6 +45,8 @@ export const clients = [
     city: "Fès",
     postalCode: "30000",
     income: 128000,
+    totalAssets: 305400,
+    status: "Inactif",
     email: "rachid.tazi@example.ma",
   },
 ];
