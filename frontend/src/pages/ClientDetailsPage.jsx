@@ -1,14 +1,19 @@
-import { Plus } from "lucide-react";
+import { IdCard, Mail, MapPin, Plus, Wallet } from "lucide-react";
+import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import LoanTable from "../components/loans/LoanTable";
+import ClientFormModal from "../components/clients/ClientFormModal";
 import {
   Breadcrumbs,
   Button,
   Card,
+  ConfirmationDialog,
   EmptyState,
   LoadingState,
+  SuccessModal,
 } from "../components/ui";
 import { useLoans } from "../hooks/useLoans";
+import { clientService } from "../services/clientService";
 import { money } from "../utils/finance";
 import { getClient, loanStats } from "./pageShared";
 export default function ClientDetailsPage() {
@@ -16,9 +21,41 @@ export default function ClientDetailsPage() {
   const { clientId } = useParams();
   const client = getClient(clientId);
   const { loading, data: loans = [] } = useLoans();
+  const [editOpen, setEditOpen] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState("");
+  const [deleted, setDeleted] = useState(false);
   if (loading) return <LoadingState />;
+  if (deleted) {
+    return (
+      <SuccessModal
+        title="Client Deleted Successfully"
+        message="The client has been successfully removed from the system."
+        onClose={() => navigate("/clients")}
+      />
+    );
+  }
   if (!client) return <EmptyState title="Client not found" />;
   const stats = loanStats(clientId, loans);
+  const closeDeleteConfirm = () => {
+    if (deleting) return;
+    setConfirmDelete(false);
+    setDeleteError("");
+  };
+  const confirmDeleteClient = async () => {
+    setDeleting(true);
+    setDeleteError("");
+    try {
+      await clientService.remove(clientId);
+      setConfirmDelete(false);
+      setDeleted(true);
+    } catch {
+      setDeleteError("Something went wrong. Please try again.");
+    } finally {
+      setDeleting(false);
+    }
+  };
   return (
     <>
       <Breadcrumbs
@@ -27,16 +64,35 @@ export default function ClientDetailsPage() {
       <div className="profile card">
         <div>
           <h1>{client.name}</h1>
-          <p className="mono">
-            {client.id} · {client.city}, Morocco · {money(client.income)}/yr
-          </p>
+          <div className="profile-meta">
+            <div className="profile-meta-row mono">
+              <span className="profile-meta-item">
+                <IdCard size={14} />
+                {client.id}
+              </span>
+              <span className="profile-meta-item">
+                <MapPin size={14} />
+                {client.city}, Morocco
+              </span>
+              <span className="profile-meta-item">
+                <Wallet size={14} />
+                {money(client.income)}/yr
+              </span>
+            </div>
+            <div className="profile-meta-row profile-meta-email mono">
+              <span className="profile-meta-item">
+                <Mail size={14} />
+                {client.email}
+              </span>
+            </div>
+          </div>
         </div>
         <div className="actions">
-          <Button
-            variant="secondary"
-            onClick={() => navigate(`/clients/${clientId}/edit`)}
-          >
+          <Button variant="secondary" onClick={() => setEditOpen(true)}>
             Edit profile
+          </Button>
+          <Button variant="danger" onClick={() => setConfirmDelete(true)}>
+            Delete profile
           </Button>
         </div>
       </div>
@@ -70,6 +126,25 @@ export default function ClientDetailsPage() {
           <EmptyState title="This client has no loans yet" />
         )}
       </Card>
+      {editOpen && (
+        <ClientFormModal
+          mode="edit"
+          client={client}
+          onClose={() => setEditOpen(false)}
+          onSaved={() => setEditOpen(false)}
+        />
+      )}
+      {confirmDelete && (
+        <ConfirmationDialog
+          title="Delete Client Profile?"
+          message="Deleting this client profile will permanently remove the client and all associated data, including their loans and payment history. This action cannot be undone."
+          confirmLabel="Delete Profile"
+          submitting={deleting}
+          error={deleteError}
+          onClose={closeDeleteConfirm}
+          onConfirm={confirmDeleteClient}
+        />
+      )}
     </>
   );
 }

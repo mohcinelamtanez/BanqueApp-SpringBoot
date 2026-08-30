@@ -1,6 +1,8 @@
+import { useEffect } from "react";
 import {
   X,
   AlertTriangle,
+  CheckCircle2,
   ChevronRight,
   Check,
   LoaderCircle,
@@ -60,8 +62,22 @@ export function Select({ label, children, ...props }) {
   );
 }
 export function Modal({ title, children, onClose }) {
+  useEffect(() => {
+    if (!onClose) return undefined;
+    const onKeyDown = (event) => {
+      if (event.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [onClose]);
   return (
-    <div className="overlay" role="presentation">
+    <div
+      className="overlay"
+      role="presentation"
+      onMouseDown={(event) => {
+        if (onClose && event.target === event.currentTarget) onClose();
+      }}
+    >
       <section
         className="modal"
         role="dialog"
@@ -86,23 +102,43 @@ export function Modal({ title, children, onClose }) {
 export function ConfirmationDialog({
   title = "Confirm deletion",
   message,
+  confirmLabel = "Delete",
+  submitting = false,
+  error = "",
   onClose,
   onConfirm,
 }) {
   return (
-    <Modal title={title} onClose={onClose}>
+    <Modal title={title} onClose={submitting ? undefined : onClose}>
       <div className="confirmation">
         <span className="warning">
           <AlertTriangle />
         </span>
         <p>{message}</p>
+        {error && <p className="error">{error}</p>}
         <div className="actions">
-          <Button variant="secondary" onClick={onClose}>
+          <Button variant="secondary" onClick={onClose} disabled={submitting}>
             Cancel
           </Button>
-          <Button variant="danger" onClick={onConfirm}>
-            Delete
+          <Button variant="danger" onClick={onConfirm} disabled={submitting}>
+            {submitting && <LoaderCircle size={16} className="spin" />}
+            {confirmLabel}
           </Button>
+        </div>
+      </div>
+    </Modal>
+  );
+}
+export function SuccessModal({ title, message, onClose }) {
+  return (
+    <Modal title={title} onClose={onClose}>
+      <div className="confirmation">
+        <span className="success-icon">
+          <CheckCircle2 />
+        </span>
+        <p>{message}</p>
+        <div className="actions">
+          <Button onClick={onClose}>Done</Button>
         </div>
       </div>
     </Modal>

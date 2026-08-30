@@ -1,9 +1,16 @@
 import { Download, Plus, Search } from "lucide-react";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Button, Card, EmptyState } from "../components/ui";
+import {
+  Button,
+  Card,
+  ConfirmationDialog,
+  EmptyState,
+  SuccessModal,
+} from "../components/ui";
 import ClientTable from "../components/clients/ClientTable";
+import ClientFormModal from "../components/clients/ClientFormModal";
 import { clients } from "../data/mock/data";
+import { clientService } from "../services/clientService";
 import { csvEscape, downloadCsv, PageHeading } from "./pageShared";
 
 const PAGE_SIZE = 5;
@@ -25,9 +32,13 @@ function pageList(total, current) {
 }
 
 export default function ClientsPage() {
-  const navigate = useNavigate();
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(1);
+  const [modal, setModal] = useState(null);
+  const [confirmDelete, setConfirmDelete] = useState(null);
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState("");
+  const [success, setSuccess] = useState(null);
   const shown = clients.filter((client) =>
     `${client.name} ${client.id} ${client.city}`
       .toLowerCase()
@@ -58,13 +69,34 @@ export default function ClientsPage() {
         ].join(","),
       ),
     ]);
+  const closeDeleteConfirm = () => {
+    if (deleting) return;
+    setConfirmDelete(null);
+    setDeleteError("");
+  };
+  const confirmDeleteClient = async () => {
+    setDeleting(true);
+    setDeleteError("");
+    try {
+      await clientService.remove(confirmDelete.id);
+      setConfirmDelete(null);
+      setSuccess({
+        title: "Client Deleted Successfully",
+        message: "The client has been successfully removed from the system.",
+      });
+    } catch {
+      setDeleteError("Something went wrong. Please try again.");
+    } finally {
+      setDeleting(false);
+    }
+  };
   return (
     <>
       <PageHeading
         title="Clients"
         subtitle="Manage the complete bank customer base."
         action={
-          <Button onClick={() => navigate("/clients/new")}>
+          <Button onClick={() => setModal({ mode: "create" })}>
             <Plus size={17} /> Add client
           </Button>
         }
@@ -93,7 +125,11 @@ export default function ClientsPage() {
         </div>
         {shown.length ? (
           <>
-            <ClientTable clients={pageItems} />
+            <ClientTable
+              clients={pageItems}
+              onEdit={(client) => setModal({ mode: "edit", client })}
+              onDelete={(client) => setConfirmDelete(client)}
+            />
             <div className="ct-pagination">
               <button
                 type="button"
@@ -140,6 +176,43 @@ export default function ClientsPage() {
           />
         )}
       </Card>
+      {modal && (
+        <ClientFormModal
+          mode={modal.mode}
+          client={modal.client}
+          onClose={() => setModal(null)}
+          onSaved={() => {
+            const wasEditing = modal.mode === "edit";
+            setModal(null);
+            setSuccess({
+              title: wasEditing
+                ? "Client Updated Successfully"
+                : "Client Added Successfully",
+              message: wasEditing
+                ? "The client's information has been successfully updated."
+                : "The client has been successfully added to the system.",
+            });
+          }}
+        />
+      )}
+      {confirmDelete && (
+        <ConfirmationDialog
+          title="Delete Client?"
+          message={`Are you sure you want to delete ${confirmDelete.name}? This action cannot be undone.`}
+          confirmLabel="Delete Client"
+          submitting={deleting}
+          error={deleteError}
+          onClose={closeDeleteConfirm}
+          onConfirm={confirmDeleteClient}
+        />
+      )}
+      {success && (
+        <SuccessModal
+          title={success.title}
+          message={success.message}
+          onClose={() => setSuccess(null)}
+        />
+      )}
     </>
   );
 }

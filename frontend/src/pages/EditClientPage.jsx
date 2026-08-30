@@ -1,33 +1,15 @@
-import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Breadcrumbs, Button, Card, EmptyState, Input } from "../components/ui";
+import { Breadcrumbs, Button, Card, EmptyState } from "../components/ui";
+import ClientForm from "../components/clients/ClientForm";
 import { clientService } from "../services/clientService";
 import { getClient, PageHeading } from "./pageShared";
 export default function EditClientPage() {
   const navigate = useNavigate();
   const { clientId } = useParams();
   const editing = Boolean(clientId);
-  const [form, setForm] = useState(
-    editing
-      ? getClient(clientId)
-      : { id: "", name: "", city: "", postalCode: "", income: "", email: "" },
-  );
-  const [errors, setErrors] = useState({});
-  if (editing && !form) return <EmptyState title="Client not found" />;
-  const change = (event) =>
-    setForm({ ...form, [event.target.name]: event.target.value });
-  const save = async (event) => {
-    event.preventDefault();
-    const nextErrors = {};
-    ["id", "name", "city", "postalCode", "income"].forEach((key) => {
-      if (!form[key]) nextErrors[key] = "Required";
-    });
-    if (Object.keys(nextErrors).length) return setErrors(nextErrors);
-    const values = {
-      ...form,
-      id: editing ? form.id : form.id.toUpperCase(),
-      income: Number(form.income),
-    };
+  const client = editing ? getClient(clientId) : null;
+  if (editing && !client) return <EmptyState title="Client not found" />;
+  const save = async (values) => {
     editing
       ? await clientService.update(clientId, values)
       : await clientService.create(values);
@@ -46,43 +28,20 @@ export default function EditClientPage() {
         subtitle="Keep client information accurate and up to date."
       />
       <Card className="form-card">
-        <form className="form-grid" onSubmit={save}>
-          {[
-            ["name", "Client name"],
-            ["id", "Client ID"],
-            ["city", "City"],
-            ["postalCode", "Postal code"],
-            ["income", "Annual income (MAD)"],
-            ["email", "Email"],
-          ].map(([name, label]) => (
-            <Input
-              key={name}
-              name={name}
-              label={label}
-              type={
-                name === "income"
-                  ? "number"
-                  : name === "email"
-                    ? "email"
-                    : "text"
-              }
-              disabled={editing && name === "id"}
-              value={form[name]}
-              error={errors[name]}
-              onChange={change}
-            />
-          ))}
-          <div className="form-actions">
-            <Button
-              type="button"
-              variant="secondary"
-              onClick={() => navigate(-1)}
-            >
-              Cancel
-            </Button>
-            <Button>{editing ? "Save changes" : "Create client"}</Button>
-          </div>
-        </form>
+        <ClientForm
+          formId="client-page-form"
+          client={client}
+          editing={editing}
+          onSubmit={save}
+        />
+        <div className="form-actions">
+          <Button type="button" variant="secondary" onClick={() => navigate(-1)}>
+            Cancel
+          </Button>
+          <Button type="submit" form="client-page-form">
+            {editing ? "Save changes" : "Create client"}
+          </Button>
+        </div>
       </Card>
     </>
   );

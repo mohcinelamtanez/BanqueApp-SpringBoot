@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import { Eye, Pencil, MoreVertical } from "lucide-react";
+import { Eye, Pencil, MoreVertical, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { DataTable } from "../ui";
 import { money } from "../../utils/finance";
 
-function ActionsMenu({ client, onView, onEdit }) {
+function ActionsMenu({ client, onView, onEdit, onDelete }) {
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
   useEffect(() => {
@@ -51,16 +51,28 @@ function ActionsMenu({ client, onView, onEdit }) {
             <Pencil size={18} />
             Edit Client
           </button>
+          <div className="actions-menu-divider" />
+          <button
+            type="button"
+            role="menuitem"
+            className="actions-menu-danger"
+            onClick={() => {
+              setOpen(false);
+              onDelete(client);
+            }}
+          >
+            <Trash2 size={18} />
+            Delete Client
+          </button>
         </div>
       )}
     </div>
   );
 }
 
-export default function ClientTable({ clients = [] }) {
+export default function ClientTable({ clients = [], onEdit, onDelete }) {
   const navigate = useNavigate();
   const onView = (client) => navigate(`/clients/${client.id}`);
-  const onEdit = (client) => navigate(`/clients/${client.id}/edit`);
   return (
     <div className="client-table">
       <DataTable
@@ -89,7 +101,12 @@ export default function ClientTable({ clients = [] }) {
               </span>
             </td>
             <td>
-              <ActionsMenu client={client} onView={onView} onEdit={onEdit} />
+              <ActionsMenu
+                client={client}
+                onView={onView}
+                onEdit={onEdit}
+                onDelete={onDelete}
+              />
             </td>
           </tr>
         ))}
