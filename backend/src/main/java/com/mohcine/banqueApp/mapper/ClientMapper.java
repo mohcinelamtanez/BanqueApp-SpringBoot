@@ -26,17 +26,17 @@ public class ClientMapper {
     }
 
     public ClientResponseDTO  toDTO(Client client) {
-        ClientResponseDTO clientResponseDTO = new ClientResponseDTO();
-
-        clientResponseDTO.setClientReference(client.getClientReference());
-        clientResponseDTO.setFirstName(client.getFirstName());
-        clientResponseDTO.setLastName(client.getLastName());
-        clientResponseDTO.setCity(client.getCity());
-        clientResponseDTO.setPostalCode(client.getPostalCode());
-        clientResponseDTO.setAnnualIncome(client.getAnnualIncome());
-        clientResponseDTO.setEmail(client.getEmail());
-        clientResponseDTO.setClientStatus(client.getClientStatus());
-        return clientResponseDTO;
+        return
+                new ClientResponseDTO(
+                client.getClientReference(),
+                client.getFirstName(),
+                client.getLastName(),
+                client.getCity(),
+                client.getPostalCode(),
+                client.getAnnualIncome(),
+                client.getEmail(),
+                client.getClientStatus()
+        );
     }
 
     public void updateEntity( ClientUpdateDTO dto , Client client) {
