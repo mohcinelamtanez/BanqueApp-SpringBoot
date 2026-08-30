@@ -5,17 +5,12 @@ import com.mohcine.banqueApp.dto.ClientResponseDTO;
 import com.mohcine.banqueApp.dto.ClientUpdateDTO;
 import com.mohcine.banqueApp.entity.Client;
 import com.mohcine.banqueApp.mapper.ClientMapper;
-import com.mohcine.banqueApp.service.impl.ClientServiceImpl;
 import com.mohcine.banqueApp.service.interfaces.ClientService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * @author USER

@@ -4,7 +4,6 @@ import com.mohcine.banqueApp.dto.ClientCreateDTO;
 import com.mohcine.banqueApp.dto.ClientResponseDTO;
 import com.mohcine.banqueApp.dto.ClientUpdateDTO;
 import com.mohcine.banqueApp.entity.Client;
-import com.mohcine.banqueApp.enums.ClientStatus;
 import org.springframework.stereotype.Component;
 
 /**
@@ -16,12 +15,12 @@ public class ClientMapper {
     public Client toEntity(ClientCreateDTO dto) {
        Client client = new Client();
 
-        client.setFirstName(dto.getFirstName()) ;
-        client.setLastName(dto.getLastName()) ;
-        client.setCity(dto.getCity()) ;
-        client.setAnnualIncome(dto.getAnnualIncome());
-        client.setPostalCode(dto.getPostalCode());
-        client.setEmail(dto.getEmail());
+        client.setFirstName(dto.firstName()) ;
+        client.setLastName(dto.lastName()) ;
+        client.setCity(dto.city()) ;
+        client.setAnnualIncome(dto.annualIncome());
+        client.setPostalCode(dto.postalCode());
+        client.setEmail(dto.email());
         return client ;
     }
 

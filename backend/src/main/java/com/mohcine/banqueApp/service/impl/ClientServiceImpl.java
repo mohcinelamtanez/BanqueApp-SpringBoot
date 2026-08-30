@@ -72,7 +72,6 @@ public class ClientServiceImpl implements ClientService {
             client.setStatus(ClientStatus.ACTIVE);
 
             return clientRepository.save(client);
-
     }
 
    @Override
