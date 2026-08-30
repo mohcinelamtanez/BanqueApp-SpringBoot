@@ -1,15 +1,27 @@
 import { useState } from "react";
-import { Bell, Menu, Search, X } from "lucide-react";
+import {
+  Bell,
+  Menu,
+  Search,
+  X,
+  LayoutDashboard,
+  Users,
+  Banknote,
+  BarChart3,
+  Shield,
+  Settings,
+  LogOut,
+} from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { Logo } from "../ui";
 import NotificationCenter from "../notifications/NotificationCenter";
 const links = [
-  ["Dashboard", "/dashboard"],
-  ["Clients", "/clients"],
-  ["Loans", "/loans"],
-  ["Reports", "/reports"],
-  ["Security", "/security"],
-  ["Settings", "/settings"],
+  ["Dashboard", "/dashboard", LayoutDashboard],
+  ["Clients", "/clients", Users],
+  ["Loans", "/loans", Banknote],
+  ["Reports", "/reports", BarChart3],
+  ["Security", "/security", Shield],
+  ["Settings", "/settings", Settings],
 ];
 export default function AdminLayout({ children }) {
   const [drawer, setDrawer] = useState(false);
@@ -24,14 +36,22 @@ export default function AdminLayout({ children }) {
           </button>
         </div>
         <nav>
-          {links.map(([label, to]) => (
+          {links.map(([label, to, Icon]) => (
             <NavLink key={to} to={to} onClick={() => setDrawer(false)}>
-              <span>{label}</span>
+              {({ isActive }) => (
+                <>
+                  <Icon size={24} fill={isActive ? "currentColor" : "none"} />
+                  <span>{label}</span>
+                </>
+              )}
             </NavLink>
           ))}
         </nav>
-        <div className="logout">
-          ↪ <span>Logout</span>
+        <div className="logout-wrap">
+          <div className="logout">
+            <LogOut size={24} />
+            <span>Logout</span>
+          </div>
         </div>
       </aside>
       <div className="page-shell">

@@ -5,20 +5,17 @@ import {
   Check,
   LoaderCircle,
   Building2,
+  Landmark,
 } from "lucide-react";
 export function Logo({ small = false, inverse = false }) {
   return (
     <div className={`brand ${inverse ? "inverse" : ""}`}>
-      <span className="brand-mark">
-        <Building2 size={small ? 18 : 22} />
+      <span className="brand-row">
+        <Landmark size={small ? 18 : 28} className="brand-mark" />
+        {!small && <b>BanqueApp</b>}
       </span>
-      {!small && (
-        <span>
-          <b>BanqueApp</b>
-          <em>ADMIN PORTAL</em>
-        </span>
-      )}
-    </div> 
+      {!small && <em>Admin Portal</em>}
+    </div>
   );
 }
 export function Button({

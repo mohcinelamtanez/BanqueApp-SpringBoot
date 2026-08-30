@@ -43,65 +43,87 @@ textarea:focus {
   color: #fff;
   display: flex;
   flex-direction: column;
+  border-right: 1px solid #c6c6cd;
   z-index: 40;
 }
 .side-top {
-  padding: 25px 24px 19px;
+  padding: 24px;
 }
-.brand {
+.brand-row {
   display: flex;
   align-items: center;
-  gap: 11px;
+  gap: 12px;
+  margin-bottom: 4px;
 }
 .brand-mark {
-  width: 38px;
-  height: 38px;
-  border-radius: 9px;
-  display: grid;
-  place-items: center;
-  background: #131b2e;
+  flex: none;
   color: #fff;
 }
 .brand b {
-  font-size: 20px;
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
   display: block;
 }
 .brand em {
   font-style: normal;
   font-weight: 600;
-  color: #bfc2ca;
-  font-size: 10px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 12px;
   letter-spacing: 0.08em;
+  text-transform: uppercase;
+  display: block;
 }
 .sidebar nav {
-  padding: 20px 12px;
-  display: grid;
-  gap: 6px;
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 .sidebar a {
-  color: #c5c7cf;
+  color: rgba(255, 255, 255, 0.7);
   text-decoration: none;
-  padding: 14px 19px;
+  padding: 16px 24px;
   display: flex;
   align-items: center;
-  gap: 15px;
-  border-radius: 0 8px 8px 0;
+  gap: 16px;
   font-weight: 500;
+  border-left: 4px solid transparent;
+  transition:
+    background-color 0.2s,
+    color 0.2s;
 }
-.sidebar a.active,
 .sidebar a:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+.sidebar a.active {
   background: #d0e1fb;
-  color: #263143;
-  border-left: 4px solid #bec6e0;
-  padding-left: 15px;
+  color: #54647a;
+  font-weight: 600;
+  border-left-color: #bec6e0;
+}
+.logout-wrap {
+  margin-top: auto;
+  padding: 16px;
+  border-top: 1px solid rgba(198, 198, 205, 0.2);
 }
 .logout {
-  margin: auto 24px 25px;
-  color: #c5c7cf;
-  border-top: 1px solid #303038;
-  padding-top: 22px;
+  color: rgba(255, 255, 255, 0.7);
   display: flex;
-  gap: 14px;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 24px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition:
+    background-color 0.2s,
+    color 0.2s;
+}
+.logout:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
 }
 .page-shell {
   margin-left: 280px;
