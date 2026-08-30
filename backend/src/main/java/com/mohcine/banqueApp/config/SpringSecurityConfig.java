@@ -82,6 +82,7 @@ public class SpringSecurityConfig {
                                 "/api/v1/clients/**",
                                 "/v1/api/admin/user/sign-in/**",
                                 "/api/v1/clients",
+                                "/api/v1/loans",
                                 "/api/v1/clients/reference/{reference}"
                         ).permitAll()
 

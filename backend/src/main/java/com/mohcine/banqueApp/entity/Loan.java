@@ -1,5 +1,4 @@
 package com.mohcine.banqueApp.entity;
-import com.mohcine.banqueApp.entity.*;
 import com.mohcine.banqueApp.enums.*;
 
 import jakarta.persistence.*;
