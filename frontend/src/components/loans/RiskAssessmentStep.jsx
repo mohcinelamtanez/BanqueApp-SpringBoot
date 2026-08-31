@@ -5,15 +5,29 @@ import { money, loanSummary } from "../../utils/finance";
 
 // Placeholder scoring used until the real risk-assessment API is connected.
 // Structured so the caller only needs to swap this function out for an API
-// call later — the rest of the component just consumes { score, level }.
+// call later — consumers just read whichever fields they need off the
+// returned object (Step 3 only uses score/level; the Step 4 decision
+// workspace also shows the supporting indicators below).
 function mockRiskAssessment(client, values) {
   const summary = loanSummary(values.amount, values.duration, values.rate);
   const monthlyIncome = (client?.income || 0) / 12;
   const ratio = monthlyIncome ? summary.monthlyPayment / monthlyIncome : 1;
   const score = Math.min(99, Math.max(1, Math.round(ratio * 100)));
   const level = score < 30 ? "LOW" : score < 55 ? "MEDIUM" : "HIGH";
-  return { score, level };
+  const confidence = Math.max(60, 100 - Math.round(ratio * 40));
+  const creditScoreEstimate = Math.round(820 - ratio * 250);
+  const stability = level === "LOW" ? "High" : level === "MEDIUM" ? "Moderate" : "Low";
+  return {
+    score,
+    level,
+    confidence,
+    dtiRatio: ratio,
+    paymentToIncome: ratio,
+    creditScoreEstimate,
+    stability,
+  };
 }
+export { mockRiskAssessment };
 
 const LEVEL_COPY = {
   LOW: "The algorithmic model found no significant risk factors for this application based on the applicant's income and the requested loan terms.",

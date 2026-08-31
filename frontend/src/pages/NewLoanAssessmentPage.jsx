@@ -5,6 +5,7 @@ import { Button, LoadingState } from "../components/ui";
 import ClientSelectionStep from "../components/loans/ClientSelectionStep";
 import LoanDetailsStep from "../components/loans/LoanDetailsStep";
 import RiskAssessmentStep from "../components/loans/RiskAssessmentStep";
+import DecisionStep from "../components/loans/DecisionStep";
 import NewLoanStepper from "../components/loans/NewLoanStepper";
 import { useLoans } from "../hooks/useLoans";
 import { clients } from "../data/mock/data";
@@ -41,6 +42,8 @@ export default function NewLoanAssessmentPage() {
               `Configure the loan terms for ${selectedClient?.name || "the selected client"}.`}
             {step === 3 &&
               `Review the algorithmic risk assessment for ${selectedClient?.name || "the selected client"}.`}
+            {step === 4 &&
+              "Review the assessment and provide the final decision."}
           </p>
         </div>
         <Button variant="secondary" onClick={() => navigate("/loans")}>
@@ -71,7 +74,16 @@ export default function NewLoanAssessmentPage() {
           result={riskResult}
           onResult={setRiskResult}
           onBack={() => setStep(2)}
-          onNext={() => {}}
+          onNext={() => setStep(4)}
+        />
+      )}
+      {step === 4 && (
+        <DecisionStep
+          client={selectedClient}
+          values={loanValues}
+          risk={riskResult}
+          loans={loans}
+          onBack={() => setStep(3)}
         />
       )}
     </div>

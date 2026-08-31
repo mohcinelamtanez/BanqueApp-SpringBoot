@@ -355,6 +355,10 @@ main {
   background: #ba1a1a;
   color: #fff;
 }
+.btn.success {
+  background: #16a34a;
+  color: #fff;
+}
 .btn:disabled {
   opacity: 0.45;
   cursor: not-allowed;
@@ -1654,6 +1658,297 @@ dd {
   padding-top: 24px;
   border-top: 1px solid #e7eeff;
 }
+/* Step 4 — Decision (Stitch: loan_decision_workspace, plus the approval /
+   rejection confirmation modals for the two decision dialogs) */
+.stack-gap {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.decision-section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e7eeff;
+}
+.decision-link-btn {
+  background: transparent;
+  border: 0;
+  color: #111c2d;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.decision-link-btn:hover {
+  text-decoration: underline;
+}
+.decision-row-list {
+  display: flex;
+  flex-direction: column;
+}
+.decision-row-list-tight {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #e7eeff;
+}
+.decision-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid #e7eeff;
+  font-size: 13px;
+}
+.decision-row:last-child {
+  border-bottom: 0;
+}
+.decision-row span:first-child {
+  color: #45464d;
+}
+.decision-history-badge {
+  background: #dcfce7;
+  color: #166534;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-right: 8px;
+}
+.decision-history-sep {
+  color: #c6c6cd;
+  margin-right: 8px;
+}
+.stat-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.stat-grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+.stat-mini {
+  background: #f9f9ff;
+  border: 1px solid #c6c6cd;
+  border-radius: 8px;
+  padding: 16px;
+}
+.stat-mini.center {
+  text-align: center;
+}
+.stat-mini small {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #45464d;
+  margin-bottom: 6px;
+}
+.stat-mini strong {
+  display: block;
+  font-size: 18px;
+  font-weight: 700;
+  font-family: "JetBrains Mono", monospace;
+}
+.risk-workspace-card {
+  position: relative;
+  overflow: hidden;
+}
+.risk-workspace-blob {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 128px;
+  height: 128px;
+  background: #d0e1fb80;
+  border-bottom-left-radius: 9999px;
+  z-index: 0;
+}
+.risk-workspace-head {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+.risk-workspace-head h2 {
+  margin: 0 0 8px;
+}
+.risk-workspace-head p {
+  margin: 0;
+  max-width: 420px;
+  color: #45464d;
+  font-size: 13px;
+}
+.risk-workspace-badge-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+.risk-workspace-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.risk-workspace-badge.low {
+  background: #dff7ef;
+  color: #08785e;
+  border: 1px solid #08785e33;
+}
+.risk-workspace-badge.medium {
+  background: #fff3d6;
+  color: #945d00;
+  border: 1px solid #945d0033;
+}
+.risk-workspace-badge.high {
+  background: #ffdad6;
+  color: #ba1a1a;
+  border: 1px solid #ba1a1a33;
+}
+.risk-workspace-confidence {
+  font-size: 11px;
+  color: #45464d;
+}
+.decision-option {
+  border: 1px solid #c6c6cd;
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  transition: background-color 0.2s;
+}
+.decision-option:hover {
+  background: #f0f3ff;
+}
+.decision-option h3 {
+  margin: 0 0 4px;
+  font-size: 17px;
+}
+.decision-option p {
+  margin: 0;
+  max-width: 420px;
+  color: #45464d;
+  font-size: 13px;
+}
+.decision-divider {
+  display: flex;
+  align-items: center;
+  padding: 8px 0;
+}
+.decision-divider::before,
+.decision-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #c6c6cd;
+}
+.decision-divider span {
+  padding: 0 16px;
+  color: #45464d;
+  font-size: 13px;
+}
+.decision-footer-audit {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid #c6c6cd;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 11px;
+  color: #45464d;
+  font-family: "JetBrains Mono", monospace;
+}
+.decision-footer-audit-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.decision-recap {
+  background: #f0f3ff;
+  border: 1px solid #c6c6cd;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+  display: grid;
+  gap: 8px;
+}
+.decision-recap-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  color: #111c2d;
+}
+.decision-recap-row span:first-child {
+  color: #45464d;
+}
+.decision-recap-simple p {
+  margin: 0 0 6px;
+  font-size: 14px;
+  color: #45464d;
+}
+.decision-recap-simple p:last-child {
+  margin-bottom: 0;
+}
+.decision-recap-simple b.low {
+  color: #08785e;
+}
+.decision-recap-simple b.medium {
+  color: #945d00;
+}
+.decision-recap-simple b.high {
+  color: #ba1a1a;
+}
+.decision-note {
+  color: #45464d;
+  font-size: 13px;
+  margin: 0 0 20px;
+}
+.decision-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+.risk-badge-sm {
+  display: inline-flex;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.risk-badge-sm.low {
+  background: #dff7ef;
+  color: #08785e;
+}
+.risk-badge-sm.medium {
+  background: #fff3d6;
+  color: #945d00;
+}
+.risk-badge-sm.high {
+  background: #ffdad6;
+  color: #ba1a1a;
+}
 .client-choice {
   display: flex;
   align-items: center;
@@ -1958,6 +2253,10 @@ dd {
 @media (max-width: 650px) {
   main {
     padding: 20px;
+  }
+  .stat-grid-2,
+  .stat-grid-4 {
+    grid-template-columns: 1fr 1fr;
   }
   .topbar {
     padding: 0 15px;
