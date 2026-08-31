@@ -1532,6 +1532,128 @@ dd {
   display: flex;
   gap: 12px;
 }
+/* Step 3 — Risk Assessment (Stitch: risk_assessment_refined_ml_result_display) */
+.icon-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.risk-panel {
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.risk-initial {
+  text-align: center;
+}
+.risk-initial-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: #d8e3fb;
+  color: #45464d;
+  display: grid;
+  place-items: center;
+  margin: 0 auto 16px;
+}
+.risk-initial h3 {
+  margin: 0 0 8px;
+  font-size: 19px;
+}
+.risk-initial p {
+  margin: 0 auto 24px;
+  max-width: 420px;
+  color: #45464d;
+}
+.risk-initial .spin {
+  color: #565e74;
+  margin: 0 auto 16px;
+}
+.risk-result-top {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+  padding-bottom: 24px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid #e7eeff;
+}
+.risk-score-block small,
+.risk-level-block small {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #45464d;
+  margin-bottom: 8px;
+}
+.risk-score-value {
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 1;
+  color: #111c2d;
+}
+.risk-level-block {
+  text-align: right;
+}
+.risk-level-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 24px;
+  border-radius: 8px;
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.risk-level-pill i {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: block;
+  font-style: normal;
+}
+.risk-level-pill.low {
+  background: #dff7ef;
+  color: #08785e;
+}
+.risk-level-pill.low i {
+  background: #08785e;
+}
+.risk-level-pill.medium {
+  background: #fff3d6;
+  color: #945d00;
+}
+.risk-level-pill.medium i {
+  background: #945d00;
+}
+.risk-level-pill.high {
+  background: #ffdad6;
+  color: #ba1a1a;
+}
+.risk-level-pill.high i {
+  background: #ba1a1a;
+}
+.risk-explain {
+  margin-bottom: 24px;
+}
+.risk-explain h4 {
+  margin: 0 0 8px;
+  font-size: 19px;
+}
+.risk-explain p {
+  margin: 0;
+  color: #45464d;
+}
+.risk-recalculate {
+  display: flex;
+  justify-content: center;
+  padding-top: 24px;
+  border-top: 1px solid #e7eeff;
+}
 .client-choice {
   display: flex;
   align-items: center;
