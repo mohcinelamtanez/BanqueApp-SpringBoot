@@ -103,10 +103,13 @@ export function ConfirmationDialog({
   title = "Confirm deletion",
   message,
   confirmLabel = "Delete",
+  confirmVariant = "danger",
+  confirmDisabled = false,
   submitting = false,
   error = "",
   onClose,
   onConfirm,
+  children,
 }) {
   return (
     <Modal title={title} onClose={submitting ? undefined : onClose}>
@@ -115,12 +118,17 @@ export function ConfirmationDialog({
           <AlertTriangle />
         </span>
         <p>{message}</p>
+        {children}
         {error && <p className="error">{error}</p>}
         <div className="actions">
           <Button variant="secondary" onClick={onClose} disabled={submitting}>
             Cancel
           </Button>
-          <Button variant="danger" onClick={onConfirm} disabled={submitting}>
+          <Button
+            variant={confirmVariant}
+            onClick={onConfirm}
+            disabled={submitting || confirmDisabled}
+          >
             {submitting && <LoaderCircle size={16} className="spin" />}
             {confirmLabel}
           </Button>
@@ -183,6 +191,66 @@ export function DataTable({ columns, children }) {
         </thead>
         <tbody>{children}</tbody>
       </table>
+    </div>
+  );
+}
+function paginationPageList(total, current) {
+  if (total <= 5) return Array.from({ length: total }, (_, i) => i + 1);
+  const pages = [1];
+  if (current > 3) pages.push("…");
+  for (
+    let page = Math.max(2, current - 1);
+    page <= Math.min(total - 1, current + 1);
+    page++
+  ) {
+    pages.push(page);
+  }
+  if (current < total - 2) pages.push("…");
+  pages.push(total);
+  return pages;
+}
+export function Pagination({
+  page,
+  totalPages,
+  onChange,
+  className = "pagination-bar",
+}) {
+  return (
+    <div className={className}>
+      <button
+        type="button"
+        className="page-btn"
+        disabled={page === 1}
+        onClick={() => onChange(page - 1)}
+      >
+        Previous
+      </button>
+      <div className="page-numbers">
+        {paginationPageList(totalPages, page).map((entry, index) =>
+          typeof entry === "number" ? (
+            <button
+              key={entry}
+              type="button"
+              className={entry === page ? "page-num active" : "page-num"}
+              onClick={() => onChange(entry)}
+            >
+              {entry}
+            </button>
+          ) : (
+            <span key={`ellipsis-${index}`} className="page-ellipsis">
+              {entry}
+            </span>
+          ),
+        )}
+      </div>
+      <button
+        type="button"
+        className="page-btn"
+        disabled={page === totalPages}
+        onClick={() => onChange(page + 1)}
+      >
+        Next
+      </button>
     </div>
   );
 }

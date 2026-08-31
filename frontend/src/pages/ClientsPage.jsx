@@ -5,35 +5,18 @@ import {
   Card,
   ConfirmationDialog,
   EmptyState,
+  Pagination,
   SuccessModal,
 } from "../components/ui";
 import ClientTable from "../components/clients/ClientTable";
 import ClientFormModal from "../components/clients/ClientFormModal";
 import { clients } from "../data/mock/data";
 import { clientService } from "../services/clientService";
+import { usePagination } from "../hooks/usePagination";
 import { csvEscape, downloadCsv, PageHeading } from "./pageShared";
-
-const PAGE_SIZE = 5;
-
-function pageList(total, current) {
-  if (total <= 5) return Array.from({ length: total }, (_, i) => i + 1);
-  const pages = [1];
-  if (current > 3) pages.push("…");
-  for (
-    let page = Math.max(2, current - 1);
-    page <= Math.min(total - 1, current + 1);
-    page++
-  ) {
-    pages.push(page);
-  }
-  if (current < total - 2) pages.push("…");
-  pages.push(total);
-  return pages;
-}
 
 export default function ClientsPage() {
   const [query, setQuery] = useState("");
-  const [page, setPage] = useState(1);
   const [modal, setModal] = useState(null);
   const [confirmDelete, setConfirmDelete] = useState(null);
   const [deleting, setDeleting] = useState(false);
@@ -44,14 +27,14 @@ export default function ClientsPage() {
       .toLowerCase()
       .includes(query.toLowerCase()),
   );
-  const totalPages = Math.max(1, Math.ceil(shown.length / PAGE_SIZE));
-  const currentPage = Math.min(page, totalPages);
-  const pageItems = shown.slice(
-    (currentPage - 1) * PAGE_SIZE,
-    currentPage * PAGE_SIZE,
-  );
-  const rangeStart = shown.length ? (currentPage - 1) * PAGE_SIZE + 1 : 0;
-  const rangeEnd = Math.min(currentPage * PAGE_SIZE, shown.length);
+  const {
+    page: currentPage,
+    setPage,
+    totalPages,
+    pageItems,
+    rangeStart,
+    rangeEnd,
+  } = usePagination(shown, 5);
   const changeQuery = (value) => {
     setQuery(value);
     setPage(1);
@@ -130,44 +113,12 @@ export default function ClientsPage() {
               onEdit={(client) => setModal({ mode: "edit", client })}
               onDelete={(client) => setConfirmDelete(client)}
             />
-            <div className="ct-pagination">
-              <button
-                type="button"
-                className="page-btn"
-                disabled={currentPage === 1}
-                onClick={() => setPage(currentPage - 1)}
-              >
-                Previous
-              </button>
-              <div className="page-numbers">
-                {pageList(totalPages, currentPage).map((entry, index) =>
-                  typeof entry === "number" ? (
-                    <button
-                      key={entry}
-                      type="button"
-                      className={
-                        entry === currentPage ? "page-num active" : "page-num"
-                      }
-                      onClick={() => setPage(entry)}
-                    >
-                      {entry}
-                    </button>
-                  ) : (
-                    <span key={`ellipsis-${index}`} className="page-ellipsis">
-                      {entry}
-                    </span>
-                  ),
-                )}
-              </div>
-              <button
-                type="button"
-                className="page-btn"
-                disabled={currentPage === totalPages}
-                onClick={() => setPage(currentPage + 1)}
-              >
-                Next
-              </button>
-            </div>
+            <Pagination
+              page={currentPage}
+              totalPages={totalPages}
+              onChange={setPage}
+              className="ct-pagination"
+            />
           </>
         ) : (
           <EmptyState

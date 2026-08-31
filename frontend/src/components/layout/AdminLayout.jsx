@@ -1,6 +1,7 @@
 import { useState } from "react";
 import {
   Bell,
+  ChevronDown,
   Menu,
   Search,
   X,
@@ -12,7 +13,7 @@ import {
   Settings,
   LogOut,
 } from "lucide-react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { Logo } from "../ui";
 import NotificationCenter from "../notifications/NotificationCenter";
 const links = [
@@ -23,9 +24,16 @@ const links = [
   ["Security", "/security", Shield],
   ["Settings", "/settings", Settings],
 ];
+const loanLinks = [
+  ["Loan Management", "/loans"],
+  ["Loan Requests", "/loans/requests"],
+];
 export default function AdminLayout({ children }) {
   const [drawer, setDrawer] = useState(false);
   const [notifications, setNotifications] = useState(false);
+  const location = useLocation();
+  const loansActive = location.pathname.startsWith("/loans");
+  const [loansOpen, setLoansOpen] = useState(loansActive);
   return (
     <div className="app-shell">
       <aside className={drawer ? "sidebar open" : "sidebar"}>
@@ -36,16 +44,49 @@ export default function AdminLayout({ children }) {
           </button>
         </div>
         <nav>
-          {links.map(([label, to, Icon]) => (
-            <NavLink key={to} to={to} onClick={() => setDrawer(false)}>
-              {({ isActive }) => (
-                <>
-                  <Icon size={24} fill={isActive ? "currentColor" : "none"} />
+          {links.map(([label, to, Icon]) =>
+            label === "Loans" ? (
+              <div className="sidebar-group" key={to}>
+                <button
+                  type="button"
+                  className={loansActive ? "active" : ""}
+                  onClick={() => setLoansOpen((value) => !value)}
+                  aria-expanded={loansOpen}
+                >
+                  <Icon size={24} fill={loansActive ? "currentColor" : "none"} />
                   <span>{label}</span>
-                </>
-              )}
-            </NavLink>
-          ))}
+                  <ChevronDown
+                    size={16}
+                    className={loansOpen ? "chevron open" : "chevron"}
+                  />
+                </button>
+                <div className={loansOpen ? "submenu open" : "submenu"}>
+                  {loanLinks.map(([childLabel, childTo]) => (
+                    <NavLink
+                      key={childTo}
+                      to={childTo}
+                      end={childTo === "/loans"}
+                      onClick={() => setDrawer(false)}
+                    >
+                      <span>{childLabel}</span>
+                    </NavLink>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <NavLink key={to} to={to} onClick={() => setDrawer(false)}>
+                {({ isActive }) => (
+                  <>
+                    <Icon
+                      size={24}
+                      fill={isActive ? "currentColor" : "none"}
+                    />
+                    <span>{label}</span>
+                  </>
+                )}
+              </NavLink>
+            ),
+          )}
         </nav>
         <div className="logout-wrap">
           <div className="logout">

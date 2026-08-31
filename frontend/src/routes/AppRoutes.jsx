@@ -6,8 +6,11 @@ import ClientDetailsPage from "../pages/ClientDetailsPage";
 import AddClientPage from "../pages/AddClientPage";
 import EditClientPage from "../pages/EditClientPage";
 import LoansPage from "../pages/LoansPage";
+import LoanRequestsPage from "../pages/LoanRequestsPage";
+import LoanRequestReviewPage from "../pages/LoanRequestReviewPage";
 import LoanDetailsPage from "../pages/LoanDetailsPage";
 import AddLoanPage from "../pages/AddLoanPage";
+import NewLoanAssessmentPage from "../pages/NewLoanAssessmentPage";
 import EditLoanPage from "../pages/EditLoanPage";
 import PaymentHistoryPage from "../pages/PaymentHistoryPage";
 import ReportsPage from "../pages/ReportsPage";
@@ -31,7 +34,16 @@ export default function AppRoutes() {
         <Route path="/clients/:clientId" element={<ClientDetailsPage />} />
         <Route path="/clients/:clientId/edit" element={<EditClientPage />} />
         <Route path="/loans" element={<LoansPage />} />
+        <Route path="/loans/requests" element={<LoanRequestsPage />} />
+        <Route
+          path="/loans/requests/:loanId"
+          element={<LoanRequestReviewPage />}
+        />
         <Route path="/loans/new" element={<AddLoanPage />} />
+        <Route
+          path="/loans/new-assessment"
+          element={<NewLoanAssessmentPage />}
+        />
         <Route path="/loans/:loanId" element={<LoanDetailsPage />} />
         <Route path="/loans/:loanId/edit" element={<EditLoanPage />} />
         <Route

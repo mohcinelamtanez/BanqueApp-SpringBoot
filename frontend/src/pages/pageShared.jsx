@@ -3,6 +3,15 @@ import { Badge, Card } from "../components/ui";
 import { clients } from "../data/mock/data";
 
 export const getClient = (id) => clients.find((client) => client.id === id);
+export function initials(name = "") {
+  return name
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((part) => part[0])
+    .join("")
+    .toUpperCase();
+}
 export function loanStats(clientId, loans) {
   const list = loans.filter((loan) => loan.clientId === clientId);
   return {
