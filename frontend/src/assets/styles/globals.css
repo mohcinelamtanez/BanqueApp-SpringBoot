@@ -2724,3 +2724,18 @@ dd {
 .client-shell[data-theme="dark"] .decision-note {
   color: var(--cs-text-muted);
 }
+/* Admin — User Management */
+.badge.role-admin {
+  background: #111c2d;
+  color: #fff;
+}
+.user-management-kpis {
+  margin-bottom: 24px;
+}
+.user-table th:nth-child(4),
+.user-table td:nth-child(4) {
+  text-align: left;
+}
+.user-profile-modal-heading {
+  margin-bottom: 20px;
+}

@@ -12,11 +12,13 @@ import {
   BarChart3,
   Shield,
   Settings,
+  UserCog,
   LogOut,
 } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import { Logo } from "../ui";
 import NotificationCenter from "../notifications/NotificationCenter";
+import { isAdmin } from "../../auth/currentUser";
 const links = [
   ["Dashboard", "/dashboard", LayoutDashboard],
   ["Clients", "/clients", Users],
@@ -90,6 +92,16 @@ export default function AdminLayout({ children }) {
                 )}
               </NavLink>
             ),
+          )}
+          {isAdmin() && (
+            <NavLink to="/users" onClick={() => setDrawer(false)}>
+              {({ isActive }) => (
+                <>
+                  <UserCog size={24} fill={isActive ? "currentColor" : "none"} />
+                  <span>User Management</span>
+                </>
+              )}
+            </NavLink>
           )}
         </nav>
         <div className="logout-wrap">

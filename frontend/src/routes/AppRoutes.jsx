@@ -1,6 +1,8 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import AdminLayout from "../components/layout/AdminLayout";
 import DashboardPage from "../pages/DashboardPage";
+import UserManagementPage from "../pages/UserManagementPage";
+import { isAdmin } from "../auth/currentUser";
 import ClientsPage from "../pages/ClientsPage";
 import ClientDetailsPage from "../pages/ClientDetailsPage";
 import AddClientPage from "../pages/AddClientPage";
@@ -61,6 +63,12 @@ export default function AppRoutes() {
         <Route path="/reports" element={<ReportsPage />} />
         <Route path="/security" element={<SecurityPage />} />
         <Route path="/settings" element={<SettingsPage />} />
+        <Route
+          path="/users"
+          element={
+            isAdmin() ? <UserManagementPage /> : <Navigate to="/dashboard" replace />
+          }
+        />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </AdminLayout>
