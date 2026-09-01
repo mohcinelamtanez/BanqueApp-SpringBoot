@@ -1,5 +1,6 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { useAuth } from "../../auth/AuthContext";
 import {
   Banknote,
   CreditCard,
@@ -13,16 +14,22 @@ import {
 import { Logo } from "../ui";
 
 const links = [
-  ["nav.dashboard", "/client/dashboard", LayoutDashboard],
-  ["nav.profile", "/client/profile", User],
-  ["nav.loans", "/client/loans", Banknote],
-  ["nav.applications", "/client/applications", FileText],
-  ["nav.payments", "/client/payments", CreditCard],
-  ["nav.settings", "/client/settings", Settings],
+  ["nav.dashboard", "/dashboard", LayoutDashboard],
+  ["nav.profile", "/my-profile", User],
+  ["nav.loans", "/my-loans", Banknote],
+  ["nav.applications", "/my-applications", FileText],
+  ["nav.payments", "/my-payments", CreditCard],
+  ["nav.settings", "/settings", Settings],
 ];
 
 export default function ClientSidebar({ open, onClose }) {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const { logout } = useAuth();
+  const handleLogout = () => {
+    logout();
+    navigate("/login", { replace: true });
+  };
   return (
     <aside className={open ? "sidebar open" : "sidebar"}>
       <div className="side-top">
@@ -44,7 +51,18 @@ export default function ClientSidebar({ open, onClose }) {
         ))}
       </nav>
       <div className="logout-wrap">
-        <div className="logout">
+        <div
+          className="logout"
+          role="button"
+          tabIndex={0}
+          onClick={handleLogout}
+          onKeyDown={(event) => {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              handleLogout();
+            }
+          }}
+        >
           <LogOut size={24} />
           <span>{t("nav.logout")}</span>
         </div>

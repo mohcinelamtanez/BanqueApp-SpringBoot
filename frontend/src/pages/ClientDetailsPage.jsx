@@ -114,7 +114,7 @@ export default function ClientDetailsPage() {
       <Card>
         <div className="section-head">
           <h2>Loan History</h2>
-          <Button onClick={() => navigate("/loans/new")}>
+          <Button onClick={() => navigate("/loans/add")}>
             <Plus size={16} /> Add loan
           </Button>
         </div>

@@ -32,20 +32,17 @@ export default function AppRoutes() {
         <Route path="/" element={<DashboardPage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/clients" element={<ClientsPage />} />
-        <Route path="/clients/new" element={<AddClientPage />} />
+        <Route path="/clients/new-client" element={<AddClientPage />} />
         <Route path="/clients/:clientId" element={<ClientDetailsPage />} />
         <Route path="/clients/:clientId/edit" element={<EditClientPage />} />
         <Route path="/loans" element={<LoansPage />} />
-        <Route path="/loans/requests" element={<LoanRequestsPage />} />
+        <Route path="/loan-applications" element={<LoanRequestsPage />} />
         <Route
-          path="/loans/requests/:loanId"
+          path="/loan-applications/:applicationId"
           element={<LoanRequestReviewPage />}
         />
-        <Route path="/loans/new" element={<AddLoanPage />} />
-        <Route
-          path="/loans/new-assessment"
-          element={<NewLoanAssessmentPage />}
-        />
+        <Route path="/loans/add" element={<AddLoanPage />} />
+        <Route path="/loans/new-loan" element={<NewLoanAssessmentPage />} />
         <Route path="/loans/:loanId" element={<LoanDetailsPage />} />
         <Route path="/loans/:loanId/edit" element={<EditLoanPage />} />
         <Route
@@ -65,6 +62,12 @@ export default function AppRoutes() {
         <Route path="/settings" element={<SettingsPage />} />
         <Route
           path="/users"
+          element={
+            isAdmin() ? <UserManagementPage /> : <Navigate to="/dashboard" replace />
+          }
+        />
+        <Route
+          path="/users/:userId"
           element={
             isAdmin() ? <UserManagementPage /> : <Navigate to="/dashboard" replace />
           }

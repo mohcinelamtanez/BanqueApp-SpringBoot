@@ -84,7 +84,7 @@ export default function ApplicationCard({
           <Button onClick={onCreateNew}>Create New Application</Button>
         )}
         {status === "APPROVED" && (
-          <Button onClick={() => navigate("/client/loans")}>
+          <Button onClick={() => navigate("/my-loans")}>
             View Loan
           </Button>
         )}

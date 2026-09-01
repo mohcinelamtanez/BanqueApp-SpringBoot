@@ -23,8 +23,8 @@ const RISK_PROBABILITY = {
 
 export default function LoanRequestReviewPage() {
   const navigate = useNavigate();
-  const { loanId } = useParams();
-  const { loading, data: loan } = useLoan(loanId);
+  const { applicationId } = useParams();
+  const { loading, data: loan } = useLoan(applicationId);
   const [checkingRisk, setCheckingRisk] = useState(false);
   const [riskChecked, setRiskChecked] = useState(false);
   const [decision, setDecision] = useState(null); // "approve" | "reject" | null
@@ -96,7 +96,7 @@ export default function LoanRequestReviewPage() {
     <>
       <Breadcrumbs
         items={[
-          { label: "Loan Requests", to: "/loans/requests" },
+          { label: "Loan Applications", to: "/loan-applications" },
           { label: loan.id },
         ]}
       />
@@ -215,7 +215,7 @@ export default function LoanRequestReviewPage() {
         <SuccessModal
           title={success.title}
           message={success.message}
-          onClose={() => navigate("/loans/requests")}
+          onClose={() => navigate("/loan-applications")}
         />
       )}
     </>

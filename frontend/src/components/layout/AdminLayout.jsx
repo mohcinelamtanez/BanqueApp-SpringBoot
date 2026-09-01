@@ -15,10 +15,11 @@ import {
   UserCog,
   LogOut,
 } from "lucide-react";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { Logo } from "../ui";
 import NotificationCenter from "../notifications/NotificationCenter";
 import { isAdmin } from "../../auth/currentUser";
+import { useAuth } from "../../auth/AuthContext";
 const links = [
   ["Dashboard", "/dashboard", LayoutDashboard],
   ["Clients", "/clients", Users],
@@ -29,14 +30,22 @@ const links = [
 ];
 const loanLinks = [
   ["Loan Management", "/loans"],
-  ["Loan Requests", "/loans/requests"],
-  ["Add New Loan", "/loans/new-assessment", Plus],
+  ["Loan Applications", "/loan-applications"],
+  ["Add New Loan", "/loans/new-loan", Plus],
 ];
 export default function AdminLayout({ children }) {
+  const navigate = useNavigate();
+  const { logout } = useAuth();
   const [drawer, setDrawer] = useState(false);
   const [notifications, setNotifications] = useState(false);
   const location = useLocation();
-  const loansActive = location.pathname.startsWith("/loans");
+  const handleLogout = () => {
+    logout();
+    navigate("/login", { replace: true });
+  };
+  const loansActive =
+    location.pathname.startsWith("/loans") ||
+    location.pathname.startsWith("/loan-applications");
   const [loansOpen, setLoansOpen] = useState(loansActive);
   return (
     <div className="app-shell">
@@ -105,7 +114,18 @@ export default function AdminLayout({ children }) {
           )}
         </nav>
         <div className="logout-wrap">
-          <div className="logout">
+          <div
+            className="logout"
+            role="button"
+            tabIndex={0}
+            onClick={handleLogout}
+            onKeyDown={(event) => {
+              if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                handleLogout();
+              }
+            }}
+          >
             <LogOut size={24} />
             <span>Logout</span>
           </div>

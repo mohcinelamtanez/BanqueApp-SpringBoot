@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { Plus } from "lucide-react";
 import { Button, Card, EmptyState, LoadingState } from "../../components/ui";
 import ApplicationCard from "../../components/loans/ApplicationCard";
@@ -9,11 +10,12 @@ import { PageHeading } from "../pageShared";
 import { CURRENT_CLIENT_ID } from "./clientShared";
 
 export default function ClientApplicationsPage() {
+  const navigate = useNavigate();
+  const { applicationId } = useParams();
   const [loading, setLoading] = useState(true);
   const [loans, setLoans] = useState([]);
   const [reloadKey, setReloadKey] = useState(0);
   const [showNew, setShowNew] = useState(false);
-  const [viewing, setViewing] = useState(null);
 
   useEffect(() => {
     let active = true;
@@ -35,6 +37,9 @@ export default function ClientApplicationsPage() {
     .filter((loan) => loan.clientId === CURRENT_CLIENT_ID)
     .sort((a, b) => (a.startDate < b.startDate ? 1 : -1));
   const hasPending = myApplications.some((loan) => loan.status === "Pending");
+  const viewing = applicationId
+    ? myApplications.find((loan) => loan.id === applicationId) || null
+    : null;
 
   const openNewApplication = () => setShowNew(true);
   const onApplicationCreated = () => {
@@ -85,7 +90,7 @@ export default function ClientApplicationsPage() {
               key={loan.id}
               loan={loan}
               canCreateNew={!hasPending}
-              onViewDetails={() => setViewing(loan)}
+              onViewDetails={() => navigate(`/my-applications/${loan.id}`)}
               onCreateNew={openNewApplication}
             />
           ))}
@@ -101,7 +106,7 @@ export default function ClientApplicationsPage() {
       {viewing && (
         <ApplicationDetailsModal
           loan={viewing}
-          onClose={() => setViewing(null)}
+          onClose={() => navigate("/my-applications")}
         />
       )}
     </>

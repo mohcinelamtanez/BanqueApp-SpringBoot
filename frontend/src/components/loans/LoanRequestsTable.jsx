@@ -42,7 +42,7 @@ export default function LoanRequestsTable({ loans = [] }) {
             <td>
               <Button
                 variant="secondary"
-                onClick={() => navigate(`/loans/requests/${loan.id}`)}
+                onClick={() => navigate(`/loan-applications/${loan.id}`)}
               >
                 Review
               </Button>

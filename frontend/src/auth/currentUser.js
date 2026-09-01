@@ -1,11 +1,14 @@
-// Frontend-only mock of the authenticated user until real auth/JWT is wired
-// in from the backend. Swap CURRENT_ROLE to preview the BANK_AGENT
-// experience during development. When real authentication lands, replace
-// this module's exports with values derived from the authenticated
-// session — every consumer (AdminLayout, AppRoutes, UserManagementPage)
-// only depends on this shape, not on how the role is obtained.
-export const ROLES = { ADMIN: "ADMIN", BANK_AGENT: "BANK_AGENT" };
+// Role helpers backed by the real (mock, for now) authenticated user in
+// authStore. Every consumer (AdminLayout, AppRoutes, UserManagementPage)
+// only depends on this shape, not on how the role is obtained — when real
+// auth/JWT lands, only authStore/authService need to change.
+import { getUser } from "./authStore";
 
-export const CURRENT_ROLE = ROLES.BANK_AGENT;
+export const ROLES = {
+  ADMIN: "ADMIN",
+  BANK_AGENT: "BANK_AGENT",
+  CLIENT: "CLIENT",
+};
 
-export const isAdmin = () => CURRENT_ROLE === ROLES.ADMIN;
+export const isAdmin = () => getUser()?.role === ROLES.ADMIN;
+export const isClient = () => getUser()?.role === ROLES.CLIENT;

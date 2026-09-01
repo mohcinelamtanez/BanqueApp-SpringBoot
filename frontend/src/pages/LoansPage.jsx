@@ -25,7 +25,7 @@ export default function LoansPage() {
         title="Loan Management"
         subtitle="Monitor the complete loan portfolio."
         action={
-          <Button onClick={() => navigate("/loans/new-assessment")}>
+          <Button onClick={() => navigate("/loans/new-loan")}>
             <Plus size={17} /> New loan
           </Button>
         }

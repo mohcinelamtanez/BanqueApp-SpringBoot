@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { Briefcase, Plus, Search, ShieldCheck, UserCheck, Users } from "lucide-react";
 import {
   Button,
@@ -17,12 +18,13 @@ import { usePagination } from "../hooks/usePagination";
 import { Metric, PageHeading } from "./pageShared";
 
 export default function UserManagementPage() {
+  const navigate = useNavigate();
+  const { userId } = useParams();
   const [loading, setLoading] = useState(true);
   const [users, setUsers] = useState([]);
   const [reloadKey, setReloadKey] = useState(0);
   const [query, setQuery] = useState("");
   const [formModal, setFormModal] = useState(null);
-  const [viewingUser, setViewingUser] = useState(null);
   const [statusTarget, setStatusTarget] = useState(null);
   const [togglingStatus, setTogglingStatus] = useState(false);
   const [resetTarget, setResetTarget] = useState(null);
@@ -58,6 +60,10 @@ export default function UserManagementPage() {
   } = usePagination(shown, 5);
 
   if (loading) return <LoadingState label="Loading users…" />;
+
+  const viewingUser = userId
+    ? users.find((user) => user.id === userId) || null
+    : null;
 
   const reload = () => setReloadKey((key) => key + 1);
   const changeQuery = (value) => {
@@ -138,7 +144,7 @@ export default function UserManagementPage() {
           <>
             <UserTable
               users={pageItems}
-              onView={setViewingUser}
+              onView={(user) => navigate(`/users/${user.id}`)}
               onEdit={(user) => setFormModal({ mode: "edit", user })}
               onToggleStatus={setStatusTarget}
               onResetPassword={setResetTarget}
@@ -184,7 +190,7 @@ export default function UserManagementPage() {
         />
       )}
       {viewingUser && (
-        <UserProfileModal user={viewingUser} onClose={() => setViewingUser(null)} />
+        <UserProfileModal user={viewingUser} onClose={() => navigate("/users")} />
       )}
       {statusTarget && (
         <ConfirmationDialog
