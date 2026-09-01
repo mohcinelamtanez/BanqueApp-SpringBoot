@@ -1,13 +1,21 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Bell, Menu, Search } from "lucide-react";
+import "../../i18n";
 import ClientSidebar from "./ClientSidebar";
 import NotificationCenter from "../notifications/NotificationCenter";
+import {
+  ClientThemeProvider,
+  useClientTheme,
+} from "../../pages/client/ClientThemeContext";
 
-export default function ClientLayout({ children }) {
+function ClientLayoutShell({ children }) {
+  const { t } = useTranslation();
+  const { resolved } = useClientTheme();
   const [drawer, setDrawer] = useState(false);
   const [notifications, setNotifications] = useState(false);
   return (
-    <div className="app-shell">
+    <div className="app-shell client-shell" data-theme={resolved}>
       <ClientSidebar open={drawer} onClose={() => setDrawer(false)} />
       <div className="page-shell">
         <header className="topbar">
@@ -16,13 +24,16 @@ export default function ClientLayout({ children }) {
           </button>
           <div className="search">
             <Search size={17} />
-            <input placeholder="Search…" aria-label="Search" />
+            <input
+              placeholder={t("topbar.searchPlaceholder")}
+              aria-label={t("topbar.searchPlaceholder")}
+            />
           </div>
           <div className="topbar-actions">
             <button
               className="icon-button notification"
               onClick={() => setNotifications((value) => !value)}
-              aria-label="Notifications"
+              aria-label={t("topbar.notifications")}
             >
               <Bell size={21} />
               <i />
@@ -36,6 +47,14 @@ export default function ClientLayout({ children }) {
         <main>{children}</main>
       </div>
     </div>
+  );
+}
+
+export default function ClientLayout({ children }) {
+  return (
+    <ClientThemeProvider>
+      <ClientLayoutShell>{children}</ClientLayoutShell>
+    </ClientThemeProvider>
   );
 }
 export { ClientLayout };

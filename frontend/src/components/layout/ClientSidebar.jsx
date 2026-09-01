@@ -1,4 +1,5 @@
 import { NavLink } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import {
   Banknote,
   CreditCard,
@@ -12,15 +13,16 @@ import {
 import { Logo } from "../ui";
 
 const links = [
-  ["Dashboard", "/client/dashboard", LayoutDashboard],
-  ["My Profile", "/client/profile", User],
-  ["My Loans", "/client/loans", Banknote],
-  ["My Applications", "/client/applications", FileText],
-  ["Payments", "/client/payments", CreditCard],
-  ["Settings", "/client/settings", Settings],
+  ["nav.dashboard", "/client/dashboard", LayoutDashboard],
+  ["nav.profile", "/client/profile", User],
+  ["nav.loans", "/client/loans", Banknote],
+  ["nav.applications", "/client/applications", FileText],
+  ["nav.payments", "/client/payments", CreditCard],
+  ["nav.settings", "/client/settings", Settings],
 ];
 
 export default function ClientSidebar({ open, onClose }) {
+  const { t } = useTranslation();
   return (
     <aside className={open ? "sidebar open" : "sidebar"}>
       <div className="side-top">
@@ -30,12 +32,12 @@ export default function ClientSidebar({ open, onClose }) {
         </button>
       </div>
       <nav>
-        {links.map(([label, to, Icon]) => (
+        {links.map(([labelKey, to, Icon]) => (
           <NavLink key={to} to={to} onClick={onClose}>
             {({ isActive }) => (
               <>
                 <Icon size={24} fill={isActive ? "currentColor" : "none"} />
-                <span>{label}</span>
+                <span>{t(labelKey)}</span>
               </>
             )}
           </NavLink>
@@ -44,7 +46,7 @@ export default function ClientSidebar({ open, onClose }) {
       <div className="logout-wrap">
         <div className="logout">
           <LogOut size={24} />
-          <span>Logout</span>
+          <span>{t("nav.logout")}</span>
         </div>
       </div>
     </aside>

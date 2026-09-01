@@ -2540,3 +2540,187 @@ dd {
     font-size: 17px;
   }
 }
+/* Client — Settings */
+.settings-status-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  font-size: 13px;
+  color: #45464d;
+}
+.theme-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 16px;
+}
+.theme-option-card {
+  position: relative;
+  flex: 1;
+  min-width: 150px;
+  border: 1px solid #c6c6cd;
+  border-radius: 12px;
+  padding: 20px;
+  background: #fff;
+  cursor: pointer;
+  text-align: left;
+  display: grid;
+  gap: 8px;
+  font: inherit;
+  color: inherit;
+  transition:
+    border-color 0.2s,
+    background-color 0.2s;
+}
+.theme-option-card:hover {
+  background: #f0f3ff;
+}
+.theme-option-card svg:first-of-type {
+  color: #565e74;
+}
+.theme-option-card b {
+  font-size: 14px;
+}
+.theme-option-card span {
+  font-size: 12px;
+  color: #45464d;
+}
+.theme-option-card.selected {
+  border-color: #000;
+  border-width: 2px;
+  padding: 19px;
+  background: #f0f3ff;
+}
+.theme-option-check {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  color: #000;
+}
+@media (max-width: 650px) {
+  .theme-options {
+    flex-direction: column;
+  }
+}
+/* Client — Dark theme, scoped to the Client experience only.
+   Admin always renders under a plain .app-shell with no client-shell
+   class or data-theme attribute, so none of these rules can ever match
+   Admin markup. */
+.client-shell[data-theme="dark"] {
+  --cs-surface: #141a2b;
+  --cs-surface-alt: #1b2338;
+  --cs-border: #2a3348;
+  --cs-text: #e5e7eb;
+  --cs-text-muted: #9aa3b8;
+  background: #0b0f1a;
+  color: var(--cs-text);
+}
+.client-shell[data-theme="dark"] .topbar {
+  background: var(--cs-surface);
+  border-color: var(--cs-border);
+}
+.client-shell[data-theme="dark"] .search {
+  background: var(--cs-surface-alt);
+  border-color: var(--cs-border);
+  color: var(--cs-text-muted);
+}
+.client-shell[data-theme="dark"] .icon-button:hover {
+  background: var(--cs-surface-alt);
+  color: var(--cs-text);
+}
+.client-shell[data-theme="dark"] .card,
+.client-shell[data-theme="dark"] .notification-center,
+.client-shell[data-theme="dark"] .modal,
+.client-shell[data-theme="dark"] .theme-option-card {
+  background: var(--cs-surface);
+  border-color: var(--cs-border);
+  color: var(--cs-text);
+}
+.client-shell[data-theme="dark"] .overlay {
+  background: #000000aa;
+}
+.client-shell[data-theme="dark"] table {
+  color: var(--cs-text);
+}
+.client-shell[data-theme="dark"] th {
+  background: var(--cs-surface-alt);
+  color: var(--cs-text-muted);
+}
+.client-shell[data-theme="dark"] td {
+  border-color: var(--cs-border);
+}
+.client-shell[data-theme="dark"] .field input,
+.client-shell[data-theme="dark"] .field select,
+.client-shell[data-theme="dark"] .field textarea {
+  background: var(--cs-surface-alt);
+  border-color: var(--cs-border);
+  color: var(--cs-text);
+}
+.client-shell[data-theme="dark"] .btn.secondary {
+  background: var(--cs-surface-alt);
+  border-color: var(--cs-border);
+  color: var(--cs-text);
+}
+.client-shell[data-theme="dark"] .decision-option,
+.client-shell[data-theme="dark"] .stat-mini,
+.client-shell[data-theme="dark"] .decision-recap {
+  background: var(--cs-surface-alt);
+  border-color: var(--cs-border);
+}
+.client-shell[data-theme="dark"] .decision-option:hover,
+.client-shell[data-theme="dark"] .theme-option-card:hover {
+  background: var(--cs-border);
+}
+.client-shell[data-theme="dark"] .theme-option-card.selected {
+  border-color: #fff;
+  background: var(--cs-border);
+}
+.client-shell[data-theme="dark"] .theme-option-check {
+  color: #fff;
+}
+.client-shell[data-theme="dark"] .page-num,
+.client-shell[data-theme="dark"] .page-btn {
+  color: var(--cs-text);
+}
+.client-shell[data-theme="dark"] .page-num.active {
+  background: #fff;
+  color: #0b0f1a;
+}
+.client-shell[data-theme="dark"] .badge {
+  background: var(--cs-surface-alt);
+  color: #c7cede;
+}
+.client-shell[data-theme="dark"] .badge.active,
+.client-shell[data-theme="dark"] .badge.approved,
+.client-shell[data-theme="dark"] .badge.completed,
+.client-shell[data-theme="dark"] .badge.recorded {
+  background: #123524;
+  color: #4ade80;
+}
+.client-shell[data-theme="dark"] .badge.pending,
+.client-shell[data-theme="dark"] .badge.outstanding {
+  background: #3a2a06;
+  color: #facc15;
+}
+.client-shell[data-theme="dark"] .badge.rejected,
+.client-shell[data-theme="dark"] .badge.overdue {
+  background: #3a1414;
+  color: #f87171;
+}
+.client-shell[data-theme="dark"] .application-decision-panel.rejected,
+.client-shell[data-theme="dark"] .application-decision-note.pending,
+.client-shell[data-theme="dark"] .application-locked-note {
+  background: #3a2a06;
+  border-color: #5a4310;
+}
+.client-shell[data-theme="dark"] .application-decision-panel.approved {
+  background: #123524;
+  border-color: #1f5c3c;
+}
+.client-shell[data-theme="dark"] .application-decision-panel p,
+.client-shell[data-theme="dark"] .application-decision-note p,
+.client-shell[data-theme="dark"] .application-locked-note p,
+.client-shell[data-theme="dark"] .decision-note {
+  color: var(--cs-text-muted);
+}
