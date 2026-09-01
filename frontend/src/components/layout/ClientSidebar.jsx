@@ -1,35 +1,61 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../../auth/AuthContext";
+import { ROLES } from "../../auth/currentUser";
 import {
   Banknote,
   CreditCard,
   FileText,
   LayoutDashboard,
   LogOut,
+  MoreVertical,
   Settings,
   User,
   X,
 } from "lucide-react";
 import { Logo } from "../ui";
 
-const links = [
-  ["nav.dashboard", "/dashboard", LayoutDashboard],
-  ["nav.profile", "/my-profile", User],
-  ["nav.loans", "/my-loans", Banknote],
-  ["nav.applications", "/my-applications", FileText],
-  ["nav.payments", "/my-payments", CreditCard],
-  ["nav.settings", "/settings", Settings],
+const navGroups = [
+  {
+    label: "OVERVIEW",
+    links: [["nav.dashboard", "/dashboard", LayoutDashboard]],
+  },
+  {
+    label: "MY FINANCES",
+    links: [
+      ["nav.loans", "/my-loans", Banknote],
+      ["nav.applications", "/my-applications", FileText],
+      ["nav.payments", "/my-payments", CreditCard],
+    ],
+  },
+  {
+    label: "ACCOUNT",
+    links: [
+      ["nav.profile", "/my-profile", User],
+      ["nav.settings", "/settings", Settings],
+    ],
+  },
 ];
+
+const ROLE_LABELS = {
+  [ROLES.ADMIN]: "Administrator",
+  [ROLES.BANK_AGENT]: "Bank Agent",
+  [ROLES.CLIENT]: "Client",
+};
 
 export default function ClientSidebar({ open, onClose }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
   const handleLogout = () => {
     logout();
     navigate("/login", { replace: true });
   };
+  const fullName = user ? `${user.firstName} ${user.lastName}`.trim() : "";
+  const initials = user
+    ? `${user.firstName?.[0] ?? ""}${user.lastName?.[0] ?? ""}`.toUpperCase()
+    : "";
+  const roleLabel = user ? ROLE_LABELS[user.role] ?? user.role : "";
   return (
     <aside className={open ? "sidebar open" : "sidebar"}>
       <div className="side-top">
@@ -39,18 +65,31 @@ export default function ClientSidebar({ open, onClose }) {
         </button>
       </div>
       <nav>
-        {links.map(([labelKey, to, Icon]) => (
-          <NavLink key={to} to={to} onClick={onClose}>
-            {({ isActive }) => (
-              <>
-                <Icon size={24} fill={isActive ? "currentColor" : "none"} />
+        {navGroups.map((group) => (
+          <div key={group.label}>
+            <p className="nav-section-label">{group.label}</p>
+            {group.links.map(([labelKey, to, Icon]) => (
+              <NavLink key={to} to={to} onClick={onClose}>
+                <Icon size={18} />
                 <span>{t(labelKey)}</span>
-              </>
-            )}
-          </NavLink>
+              </NavLink>
+            ))}
+          </div>
         ))}
       </nav>
-      <div className="logout-wrap">
+      <div className="sidebar-footer">
+        <div className="sidebar-profile">
+          <span className="sidebar-profile-avatar">{initials}</span>
+          <span className="sidebar-profile-info">
+            <span className="sidebar-profile-name">{fullName}</span>
+            <span className="sidebar-profile-role">{roleLabel}</span>
+          </span>
+          <MoreVertical
+            size={16}
+            className="sidebar-profile-more"
+            aria-hidden="true"
+          />
+        </div>
         <div
           className="logout"
           role="button"
@@ -63,7 +102,7 @@ export default function ClientSidebar({ open, onClose }) {
             }
           }}
         >
-          <LogOut size={24} />
+          <LogOut size={18} />
           <span>{t("nav.logout")}</span>
         </div>
       </div>

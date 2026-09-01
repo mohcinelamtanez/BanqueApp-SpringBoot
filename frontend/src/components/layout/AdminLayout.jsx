@@ -3,6 +3,7 @@ import {
   Bell,
   ChevronDown,
   Menu,
+  MoreVertical,
   Plus,
   Search,
   X,
@@ -18,24 +19,42 @@ import {
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { Logo } from "../ui";
 import NotificationCenter from "../notifications/NotificationCenter";
-import { isAdmin } from "../../auth/currentUser";
+import { isAdmin, ROLES } from "../../auth/currentUser";
 import { useAuth } from "../../auth/AuthContext";
-const links = [
-  ["Dashboard", "/dashboard", LayoutDashboard],
-  ["Clients", "/clients", Users],
-  ["Loans", "/loans", Banknote],
-  ["Reports", "/reports", BarChart3],
-  ["Security", "/security", Shield],
-  ["Settings", "/settings", Settings],
+const navGroups = [
+  {
+    label: "OVERVIEW",
+    links: [["Dashboard", "/dashboard", LayoutDashboard]],
+  },
+  {
+    label: "MANAGEMENT",
+    links: [
+      ["Clients", "/clients", Users],
+      ["Loans", "/loans", Banknote],
+      ["Reports", "/reports", BarChart3],
+    ],
+  },
+  {
+    label: "SYSTEM",
+    links: [
+      ["Security", "/security", Shield],
+      ["Settings", "/settings", Settings],
+    ],
+  },
 ];
 const loanLinks = [
   ["Loan Management", "/loans"],
   ["Loan Applications", "/loan-applications"],
   ["Add New Loan", "/loans/new-loan", Plus],
 ];
+const ROLE_LABELS = {
+  [ROLES.ADMIN]: "Administrator",
+  [ROLES.BANK_AGENT]: "Bank Agent",
+  [ROLES.CLIENT]: "Client",
+};
 export default function AdminLayout({ children }) {
   const navigate = useNavigate();
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
   const [drawer, setDrawer] = useState(false);
   const [notifications, setNotifications] = useState(false);
   const location = useLocation();
@@ -47,6 +66,11 @@ export default function AdminLayout({ children }) {
     location.pathname.startsWith("/loans") ||
     location.pathname.startsWith("/loan-applications");
   const [loansOpen, setLoansOpen] = useState(loansActive);
+  const fullName = user ? `${user.firstName} ${user.lastName}`.trim() : "";
+  const initials = user
+    ? `${user.firstName?.[0] ?? ""}${user.lastName?.[0] ?? ""}`.toUpperCase()
+    : "";
+  const roleLabel = user ? ROLE_LABELS[user.role] ?? user.role : "";
   return (
     <div className="app-shell">
       <aside className={drawer ? "sidebar open" : "sidebar"}>
@@ -57,63 +81,69 @@ export default function AdminLayout({ children }) {
           </button>
         </div>
         <nav>
-          {links.map(([label, to, Icon]) =>
-            label === "Loans" ? (
-              <div className="sidebar-group" key={to}>
-                <button
-                  type="button"
-                  className={loansActive ? "active" : ""}
-                  onClick={() => setLoansOpen((value) => !value)}
-                  aria-expanded={loansOpen}
-                >
-                  <Icon size={24} fill={loansActive ? "currentColor" : "none"} />
-                  <span>{label}</span>
-                  <ChevronDown
-                    size={16}
-                    className={loansOpen ? "chevron open" : "chevron"}
-                  />
-                </button>
-                <div className={loansOpen ? "submenu open" : "submenu"}>
-                  {loanLinks.map(([childLabel, childTo, ChildIcon]) => (
-                    <NavLink
-                      key={childTo}
-                      to={childTo}
-                      end={childTo === "/loans"}
-                      onClick={() => setDrawer(false)}
-                      className={ChildIcon ? "submenu-action" : undefined}
+          {navGroups.map((group) => (
+            <div key={group.label}>
+              <p className="nav-section-label">{group.label}</p>
+              {group.links.map(([label, to, Icon]) =>
+                label === "Loans" ? (
+                  <div className="sidebar-group" key={to}>
+                    <button
+                      type="button"
+                      className={loansActive ? "active" : ""}
+                      onClick={() => setLoansOpen((value) => !value)}
+                      aria-expanded={loansOpen}
                     >
-                      {ChildIcon && <ChildIcon size={14} />}
-                      <span>{childLabel}</span>
-                    </NavLink>
-                  ))}
-                </div>
-              </div>
-            ) : (
-              <NavLink key={to} to={to} onClick={() => setDrawer(false)}>
-                {({ isActive }) => (
-                  <>
-                    <Icon
-                      size={24}
-                      fill={isActive ? "currentColor" : "none"}
-                    />
+                      <Icon size={18} />
+                      <span>{label}</span>
+                      <ChevronDown
+                        size={16}
+                        className={loansOpen ? "chevron open" : "chevron"}
+                      />
+                    </button>
+                    <div className={loansOpen ? "submenu open" : "submenu"}>
+                      {loanLinks.map(([childLabel, childTo, ChildIcon]) => (
+                        <NavLink
+                          key={childTo}
+                          to={childTo}
+                          end={childTo === "/loans"}
+                          onClick={() => setDrawer(false)}
+                          className={ChildIcon ? "submenu-action" : undefined}
+                        >
+                          {ChildIcon && <ChildIcon size={14} />}
+                          <span>{childLabel}</span>
+                        </NavLink>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <NavLink key={to} to={to} onClick={() => setDrawer(false)}>
+                    <Icon size={18} />
                     <span>{label}</span>
-                  </>
-                )}
-              </NavLink>
-            ),
-          )}
-          {isAdmin() && (
-            <NavLink to="/users" onClick={() => setDrawer(false)}>
-              {({ isActive }) => (
-                <>
-                  <UserCog size={24} fill={isActive ? "currentColor" : "none"} />
-                  <span>User Management</span>
-                </>
+                  </NavLink>
+                ),
               )}
-            </NavLink>
-          )}
+              {group.label === "SYSTEM" && isAdmin() && (
+                <NavLink to="/users" onClick={() => setDrawer(false)}>
+                  <UserCog size={18} />
+                  <span>User Management</span>
+                </NavLink>
+              )}
+            </div>
+          ))}
         </nav>
-        <div className="logout-wrap">
+        <div className="sidebar-footer">
+          <div className="sidebar-profile">
+            <span className="sidebar-profile-avatar">{initials}</span>
+            <span className="sidebar-profile-info">
+              <span className="sidebar-profile-name">{fullName}</span>
+              <span className="sidebar-profile-role">{roleLabel}</span>
+            </span>
+            <MoreVertical
+              size={16}
+              className="sidebar-profile-more"
+              aria-hidden="true"
+            />
+          </div>
           <div
             className="logout"
             role="button"
@@ -126,7 +156,7 @@ export default function AdminLayout({ children }) {
               }
             }}
           >
-            <LogOut size={24} />
+            <LogOut size={18} />
             <span>Logout</span>
           </div>
         </div>

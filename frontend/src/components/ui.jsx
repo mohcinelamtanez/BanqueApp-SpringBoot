@@ -13,10 +13,11 @@ export function Logo({ small = false, inverse = false }) {
   return (
     <div className={`brand ${inverse ? "inverse" : ""}`}>
       <span className="brand-row">
-        <Landmark size={small ? 18 : 28} className="brand-mark" />
+        <span className="brand-mark">
+          <Landmark size={16} strokeWidth={2} />
+        </span>
         {!small && <b>BanqueApp</b>}
       </span>
-      {!small && <em>Admin Portal</em>}
     </div>
   );
 }
