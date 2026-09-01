@@ -79,7 +79,7 @@ textarea:focus {
   margin-top: 16px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
   overflow-y: auto;
 }
 .sidebar a,
@@ -98,9 +98,9 @@ textarea:focus {
   font-weight: 500;
   border-left: 4px solid transparent;
   transition:
-    background-color 0.2s ease,
-    color 0.2s ease,
-    border-color 0.2s ease;
+    background-color 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease;
 }
 .sidebar a:hover,
 .sidebar-group > button:hover {
@@ -131,7 +131,7 @@ textarea:focus {
   transition: max-height 0.25s ease;
 }
 .sidebar-group .submenu.open {
-  max-height: 140px;
+  max-height: 200px;
 }
 .sidebar-group .submenu::before {
   content: "";
@@ -144,6 +144,7 @@ textarea:focus {
 }
 .sidebar-group .submenu a {
   padding: 12px 24px 12px 64px;
+  gap: 10px;
   font-size: 13px;
   color: rgba(255, 255, 255, 0.55);
 }
@@ -154,10 +155,23 @@ textarea:focus {
   color: #54647a;
   font-weight: 600;
 }
+.sidebar-group .submenu a.submenu-action {
+  color: rgba(255, 255, 255, 0.8);
+}
+.sidebar-group .submenu a.submenu-action svg {
+  flex: none;
+  color: rgba(255, 255, 255, 0.6);
+}
+.sidebar-group .submenu a.submenu-action:hover svg {
+  color: #fff;
+}
+.sidebar-group .submenu a.submenu-action.active svg {
+  color: #54647a;
+}
 .logout-wrap {
   margin-top: auto;
-  padding: 16px;
-  border-top: 1px solid rgba(198, 198, 205, 0.2);
+  padding: 18px 16px;
+  border-top: 1px solid rgba(198, 198, 205, 0.28);
 }
 .logout {
   color: rgba(255, 255, 255, 0.7);
@@ -168,8 +182,8 @@ textarea:focus {
   border-radius: 4px;
   cursor: pointer;
   transition:
-    background-color 0.2s,
-    color 0.2s;
+    background-color 0.15s ease,
+    color 0.15s ease;
 }
 .logout:hover {
   background: rgba(255, 255, 255, 0.1);
@@ -226,6 +240,12 @@ textarea:focus {
   font-size: 13px;
   font-weight: 600;
   color: #45464d;
+}
+.topbar-actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 16px;
 }
 .icon-button,
 .row-actions button,
@@ -2327,5 +2347,196 @@ dd {
   }
   .compact {
     width: 100%;
+  }
+}
+/* Client — My Applications (loan application lifecycle) */
+.application-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+.application-card-head h3 {
+  margin: 0 0 6px;
+  font-size: 17px;
+}
+.application-card-facts {
+  display: flex;
+  gap: 14px;
+  font-size: 13px;
+  color: #45464d;
+}
+.application-card-date {
+  margin: 6px 0 0;
+  font-size: 12px;
+  color: #565e74;
+}
+.application-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.application-status-pill.pending {
+  background: #fff3d6;
+  color: #945d00;
+}
+.application-status-pill.rejected {
+  background: #ffdad6;
+  color: #93000a;
+}
+.application-status-pill.approved {
+  background: #dcfce7;
+  color: #166534;
+}
+.application-decision-panel {
+  border-radius: 8px;
+  padding: 16px;
+  margin-top: 4px;
+}
+.application-decision-panel h4 {
+  margin: 0 0 6px;
+  font-size: 14px;
+}
+.application-decision-panel p {
+  margin: 0;
+  font-size: 13px;
+  color: #45464d;
+}
+.application-decision-panel.rejected {
+  background: #fff5f4;
+  border: 1px solid #ffdad6;
+}
+.application-decision-panel.approved {
+  background: #f3fbf7;
+  border: 1px solid #dcfce7;
+}
+.application-decision-reason {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #ffdad6;
+}
+.application-decision-reason span {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #93000a;
+  margin-bottom: 4px;
+}
+.application-decision-reason p {
+  margin: 0;
+  font-size: 13px;
+  color: #45464d;
+}
+.application-decision-note {
+  border-radius: 8px;
+  padding: 14px 16px;
+  margin-top: 4px;
+}
+.application-decision-note.pending {
+  background: #fffaf0;
+  border: 1px solid #fff3d6;
+}
+.application-decision-note p {
+  margin: 0;
+  font-size: 13px;
+  color: #45464d;
+}
+.application-card-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 16px;
+}
+.application-locked-note {
+  background: #fffaf0;
+  border-color: #fff3d6;
+  margin-bottom: 20px;
+}
+.application-locked-note p {
+  margin: 0;
+  font-size: 13px;
+  color: #45464d;
+}
+.application-empty-action {
+  display: flex;
+  justify-content: center;
+  margin-top: -8px;
+}
+.application-details-section {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid #e7eeff;
+}
+.application-details-section h4 {
+  margin: 0 0 6px;
+  font-size: 14px;
+}
+.application-details-section p {
+  margin: 0;
+  font-size: 13px;
+  color: #45464d;
+}
+/* Client — Payments */
+.client-payments-kpis {
+  margin-bottom: 24px;
+}
+.next-payment-card {
+  align-items: flex-start;
+  margin-bottom: 24px;
+}
+.next-payment-loan {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 10px 0 16px;
+  font-size: 12px;
+}
+.next-payment-loan span {
+  text-transform: uppercase;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #45464d;
+}
+.next-payment-loan b {
+  color: #111c2d;
+}
+@media (max-width: 650px) {
+  .next-payment-card {
+    flex-direction: column;
+    gap: 12px;
+  }
+}
+/* Client — My Profile */
+.profile-heading {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.profile-avatar {
+  width: 64px;
+  height: 64px;
+  font-size: 20px;
+  flex: none;
+}
+.profile-role {
+  margin: 4px 0 0;
+}
+@media (max-width: 650px) {
+  .profile-heading {
+    gap: 14px;
+  }
+  .profile-avatar {
+    width: 52px;
+    height: 52px;
+    font-size: 17px;
   }
 }

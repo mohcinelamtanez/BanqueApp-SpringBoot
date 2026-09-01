@@ -3,6 +3,7 @@ import {
   Bell,
   ChevronDown,
   Menu,
+  Plus,
   Search,
   X,
   LayoutDashboard,
@@ -27,6 +28,7 @@ const links = [
 const loanLinks = [
   ["Loan Management", "/loans"],
   ["Loan Requests", "/loans/requests"],
+  ["Add New Loan", "/loans/new-assessment", Plus],
 ];
 export default function AdminLayout({ children }) {
   const [drawer, setDrawer] = useState(false);
@@ -61,13 +63,15 @@ export default function AdminLayout({ children }) {
                   />
                 </button>
                 <div className={loansOpen ? "submenu open" : "submenu"}>
-                  {loanLinks.map(([childLabel, childTo]) => (
+                  {loanLinks.map(([childLabel, childTo, ChildIcon]) => (
                     <NavLink
                       key={childTo}
                       to={childTo}
                       end={childTo === "/loans"}
                       onClick={() => setDrawer(false)}
+                      className={ChildIcon ? "submenu-action" : undefined}
                     >
+                      {ChildIcon && <ChildIcon size={14} />}
                       <span>{childLabel}</span>
                     </NavLink>
                   ))}
