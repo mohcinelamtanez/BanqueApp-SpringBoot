@@ -17,10 +17,12 @@ export const APPLICATION_STATUS_LABEL = {
   APPROVED: "Approved",
 };
 
-// The mock payment records only ever carry these three statuses — labels are
-// relabeled for the client-facing tone without inventing a fourth state.
+// DUE/OVERDUE are derived (see utils/paymentSchedule.js), never stored —
+// labels below cover every status getPaymentStatus() can return, relabeled
+// for the client-facing tone.
 export const PAYMENT_STATUS_LABEL = {
-  Completed: "Paid",
-  Outstanding: "Upcoming",
-  Overdue: "Overdue",
+  PAID: "Paid",
+  PENDING: "Upcoming",
+  DUE: "Due",
+  OVERDUE: "Overdue",
 };

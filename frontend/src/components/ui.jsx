@@ -62,7 +62,7 @@ export function Select({ label, children, ...props }) {
     </label>
   );
 }
-export function Modal({ title, children, onClose }) {
+export function Modal({ title, children, onClose, className = "" }) {
   useEffect(() => {
     if (!onClose) return undefined;
     const onKeyDown = (event) => {
@@ -80,7 +80,7 @@ export function Modal({ title, children, onClose }) {
       }}
     >
       <section
-        className="modal"
+        className={`modal ${className}`.trim()}
         role="dialog"
         aria-modal="true"
         aria-label={title}

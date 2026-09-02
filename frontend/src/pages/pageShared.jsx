@@ -46,14 +46,18 @@ export function PageHeading({ title, subtitle, action }) {
     </div>
   );
 }
-export function Metric({ label, value, icon = <Landmark /> }) {
+export function Metric({ label, value, icon = <Landmark />, footer }) {
   return (
     <Card className="metric">
       <div>
         <small>{label}</small>
         <strong>{value}</strong>
         <p>
-          <span>↑</span> Updated from current portfolio
+          {footer ?? (
+            <>
+              <span>↑</span> Updated from current portfolio
+            </>
+          )}
         </p>
       </div>
       {icon}

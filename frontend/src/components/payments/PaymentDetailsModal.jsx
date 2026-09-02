@@ -1,8 +1,10 @@
 import { Badge, Modal } from "../ui";
 import { money, date } from "../../utils/finance";
+import { getPaymentStatus } from "../../utils/paymentSchedule";
 import { PAYMENT_STATUS_LABEL } from "../../pages/client/clientShared";
 
 export default function PaymentDetailsModal({ payment, loan, onClose }) {
+  const status = getPaymentStatus(payment);
   return (
     <Modal title="Payment Details" onClose={onClose}>
       <div className="decision-recap">
@@ -28,8 +30,8 @@ export default function PaymentDetailsModal({ payment, loan, onClose }) {
         </div>
         <div className="decision-recap-row">
           <span>Status</span>
-          <Badge type={payment.status.toLowerCase()}>
-            {PAYMENT_STATUS_LABEL[payment.status] || payment.status}
+          <Badge type={status.toLowerCase()}>
+            {PAYMENT_STATUS_LABEL[status] || status}
           </Badge>
         </div>
       </div>

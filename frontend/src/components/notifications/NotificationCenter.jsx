@@ -1,6 +1,9 @@
 import { X } from "lucide-react";
-import { notifications } from "../../data/mock/data";
-export default function NotificationCenter({ onClose }) {
+import { notifications as defaultNotifications } from "../../data/mock/data";
+export default function NotificationCenter({
+  onClose,
+  notifications = defaultNotifications,
+}) {
   return (
     <section className="notification-center">
       <header>

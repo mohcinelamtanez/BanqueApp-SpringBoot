@@ -700,6 +700,32 @@ td span {
   background: #e7eeff;
   border-radius: 5px;
 }
+.row-actions button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+.row-actions button:disabled:hover {
+  background: transparent;
+}
+.schedule-modal {
+  width: min(640px, 100%);
+}
+.schedule-modal-body {
+  margin-top: 12px;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+.schedule-more {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #c6c6cd;
+  font-size: 13px;
+  color: #45464d;
+}
 .badge {
   display: inline-flex;
   white-space: nowrap;
@@ -714,12 +740,14 @@ td span {
 .badge.active,
 .badge.approved,
 .badge.completed,
-.badge.recorded {
+.badge.recorded,
+.badge.paid {
   background: #dcfce7;
   color: #166534;
 }
 .badge.pending,
-.badge.outstanding {
+.badge.outstanding,
+.badge.due {
   background: #fff3d6;
   color: #945d00;
 }
@@ -2887,6 +2915,10 @@ dd {
   background: var(--cs-surface-alt);
   color: var(--cs-text);
 }
+.client-shell[data-theme="dark"] .schedule-more {
+  border-color: var(--cs-border);
+  color: var(--cs-text-muted);
+}
 .client-shell[data-theme="dark"] .card,
 .client-shell[data-theme="dark"] .notification-center,
 .client-shell[data-theme="dark"] .modal,
@@ -2952,12 +2984,14 @@ dd {
 .client-shell[data-theme="dark"] .badge.active,
 .client-shell[data-theme="dark"] .badge.approved,
 .client-shell[data-theme="dark"] .badge.completed,
-.client-shell[data-theme="dark"] .badge.recorded {
+.client-shell[data-theme="dark"] .badge.recorded,
+.client-shell[data-theme="dark"] .badge.paid {
   background: #123524;
   color: #4ade80;
 }
 .client-shell[data-theme="dark"] .badge.pending,
-.client-shell[data-theme="dark"] .badge.outstanding {
+.client-shell[data-theme="dark"] .badge.outstanding,
+.client-shell[data-theme="dark"] .badge.due {
   background: #3a2a06;
   color: #facc15;
 }
