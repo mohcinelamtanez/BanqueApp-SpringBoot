@@ -4,6 +4,7 @@ import { Bell, Menu, Search } from "lucide-react";
 import "../../i18n";
 import ClientSidebar from "./ClientSidebar";
 import NotificationCenter from "../notifications/NotificationCenter";
+import { useSidebarCollapsed } from "./useSidebarCollapsed";
 import {
   ClientThemeProvider,
   useClientTheme,
@@ -14,9 +15,22 @@ function ClientLayoutShell({ children }) {
   const { resolved } = useClientTheme();
   const [drawer, setDrawer] = useState(false);
   const [notifications, setNotifications] = useState(false);
+  const [collapsed, setCollapsed] = useSidebarCollapsed();
   return (
-    <div className="app-shell client-shell" data-theme={resolved}>
-      <ClientSidebar open={drawer} onClose={() => setDrawer(false)} />
+    <div
+      className={
+        collapsed
+          ? "app-shell client-shell sidebar-collapsed"
+          : "app-shell client-shell"
+      }
+      data-theme={resolved}
+    >
+      <ClientSidebar
+        open={drawer}
+        onClose={() => setDrawer(false)}
+        collapsed={collapsed}
+        onToggleCollapse={() => setCollapsed((value) => !value)}
+      />
       <div className="page-shell">
         <header className="topbar">
           <button className="menu-button" onClick={() => setDrawer(true)}>

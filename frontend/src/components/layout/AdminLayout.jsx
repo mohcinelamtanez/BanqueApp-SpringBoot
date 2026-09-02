@@ -4,6 +4,8 @@ import {
   ChevronDown,
   Menu,
   MoreVertical,
+  PanelLeftClose,
+  PanelLeftOpen,
   Plus,
   Search,
   X,
@@ -21,6 +23,7 @@ import { Logo } from "../ui";
 import NotificationCenter from "../notifications/NotificationCenter";
 import { isAdmin, ROLES } from "../../auth/currentUser";
 import { useAuth } from "../../auth/AuthContext";
+import { useSidebarCollapsed } from "./useSidebarCollapsed";
 const navGroups = [
   {
     label: "OVERVIEW",
@@ -57,6 +60,7 @@ export default function AdminLayout({ children }) {
   const { user, logout } = useAuth();
   const [drawer, setDrawer] = useState(false);
   const [notifications, setNotifications] = useState(false);
+  const [collapsed, setCollapsed] = useSidebarCollapsed();
   const location = useLocation();
   const handleLogout = () => {
     logout();
@@ -72,10 +76,21 @@ export default function AdminLayout({ children }) {
     : "";
   const roleLabel = user ? ROLE_LABELS[user.role] ?? user.role : "";
   return (
-    <div className="app-shell">
-      <aside className={drawer ? "sidebar open" : "sidebar"}>
+    <div className={collapsed ? "app-shell sidebar-collapsed" : "app-shell"}>
+      <aside
+        className={`sidebar${drawer ? " open" : ""}${collapsed ? " collapsed" : ""}`}
+      >
         <div className="side-top">
           <Logo inverse />
+          <button
+            type="button"
+            className="sidebar-toggle"
+            onClick={() => setCollapsed((value) => !value)}
+            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+            title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+          >
+            {collapsed ? <PanelLeftOpen size={18} /> : <PanelLeftClose size={18} />}
+          </button>
           <button className="mobile-close" onClick={() => setDrawer(false)}>
             <X />
           </button>
@@ -92,6 +107,7 @@ export default function AdminLayout({ children }) {
                       className={loansActive ? "active" : ""}
                       onClick={() => setLoansOpen((value) => !value)}
                       aria-expanded={loansOpen}
+                      title={collapsed ? label : undefined}
                     >
                       <Icon size={18} />
                       <span>{label}</span>
@@ -116,14 +132,23 @@ export default function AdminLayout({ children }) {
                     </div>
                   </div>
                 ) : (
-                  <NavLink key={to} to={to} onClick={() => setDrawer(false)}>
+                  <NavLink
+                    key={to}
+                    to={to}
+                    onClick={() => setDrawer(false)}
+                    title={collapsed ? label : undefined}
+                  >
                     <Icon size={18} />
                     <span>{label}</span>
                   </NavLink>
                 ),
               )}
               {group.label === "SYSTEM" && isAdmin() && (
-                <NavLink to="/users" onClick={() => setDrawer(false)}>
+                <NavLink
+                  to="/users"
+                  onClick={() => setDrawer(false)}
+                  title={collapsed ? "User Management" : undefined}
+                >
                   <UserCog size={18} />
                   <span>User Management</span>
                 </NavLink>
@@ -132,7 +157,7 @@ export default function AdminLayout({ children }) {
           ))}
         </nav>
         <div className="sidebar-footer">
-          <div className="sidebar-profile">
+          <div className="sidebar-profile" title={collapsed ? fullName : undefined}>
             <span className="sidebar-profile-avatar">{initials}</span>
             <span className="sidebar-profile-info">
               <span className="sidebar-profile-name">{fullName}</span>
@@ -149,6 +174,7 @@ export default function AdminLayout({ children }) {
             role="button"
             tabIndex={0}
             onClick={handleLogout}
+            title={collapsed ? "Logout" : undefined}
             onKeyDown={(event) => {
               if (event.key === "Enter" || event.key === " ") {
                 event.preventDefault();

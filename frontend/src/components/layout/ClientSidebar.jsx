@@ -9,6 +9,8 @@ import {
   LayoutDashboard,
   LogOut,
   MoreVertical,
+  PanelLeftClose,
+  PanelLeftOpen,
   Settings,
   User,
   X,
@@ -43,7 +45,12 @@ const ROLE_LABELS = {
   [ROLES.CLIENT]: "Client",
 };
 
-export default function ClientSidebar({ open, onClose }) {
+export default function ClientSidebar({
+  open,
+  onClose,
+  collapsed = false,
+  onToggleCollapse,
+}) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { user, logout } = useAuth();
@@ -57,9 +64,20 @@ export default function ClientSidebar({ open, onClose }) {
     : "";
   const roleLabel = user ? ROLE_LABELS[user.role] ?? user.role : "";
   return (
-    <aside className={open ? "sidebar open" : "sidebar"}>
+    <aside
+      className={`sidebar${open ? " open" : ""}${collapsed ? " collapsed" : ""}`}
+    >
       <div className="side-top">
         <Logo inverse />
+        <button
+          type="button"
+          className="sidebar-toggle"
+          onClick={onToggleCollapse}
+          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+          title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+        >
+          {collapsed ? <PanelLeftOpen size={18} /> : <PanelLeftClose size={18} />}
+        </button>
         <button className="mobile-close" onClick={onClose}>
           <X />
         </button>
@@ -69,7 +87,12 @@ export default function ClientSidebar({ open, onClose }) {
           <div key={group.label}>
             <p className="nav-section-label">{group.label}</p>
             {group.links.map(([labelKey, to, Icon]) => (
-              <NavLink key={to} to={to} onClick={onClose}>
+              <NavLink
+                key={to}
+                to={to}
+                onClick={onClose}
+                title={collapsed ? t(labelKey) : undefined}
+              >
                 <Icon size={18} />
                 <span>{t(labelKey)}</span>
               </NavLink>
@@ -78,7 +101,7 @@ export default function ClientSidebar({ open, onClose }) {
         ))}
       </nav>
       <div className="sidebar-footer">
-        <div className="sidebar-profile">
+        <div className="sidebar-profile" title={collapsed ? fullName : undefined}>
           <span className="sidebar-profile-avatar">{initials}</span>
           <span className="sidebar-profile-info">
             <span className="sidebar-profile-name">{fullName}</span>
@@ -95,6 +118,7 @@ export default function ClientSidebar({ open, onClose }) {
           role="button"
           tabIndex={0}
           onClick={handleLogout}
+          title={collapsed ? t("nav.logout") : undefined}
           onKeyDown={(event) => {
             if (event.key === "Enter" || event.key === " ") {
               event.preventDefault();
