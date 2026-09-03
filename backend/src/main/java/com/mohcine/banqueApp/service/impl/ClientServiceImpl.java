@@ -87,6 +87,15 @@ public class ClientServiceImpl implements ClientService {
          clientRepository.deleteById(id);
     }
 
+    @Override
+    public void deleteClientByReference(String clientReference) {
+        Client client = clientRepository.findByClientReference(clientReference);
+        if (client == null) {
+            throw new ClientNotFoundException(clientReference);
+        }
+        deleteClient(client.getId());
+    }
+
 
     @Override
     public Client updateClient(String reference ,  ClientUpdateDTO dto) {

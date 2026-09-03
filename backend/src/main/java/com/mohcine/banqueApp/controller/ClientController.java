@@ -62,6 +62,12 @@ public class ClientController {
         clientService.deleteClient(id);
      }
 
+    @Operation(summary = "this method deletes a client based on the reference")
+    @DeleteMapping("reference/{reference}")
+    public void deleteClientByReference(@PathVariable String reference) {
+        clientService.deleteClientByReference(reference);
+    }
+
     @PutMapping("reference/{reference}")
     public ClientResponseDTO updateClient(
             @PathVariable String  reference,
