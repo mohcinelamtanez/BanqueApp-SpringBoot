@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
-export function useResource(loader, id) {
+// `extraDeps` lets a caller force a refetch (e.g. after saving an edit)
+// without changing `id` itself — `loader` is still only ever called with
+// `id`, extraDeps only affect when the effect re-runs.
+export function useResource(loader, id, extraDeps = []) {
   const [state, setState] = useState({
     loading: true,
     data: null,
@@ -16,6 +19,7 @@ export function useResource(loader, id) {
     return () => {
       active = false;
     };
-  }, [id]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id, ...extraDeps]);
   return state;
 }

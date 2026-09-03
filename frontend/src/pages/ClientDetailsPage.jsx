@@ -13,20 +13,25 @@ import {
   SuccessModal,
 } from "../components/ui";
 import { useLoans } from "../hooks/useLoans";
+import { useClient } from "../hooks/useClients";
 import { clientService } from "../services/clientService";
 import { money } from "../utils/finance";
-import { getClient, loanStats } from "./pageShared";
+import { loanStats } from "./pageShared";
 export default function ClientDetailsPage() {
   const navigate = useNavigate();
   const { clientId } = useParams();
-  const client = getClient(clientId);
-  const { loading, data: loans = [] } = useLoans();
+  const [refreshKey, setRefreshKey] = useState(0);
+  const { loading: clientLoading, data: client } = useClient(
+    clientId,
+    refreshKey,
+  );
+  const { loading: loansLoading, data: loans = [] } = useLoans();
   const [editOpen, setEditOpen] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState("");
   const [deleted, setDeleted] = useState(false);
-  if (loading) return <LoadingState />;
+  if (clientLoading || loansLoading) return <LoadingState />;
   if (deleted) {
     return (
       <SuccessModal
@@ -50,8 +55,11 @@ export default function ClientDetailsPage() {
       await clientService.remove(clientId);
       setConfirmDelete(false);
       setDeleted(true);
-    } catch {
-      setDeleteError("Something went wrong. Please try again.");
+    } catch (error) {
+      setDeleteError(
+        error.response?.data?.message ||
+          "Something went wrong. Please try again.",
+      );
     } finally {
       setDeleting(false);
     }
@@ -131,7 +139,10 @@ export default function ClientDetailsPage() {
           mode="edit"
           client={client}
           onClose={() => setEditOpen(false)}
-          onSaved={() => setEditOpen(false)}
+          onSaved={() => {
+            setEditOpen(false);
+            setRefreshKey((value) => value + 1);
+          }}
         />
       )}
       {confirmDelete && (

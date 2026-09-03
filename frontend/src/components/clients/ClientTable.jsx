@@ -80,7 +80,7 @@ export default function ClientTable({ clients = [], onEdit, onDelete }) {
           "Client ID",
           "Name",
           "Location",
-          "Total Assets",
+          "Annual Income",
           "Status",
           "Actions",
         ]}
@@ -90,9 +90,10 @@ export default function ClientTable({ clients = [], onEdit, onDelete }) {
             <td className="mono">{client.id}</td>
             <td className="cell-strong">{client.name}</td>
             <td>
-              {client.city}, {client.postalCode}
+              {client.city}
+              {client.postalCode ? `, ${client.postalCode}` : ""}
             </td>
-            <td className="mono">{money(client.totalAssets)}</td>
+            <td className="mono">{money(client.income)}</td>
             <td>
               <span
                 className={`status-chip ${client.status === "Actif" ? "actif" : "inactif"}`}

@@ -5,13 +5,14 @@ import {
   Card,
   ConfirmationDialog,
   EmptyState,
+  LoadingState,
   Pagination,
   SuccessModal,
 } from "../components/ui";
 import ClientTable from "../components/clients/ClientTable";
 import ClientFormModal from "../components/clients/ClientFormModal";
-import { clients } from "../data/mock/data";
 import { clientService } from "../services/clientService";
+import { useClients } from "../hooks/useClients";
 import { usePagination } from "../hooks/usePagination";
 import { csvEscape, downloadCsv, PageHeading } from "./pageShared";
 
@@ -22,6 +23,11 @@ export default function ClientsPage() {
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState("");
   const [success, setSuccess] = useState(null);
+  const [refreshKey, setRefreshKey] = useState(0);
+  const refresh = () => setRefreshKey((value) => value + 1);
+  const { loading, data } = useClients(refreshKey);
+  const clients = data || [];
+
   const shown = clients.filter((client) =>
     `${client.name} ${client.id} ${client.city}`
       .toLowerCase()
@@ -41,13 +47,13 @@ export default function ClientsPage() {
   };
   const exportCsv = () =>
     downloadCsv("clients.csv", [
-      "clientId,name,location,totalAssets,status",
+      "clientId,name,location,annualIncome,status",
       ...shown.map((client) =>
         [
           csvEscape(client.id),
           csvEscape(client.name),
           csvEscape(`${client.city}, ${client.postalCode}`),
-          csvEscape(client.totalAssets),
+          csvEscape(client.income),
           csvEscape(client.status),
         ].join(","),
       ),
@@ -63,16 +69,23 @@ export default function ClientsPage() {
     try {
       await clientService.remove(confirmDelete.id);
       setConfirmDelete(null);
+      refresh();
       setSuccess({
         title: "Client Deleted Successfully",
         message: "The client has been successfully removed from the system.",
       });
-    } catch {
-      setDeleteError("Something went wrong. Please try again.");
+    } catch (error) {
+      setDeleteError(
+        error.response?.data?.message ||
+          "Something went wrong. Please try again.",
+      );
     } finally {
       setDeleting(false);
     }
   };
+
+  if (loading) return <LoadingState label="Loading clients…" />;
+
   return (
     <>
       <PageHeading
@@ -135,6 +148,7 @@ export default function ClientsPage() {
           onSaved={() => {
             const wasEditing = modal.mode === "edit";
             setModal(null);
+            refresh();
             setSuccess({
               title: wasEditing
                 ? "Client Updated Successfully"

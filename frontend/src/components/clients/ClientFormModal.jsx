@@ -31,8 +31,11 @@ export default function ClientFormModal({ mode, client, onClose, onSaved }) {
         ? await clientService.update(client.id, values)
         : await clientService.create(values);
       onSaved(saved);
-    } catch {
-      setError("Something went wrong. Please try again.");
+    } catch (err) {
+      setError(
+        err.response?.data?.message ||
+          "Something went wrong. Please try again.",
+      );
       setSubmitting(false);
     }
   };
@@ -70,12 +73,7 @@ export default function ClientFormModal({ mode, client, onClose, onSaved }) {
           </button>
         </header>
         <div className="client-modal-body">
-          <ClientForm
-            formId={FORM_ID}
-            client={client}
-            editing={editing}
-            onSubmit={submit}
-          />
+          <ClientForm formId={FORM_ID} client={client} onSubmit={submit} />
           {error && <p className="error">{error}</p>}
         </div>
         <footer className="client-modal-footer">
