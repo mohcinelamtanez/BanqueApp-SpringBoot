@@ -58,9 +58,17 @@ export default function ClientSidebar({
     logout();
     navigate("/login", { replace: true });
   };
-  const fullName = user ? `${user.firstName} ${user.lastName}`.trim() : "";
+  // The backend's User account has no name fields (only Client rows do) —
+  // fall back to the email rather than showing "undefined undefined".
+  const fullName = user
+    ? user.firstName
+      ? `${user.firstName} ${user.lastName}`.trim()
+      : user.email
+    : "";
   const initials = user
-    ? `${user.firstName?.[0] ?? ""}${user.lastName?.[0] ?? ""}`.toUpperCase()
+    ? user.firstName
+      ? `${user.firstName[0] ?? ""}${user.lastName?.[0] ?? ""}`.toUpperCase()
+      : user.email?.[0]?.toUpperCase() || ""
     : "";
   const roleLabel = user ? ROLE_LABELS[user.role] ?? user.role : "";
   return (

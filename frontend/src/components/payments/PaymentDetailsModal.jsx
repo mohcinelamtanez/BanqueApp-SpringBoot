@@ -10,11 +10,13 @@ export default function PaymentDetailsModal({ payment, loan, onClose }) {
       <div className="decision-recap">
         <div className="decision-recap-row">
           <span>Payment ID</span>
-          <b className="mono">{payment.id}</b>
+          <b className="mono">{payment.reference || payment.id}</b>
         </div>
         <div className="decision-recap-row">
           <span>Loan</span>
-          <b>{loan ? `${loan.type} · ${loan.id}` : payment.loanId}</b>
+          <b>
+            {loan ? `${loan.type} · ${loan.reference}` : payment.loanId}
+          </b>
         </div>
         <div className="decision-recap-row">
           <span>Amount</span>

@@ -4,8 +4,11 @@ import { Button, Card, LoadingState } from "../components/ui";
 import { useLoans } from "../hooks/useLoans";
 import { downloadCsv, PageHeading } from "./pageShared";
 export default function ReportsPage() {
-  const { loading, data = [] } = useLoans();
+  const { loading, data } = useLoans();
   if (loading) return <LoadingState />;
+  // Pending loan applications aren't Loans yet — the loan portfolio report
+  // only covers Active/Completed/Rejected records.
+  const loans = (data || []).filter((loan) => loan.status !== "Pending");
   return (
     <>
       <PageHeading
@@ -16,7 +19,7 @@ export default function ReportsPage() {
             onClick={() =>
               downloadCsv("banqueapp-loans-report.csv", [
                 "Loan ID,Type,Amount,Risk,Status",
-                ...data.map((loan) =>
+                ...loans.map((loan) =>
                   [
                     loan.id,
                     loan.type,
@@ -37,7 +40,7 @@ export default function ReportsPage() {
           <h2>Loan report</h2>
           <span>Current loan portfolio</span>
         </div>
-        <LoanTable loans={data} />
+        <LoanTable loans={loans} />
       </Card>
     </>
   );

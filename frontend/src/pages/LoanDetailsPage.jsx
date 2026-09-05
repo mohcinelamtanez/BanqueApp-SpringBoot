@@ -7,23 +7,31 @@ import {
   LoadingState,
 } from "../components/ui";
 import { useLoan } from "../hooks/useLoans";
-import { money, loanSummary } from "../utils/finance";
-import { getClient, PageHeading, StatusBadge } from "./pageShared";
+import { useClient } from "../hooks/useClients";
+import { money, loanSummary, loanEndDate } from "../utils/finance";
+import { PageHeading, StatusBadge } from "./pageShared";
 export default function LoanDetailsPage() {
   const navigate = useNavigate();
   const { loanId } = useParams();
-  const { loading, data: loan } = useLoan(loanId);
-  if (loading) return <LoadingState />;
+  const { loading: loanLoading, data: loan } = useLoan(loanId);
+  const { loading: clientLoading, data: client } = useClient(
+    loan?.clientId,
+  );
+  if (loanLoading || (loan?.clientId && clientLoading)) return <LoadingState />;
   if (!loan) return <EmptyState title="Loan not found" />;
-  const client = getClient(loan.clientId);
   const summary = loanSummary(loan.amount, loan.duration, loan.rate);
+  // A Rejected loan never had a repayment period, so it has no End Date.
+  const endDate =
+    loan.status === "Rejected"
+      ? null
+      : loanEndDate(loan.startDate, loan.duration);
   return (
     <>
       <Breadcrumbs
-        items={[{ label: "Loans", to: "/loans" }, { label: loan.id }]}
+        items={[{ label: "Loans", to: "/loans" }, { label: loan.reference }]}
       />
       <PageHeading
-        title={`Loan ${loan.id}`}
+        title={`Loan ${loan.reference}`}
         subtitle={`${loan.type} for ${client?.name || "unknown client"}`}
         action={
           <div className="actions">
@@ -44,16 +52,20 @@ export default function LoanDetailsPage() {
           <h2>Loan information</h2>
           <dl>
             <dt>Client</dt>
-            <dd>{client?.name}</dd>
+            <dd>{client?.name || "—"}</dd>
             <dt>Principal amount</dt>
             <dd>{money(loan.amount)}</dd>
             <dt>Annual interest rate</dt>
             <dd>{loan.rate}%</dd>
             <dt>Duration</dt>
             <dd>{loan.duration} months</dd>
+            <dt>Start Date</dt>
+            <dd>{loan.startDate || "—"}</dd>
+            <dt>End Date</dt>
+            <dd>{endDate || "—"}</dd>
             <dt>Risk</dt>
             <dd>
-              <StatusBadge value={loan.risk} risk />
+              {loan.risk ? <StatusBadge value={loan.risk} risk /> : "—"}
             </dd>
             <dt>Status</dt>
             <dd>

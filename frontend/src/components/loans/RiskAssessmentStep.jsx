@@ -2,32 +2,7 @@ import { useState } from "react";
 import { LoaderCircle, RefreshCw, ShieldCheck, User } from "lucide-react";
 import { Button, Card } from "../ui";
 import { money, loanSummary } from "../../utils/finance";
-
-// Placeholder scoring used until the real risk-assessment API is connected.
-// Structured so the caller only needs to swap this function out for an API
-// call later — consumers just read whichever fields they need off the
-// returned object (Step 3 only uses score/level; the Step 4 decision
-// workspace also shows the supporting indicators below).
-function mockRiskAssessment(client, values) {
-  const summary = loanSummary(values.amount, values.duration, values.rate);
-  const monthlyIncome = (client?.income || 0) / 12;
-  const ratio = monthlyIncome ? summary.monthlyPayment / monthlyIncome : 1;
-  const score = Math.min(99, Math.max(1, Math.round(ratio * 100)));
-  const level = score < 30 ? "LOW" : score < 55 ? "MEDIUM" : "HIGH";
-  const confidence = Math.max(60, 100 - Math.round(ratio * 40));
-  const creditScoreEstimate = Math.round(820 - ratio * 250);
-  const stability = level === "LOW" ? "High" : level === "MEDIUM" ? "Moderate" : "Low";
-  return {
-    score,
-    level,
-    confidence,
-    dtiRatio: ratio,
-    paymentToIncome: ratio,
-    creditScoreEstimate,
-    stability,
-  };
-}
-export { mockRiskAssessment };
+import { riskService } from "../../services/riskService";
 
 const LEVEL_COPY = {
   LOW: "The algorithmic model found no significant risk factors for this application based on the applicant's income and the requested loan terms.",
@@ -45,13 +20,32 @@ export default function RiskAssessmentStep({
   onNext,
 }) {
   const [checking, setChecking] = useState(false);
+  const [error, setError] = useState("");
 
-  const calculateRisk = () => {
+  const calculateRisk = async () => {
     setChecking(true);
-    setTimeout(() => {
+    setError("");
+    try {
+      const summary = loanSummary(values.amount, values.duration, values.rate);
+      const prediction = await riskService.calculate({
+        annualIncome: client?.income || 0,
+        monthlyPayment: summary.monthlyPayment,
+        duration: values.duration,
+        annualInterestRate: values.rate,
+      });
+      onResult({
+        score: prediction.score,
+        probability: prediction.probability,
+        level: prediction.level,
+        decision: prediction.decision,
+      });
+    } catch {
+      setError(
+        "The risk model is unavailable right now. Please try again in a moment.",
+      );
+    } finally {
       setChecking(false);
-      onResult(mockRiskAssessment(client, values));
-    }, 900);
+    }
   };
 
   return (
@@ -102,6 +96,7 @@ export default function RiskAssessmentStep({
               <h4>AI Risk Assessment</h4>
               <p>{LEVEL_COPY[result.level]}</p>
             </div>
+            {error && <p className="error">{error}</p>}
             <div className="risk-recalculate">
               <Button variant="secondary" onClick={calculateRisk}>
                 <RefreshCw size={16} /> Recalculate Risk
@@ -118,6 +113,7 @@ export default function RiskAssessmentStep({
               Run the algorithmic risk model against the applicant's profile
               and the requested loan terms before proceeding.
             </p>
+            {error && <p className="error">{error}</p>}
             <Button onClick={calculateRisk}>Calculate Risk</Button>
           </div>
         )}

@@ -10,10 +10,12 @@
   },
   "dependencies": {
     "axios": "latest",
+    "i18next": "^26.4.1",
+    "lucide-react": "latest",
     "react": "latest",
     "react-dom": "latest",
-    "react-router-dom": "latest",
-    "lucide-react": "latest"
+    "react-i18next": "^17.0.13",
+    "react-router-dom": "latest"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "latest",

@@ -12,11 +12,14 @@ import {
 import { Button, Card, Modal, SuccessModal } from "../ui";
 import { money, loanSummary } from "../../utils/finance";
 import { loanStats } from "../../pages/pageShared";
+import { loanService } from "../../services/loanService";
 
 export default function DecisionStep({ client, values, risk, loans, onBack }) {
   const navigate = useNavigate();
   const [modal, setModal] = useState(null); // "approve" | "reject" | null
   const [rejectReason, setRejectReason] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
   const [success, setSuccess] = useState(null);
 
   const summary = loanSummary(values.amount, values.duration, values.rate);
@@ -24,26 +27,66 @@ export default function DecisionStep({ client, values, risk, loans, onBack }) {
   const riskLevel = risk?.level?.toLowerCase() || "";
 
   const closeModal = () => {
+    if (submitting) return;
     setModal(null);
     setRejectReason("");
+    setSubmitError("");
   };
 
-  const confirmApprove = () => {
-    setModal(null);
-    setSuccess({
-      title: "Loan Approved Successfully",
-      message:
-        "The loan has been approved. It will become active and its repayment schedule will be created once submitted to the system.",
+  const createLoan = (status, rejectionReason) =>
+    loanService.create({
+      clientId: client.id,
+      type: values.loanType,
+      amount: values.amount,
+      duration: values.duration,
+      rate: values.rate,
+      monthlyPayment: summary.monthlyPayment,
+      risk: risk?.level,
+      score: risk?.probability,
+      status,
+      rejectionReason,
     });
+
+  const confirmApprove = async () => {
+    setSubmitting(true);
+    setSubmitError("");
+    try {
+      await createLoan("Active");
+      setModal(null);
+      setSuccess({
+        title: "Loan Approved Successfully",
+        message:
+          "The loan has been approved and is now active. Its repayment schedule will be available once payments are connected.",
+      });
+    } catch (error) {
+      setSubmitError(
+        error.response?.data?.message ||
+          "Something went wrong. Please try again.",
+      );
+    } finally {
+      setSubmitting(false);
+    }
   };
 
-  const confirmReject = () => {
-    setModal(null);
-    setRejectReason("");
-    setSuccess({
-      title: "Loan Request Rejected",
-      message: "The loan application has been marked as rejected.",
-    });
+  const confirmReject = async () => {
+    setSubmitting(true);
+    setSubmitError("");
+    try {
+      await createLoan("Rejected", rejectReason.trim());
+      setModal(null);
+      setRejectReason("");
+      setSuccess({
+        title: "Loan Request Rejected",
+        message: "The loan application has been marked as rejected.",
+      });
+    } catch (error) {
+      setSubmitError(
+        error.response?.data?.message ||
+          "Something went wrong. Please try again.",
+      );
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -162,7 +205,7 @@ export default function DecisionStep({ client, values, risk, loans, onBack }) {
                       {risk.level} RISK
                     </span>
                     <span className="risk-workspace-confidence">
-                      {risk.confidence}% Confidence
+                      {risk.score}% Risk Score
                     </span>
                   </>
                 ) : (
@@ -170,26 +213,14 @@ export default function DecisionStep({ client, values, risk, loans, onBack }) {
                 )}
               </div>
             </div>
-            <div className="stat-grid-4">
+            <div className="stat-grid-2">
               <div className="stat-mini center">
-                <small>DTI Ratio</small>
-                <strong>
-                  {risk ? `${Math.round(risk.dtiRatio * 100)}%` : "—"}
-                </strong>
+                <small>Risk Score</small>
+                <strong>{risk ? `${risk.score}%` : "—"}</strong>
               </div>
               <div className="stat-mini center">
-                <small>Payment/Income</small>
-                <strong>
-                  {risk ? `${Math.round(risk.paymentToIncome * 100)}%` : "—"}
-                </strong>
-              </div>
-              <div className="stat-mini center">
-                <small>Credit Score</small>
-                <strong>{risk ? risk.creditScoreEstimate : "—"}</strong>
-              </div>
-              <div className="stat-mini center">
-                <small>Stability</small>
-                <strong>{risk ? risk.stability : "—"}</strong>
+                <small>Model Decision</small>
+                <strong>{risk ? risk.decision : "—"}</strong>
               </div>
             </div>
           </Card>
@@ -275,12 +306,21 @@ export default function DecisionStep({ client, values, risk, loans, onBack }) {
             Confirming this action will activate the loan and generate the
             repayment schedule immediately.
           </p>
+          {submitError && <p className="error">{submitError}</p>}
           <div className="decision-modal-actions">
-            <Button variant="secondary" onClick={closeModal}>
+            <Button
+              variant="secondary"
+              onClick={closeModal}
+              disabled={submitting}
+            >
               Cancel
             </Button>
-            <Button variant="success" onClick={confirmApprove}>
-              Confirm Approval
+            <Button
+              variant="success"
+              onClick={confirmApprove}
+              disabled={submitting}
+            >
+              {submitting ? "Approving…" : "Confirm Approval"}
             </Button>
           </div>
         </Modal>
@@ -309,16 +349,21 @@ export default function DecisionStep({ client, values, risk, loans, onBack }) {
               onChange={(event) => setRejectReason(event.target.value)}
             />
           </div>
+          {submitError && <p className="error">{submitError}</p>}
           <div className="decision-modal-actions">
-            <Button variant="secondary" onClick={closeModal}>
+            <Button
+              variant="secondary"
+              onClick={closeModal}
+              disabled={submitting}
+            >
               Cancel
             </Button>
             <Button
               variant="danger"
-              disabled={!rejectReason.trim()}
+              disabled={!rejectReason.trim() || submitting}
               onClick={confirmReject}
             >
-              Confirm Rejection
+              {submitting ? "Rejecting…" : "Confirm Rejection"}
             </Button>
           </div>
         </Modal>

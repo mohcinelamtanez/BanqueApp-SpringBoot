@@ -1,8 +1,6 @@
 import { Landmark } from "lucide-react";
 import { Badge, Card } from "../components/ui";
-import { clients } from "../data/mock/data";
 
-export const getClient = (id) => clients.find((client) => client.id === id);
 export function initials(name = "") {
   return name
     .trim()
@@ -14,8 +12,12 @@ export function initials(name = "") {
 }
 export function loanStats(clientId, loans) {
   const list = loans.filter((loan) => loan.clientId === clientId);
+  // "Pending" is a LoanApplication state, not a Loan state — a request
+  // still awaiting a decision was never granted, so it must not count
+  // toward a client's loan totals or amount borrowed.
+  const isLoan = (loan) => loan.status !== "Rejected" && loan.status !== "Pending";
   return {
-    total: list.filter((loan) => loan.status !== "Rejected").length,
+    total: list.filter(isLoan).length,
     active: list.filter((loan) => loan.status === "Active").length,
     completed: list.filter((loan) => loan.status === "Completed").length,
     rejected: list.filter((loan) => loan.status === "Rejected").length,
@@ -23,7 +25,7 @@ export function loanStats(clientId, loans) {
       .filter((loan) => loan.status === "Active")
       .reduce((sum, loan) => sum + loan.amount - loan.repaid, 0),
     borrowed: list
-      .filter((loan) => loan.status !== "Rejected")
+      .filter(isLoan)
       .reduce((sum, loan) => sum + loan.amount, 0),
     repaid: list.reduce((sum, loan) => sum + loan.repaid, 0),
   };

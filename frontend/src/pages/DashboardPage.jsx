@@ -6,16 +6,19 @@ import {
   Users,
 } from "lucide-react";
 import { Button, Card, LoadingState } from "../components/ui";
-import { clients } from "../data/mock/data";
+import { useClients } from "../hooks/useClients";
 import { useLoans } from "../hooks/useLoans";
 import { money } from "../utils/finance";
 import { Metric, PageHeading } from "./pageShared";
 export default function DashboardPage() {
-  const { loading, data: loans = [] } = useLoans();
-  if (loading) return <LoadingState />;
+  const { loading: loansLoading, data: loans = [] } = useLoans();
+  const { loading: clientsLoading, data: clients = [] } = useClients();
+  if (loansLoading || clientsLoading) return <LoadingState />;
   const active = loans.filter((loan) => loan.status === "Active");
+  // A Pending application hasn't been decided yet — no money has actually
+  // been granted until it becomes an Active (or Completed) Loan.
   const granted = loans
-    .filter((loan) => loan.status !== "Rejected")
+    .filter((loan) => loan.status === "Active" || loan.status === "Completed")
     .reduce((sum, loan) => sum + loan.amount, 0);
   const outstanding = active.reduce(
     (sum, loan) => sum + loan.amount - loan.repaid,

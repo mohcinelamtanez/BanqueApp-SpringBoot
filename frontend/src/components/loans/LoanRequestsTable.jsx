@@ -1,9 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import { Button, DataTable } from "../ui";
-import { getClient, initials, StatusBadge } from "../../pages/pageShared";
+import { initials, StatusBadge } from "../../pages/pageShared";
 import { money, date } from "../../utils/finance";
-export default function LoanRequestsTable({ loans = [] }) {
+export default function LoanRequestsTable({ applications = [], clients = [] }) {
   const navigate = useNavigate();
+  const getClient = (clientId) =>
+    clients.find((client) => client.id === clientId);
   return (
     <DataTable
       columns={[
@@ -16,10 +18,10 @@ export default function LoanRequestsTable({ loans = [] }) {
         "Action",
       ]}
     >
-      {loans.map((loan) => {
-        const client = getClient(loan.clientId);
+      {applications.map((application) => {
+        const client = getClient(application.clientId);
         return (
-          <tr key={loan.id}>
+          <tr key={application.id}>
             <td>
               <div className="review-client-cell">
                 <span className="avatar">
@@ -28,23 +30,23 @@ export default function LoanRequestsTable({ loans = [] }) {
                 <div>
                   <b>{client ? client.name : "Unknown client"}</b>
                   <br />
-                  <span className="mono">{loan.clientId}</span>
+                  <span className="mono">{application.clientId}</span>
                 </div>
               </div>
             </td>
-            <td>{loan.type}</td>
-            <td className="mono">{money(loan.amount)}</td>
-            <td>{loan.duration} months</td>
-            <td>{date(loan.startDate)}</td>
+            <td>{application.type}</td>
+            <td className="mono">{money(application.amount)}</td>
+            <td>{application.duration} months</td>
+            <td>{date(application.submittedDate)}</td>
             <td>
-              <StatusBadge value={loan.status} />
+              <StatusBadge value={application.status} />
             </td>
             <td>
               <Button
                 variant="secondary"
-                onClick={() => navigate(`/loan-applications/${loan.id}`)}
+                onClick={() => navigate(`/loan-applications/${application.id}`)}
               >
-                Review
+                {application.status === "Pending" ? "Review" : "View"}
               </Button>
             </td>
           </tr>

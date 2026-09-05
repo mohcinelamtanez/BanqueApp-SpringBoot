@@ -1,18 +1,27 @@
 import { useState } from "react";
 import { IdCard, Mail, MapPin } from "lucide-react";
-import { Badge, Button, Card, SuccessModal } from "../../components/ui";
+import {
+  Badge,
+  Button,
+  Card,
+  EmptyState,
+  LoadingState,
+  SuccessModal,
+} from "../../components/ui";
 import ClientFormModal from "../../components/clients/ClientFormModal";
+import { useClient } from "../../hooks/useClients";
 import { money } from "../../utils/finance";
-import { getClient, initials, PageHeading } from "../pageShared";
-import { CURRENT_CLIENT_ID } from "./clientShared";
+import { initials, PageHeading } from "../pageShared";
+import { getCurrentClientId } from "./clientShared";
 
 export default function ClientProfilePage() {
-  const [client, setClient] = useState(() => getClient(CURRENT_CLIENT_ID));
+  const [refreshKey, setRefreshKey] = useState(0);
+  const { loading, data: client } = useClient(getCurrentClientId(), refreshKey);
   const [editOpen, setEditOpen] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
 
-  const [firstName, ...rest] = client.name.split(" ");
-  const lastName = rest.join(" ");
+  if (loading) return <LoadingState />;
+  if (!client) return <EmptyState title="Profile not found" />;
 
   return (
     <>
@@ -60,9 +69,9 @@ export default function ClientProfilePage() {
           <h2>Personal Information</h2>
           <dl>
             <dt>First Name</dt>
-            <dd>{firstName}</dd>
+            <dd>{client.firstName}</dd>
             <dt>Last Name</dt>
-            <dd>{lastName || "—"}</dd>
+            <dd>{client.lastName || "—"}</dd>
             <dt>Email</dt>
             <dd>{client.email}</dd>
           </dl>
@@ -73,7 +82,7 @@ export default function ClientProfilePage() {
             <dt>City</dt>
             <dd>{client.city}</dd>
             <dt>Postal Code</dt>
-            <dd>{client.postalCode}</dd>
+            <dd>{client.postalCode || "—"}</dd>
           </dl>
         </Card>
       </div>
@@ -83,8 +92,6 @@ export default function ClientProfilePage() {
         <dl>
           <dt>Annual Revenue</dt>
           <dd>{money(client.income)} / year</dd>
-          <dt>Total Assets</dt>
-          <dd>{money(client.totalAssets)}</dd>
         </dl>
       </Card>
 
@@ -93,10 +100,10 @@ export default function ClientProfilePage() {
           mode="edit"
           client={client}
           onClose={() => setEditOpen(false)}
-          onSaved={(saved) => {
-            setClient({ ...saved });
+          onSaved={() => {
             setEditOpen(false);
             setShowSuccess(true);
+            setRefreshKey((value) => value + 1);
           }}
         />
       )}

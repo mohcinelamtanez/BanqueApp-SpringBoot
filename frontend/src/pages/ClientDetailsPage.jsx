@@ -25,7 +25,7 @@ export default function ClientDetailsPage() {
     clientId,
     refreshKey,
   );
-  const { loading: loansLoading, data: loans = [] } = useLoans();
+  const { loading: loansLoading, data: loans = [] } = useLoans(refreshKey);
   const [editOpen, setEditOpen] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -43,6 +43,11 @@ export default function ClientDetailsPage() {
   }
   if (!client) return <EmptyState title="Client not found" />;
   const stats = loanStats(clientId, loans);
+  // Pending loan applications belong exclusively in "Loan Applications" —
+  // Loan History here is strictly Loan records (Active/Completed/Rejected).
+  const clientLoans = loans.filter(
+    (loan) => loan.clientId === clientId && loan.status !== "Pending",
+  );
   const closeDeleteConfirm = () => {
     if (deleting) return;
     setConfirmDelete(false);
@@ -122,14 +127,12 @@ export default function ClientDetailsPage() {
       <Card>
         <div className="section-head">
           <h2>Loan History</h2>
-          <Button onClick={() => navigate("/loans/add")}>
+          <Button onClick={() => navigate(`/loans/new-loan?clientId=${clientId}`)}>
             <Plus size={16} /> Add loan
           </Button>
         </div>
-        {loans.filter((loan) => loan.clientId === clientId).length ? (
-          <LoanTable
-            loans={loans.filter((loan) => loan.clientId === clientId)}
-          />
+        {clientLoans.length ? (
+          <LoanTable loans={clientLoans} />
         ) : (
           <EmptyState title="This client has no loans yet" />
         )}

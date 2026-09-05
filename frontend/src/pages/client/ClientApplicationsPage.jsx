@@ -1,44 +1,63 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Plus } from "lucide-react";
-import { Button, Card, EmptyState, LoadingState } from "../../components/ui";
+import { Button, Card, EmptyState, ErrorState, LoadingState } from "../../components/ui";
 import ApplicationCard from "../../components/loans/ApplicationCard";
 import NewApplicationModal from "../../components/loans/NewApplicationModal";
 import ApplicationDetailsModal from "../../components/loans/ApplicationDetailsModal";
+import { applicationService } from "../../services/applicationService";
 import { loanService } from "../../services/loanService";
 import { PageHeading } from "../pageShared";
-import { CURRENT_CLIENT_ID } from "./clientShared";
 
 export default function ClientApplicationsPage() {
   const navigate = useNavigate();
   const { applicationId } = useParams();
   const [loading, setLoading] = useState(true);
-  const [loans, setLoans] = useState([]);
+  const [applications, setApplications] = useState([]);
+  const [hasActiveLoan, setHasActiveLoan] = useState(false);
   const [reloadKey, setReloadKey] = useState(0);
   const [showNew, setShowNew] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     let active = true;
     setLoading(true);
-    loanService.list().then((data) => {
-      if (active) {
-        setLoans(data);
+    setError("");
+    Promise.all([applicationService.listMine(), loanService.listMine()])
+      .then(([applicationsData, loansData]) => {
+        if (!active) return;
+        setApplications(applicationsData);
+        setHasActiveLoan(loansData.some((loan) => loan.status === "Active"));
         setLoading(false);
-      }
-    });
+      })
+      .catch(() => {
+        if (active) {
+          setError("Unable to load your applications right now. Please try again.");
+          setLoading(false);
+        }
+      });
     return () => {
       active = false;
     };
   }, [reloadKey]);
 
   if (loading) return <LoadingState label="Loading your applications…" />;
+  if (error) return <ErrorState detail={error} />;
 
-  const myApplications = loans
-    .filter((loan) => loan.clientId === CURRENT_CLIENT_ID)
-    .sort((a, b) => (a.startDate < b.startDate ? 1 : -1));
-  const hasPending = myApplications.some((loan) => loan.status === "Pending");
+  const sortedApplications = [...applications].sort((a, b) =>
+    a.submittedDate < b.submittedDate ? 1 : -1,
+  );
+  const hasPending = sortedApplications.some(
+    (application) => application.status === "Pending",
+  );
+  // Mirrors the backend eligibility rule exactly: no ACTIVE Loan and no
+  // PENDING Application. The backend remains the authoritative check —
+  // this only drives the UX (locked note + disabled action).
+  const canApply = !hasPending && !hasActiveLoan;
   const viewing = applicationId
-    ? myApplications.find((loan) => loan.id === applicationId) || null
+    ? sortedApplications.find(
+        (application) => String(application.id) === applicationId,
+      ) || null
     : null;
 
   const openNewApplication = () => setShowNew(true);
@@ -53,7 +72,7 @@ export default function ClientApplicationsPage() {
         title="My Applications"
         subtitle="Track your loan applications and their current status."
         action={
-          !hasPending && myApplications.length > 0 ? (
+          canApply && sortedApplications.length > 0 ? (
             <Button onClick={openNewApplication}>
               <Plus size={17} /> New Application
             </Button>
@@ -64,14 +83,24 @@ export default function ClientApplicationsPage() {
       {hasPending && (
         <Card className="application-locked-note">
           <p>
-            <b>You already have an application under review.</b> Please wait
+            <b>You already have a pending loan application.</b> Please wait
             until a decision has been made before submitting another
             application.
           </p>
         </Card>
       )}
 
-      {myApplications.length === 0 ? (
+      {!hasPending && hasActiveLoan && (
+        <Card className="application-locked-note">
+          <p>
+            <b>You already have an active loan.</b> You can apply for a new
+            loan once your current loan is fully paid off or otherwise
+            closed.
+          </p>
+        </Card>
+      )}
+
+      {sortedApplications.length === 0 ? (
         <Card>
           <EmptyState
             title="No loan applications yet"
@@ -85,12 +114,14 @@ export default function ClientApplicationsPage() {
         </Card>
       ) : (
         <div className="stack-gap">
-          {myApplications.map((loan) => (
+          {sortedApplications.map((application) => (
             <ApplicationCard
-              key={loan.id}
-              loan={loan}
-              canCreateNew={!hasPending}
-              onViewDetails={() => navigate(`/my-applications/${loan.id}`)}
+              key={application.id}
+              application={application}
+              canCreateNew={canApply}
+              onViewDetails={() =>
+                navigate(`/my-applications/${application.id}`)
+              }
               onCreateNew={openNewApplication}
             />
           ))}
@@ -105,7 +136,7 @@ export default function ClientApplicationsPage() {
       )}
       {viewing && (
         <ApplicationDetailsModal
-          loan={viewing}
+          application={viewing}
           onClose={() => navigate("/my-applications")}
         />
       )}

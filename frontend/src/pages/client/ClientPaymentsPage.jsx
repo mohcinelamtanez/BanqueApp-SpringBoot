@@ -5,6 +5,7 @@ import {
   Card,
   DataTable,
   EmptyState,
+  ErrorState,
   LoadingState,
   Pagination,
   Select,
@@ -14,10 +15,10 @@ import PaymentScheduleModal from "../../components/payments/PaymentScheduleModal
 import { loanService } from "../../services/loanService";
 import { paymentService } from "../../services/paymentService";
 import { usePagination } from "../../hooks/usePagination";
-import { money, date } from "../../utils/finance";
+import { money, date, loanEndDate } from "../../utils/finance";
 import { amountDue, visiblePaymentRows } from "../../utils/paymentSchedule";
-import { loanStats, Metric, PageHeading } from "../pageShared";
-import { CURRENT_CLIENT_ID, PAYMENT_STATUS_LABEL } from "./clientShared";
+import { loanStats, Metric, PageHeading, StatusBadge } from "../pageShared";
+import { getCurrentClientId, PAYMENT_STATUS_LABEL } from "./clientShared";
 
 export default function ClientPaymentsPage() {
   const [loading, setLoading] = useState(true);
@@ -26,27 +27,37 @@ export default function ClientPaymentsPage() {
   const [selectedLoanId, setSelectedLoanId] = useState(null);
   const [viewing, setViewing] = useState(null);
   const [showSchedule, setShowSchedule] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     let active = true;
     setLoading(true);
-    loanService.list().then(async (allLoans) => {
-      const myLoans = allLoans.filter(
-        (loan) => loan.clientId === CURRENT_CLIENT_ID,
-      );
-      const paymentLists = await Promise.all(
-        myLoans.map((loan) => paymentService.list(loan.id)),
-      );
-      if (!active) return;
-      setLoans(myLoans);
-      setPayments(paymentLists.flat());
-      // MVP assumption: a client has at most one Active loan at a time — it
-      // is what "My Payments" opens on by default.
-      const activeLoan = myLoans.find((loan) => loan.status === "Active");
-      const firstPastLoan = myLoans.find((loan) => loan.status === "Completed");
-      setSelectedLoanId(activeLoan?.id ?? firstPastLoan?.id ?? null);
-      setLoading(false);
-    });
+    setError("");
+    Promise.all([loanService.listMine(), paymentService.listMine()])
+      .then(([allLoans, allPayments]) => {
+        if (!active) return;
+        // A Rejected loan has no repayment period — this page only ever
+        // deals in real, active/completed repayment schedules.
+        const myLoans = allLoans.filter(
+          (loan) => loan.status === "Active" || loan.status === "Completed",
+        );
+        setLoans(myLoans);
+        setPayments(allPayments);
+        // MVP assumption: a client has at most one Active loan at a time —
+        // it is what "My Payments" opens on by default.
+        const activeLoan = myLoans.find((loan) => loan.status === "Active");
+        const firstPastLoan = myLoans.find(
+          (loan) => loan.status === "Completed",
+        );
+        setSelectedLoanId(activeLoan?.id ?? firstPastLoan?.id ?? null);
+        setLoading(false);
+      })
+      .catch(() => {
+        if (active) {
+          setError("Unable to load your payments right now. Please try again.");
+          setLoading(false);
+        }
+      });
     return () => {
       active = false;
     };
@@ -61,12 +72,13 @@ export default function ClientPaymentsPage() {
   const { page, setPage, totalPages, pageItems } = usePagination(visible, 5);
 
   if (loading) return <LoadingState label="Loading your payments…" />;
+  if (error) return <ErrorState detail={error} />;
 
   const loanFor = (loanId) => loans.find((loan) => loan.id === loanId);
   const activeLoan = loans.find((loan) => loan.status === "Active");
   const pastLoans = loans.filter((loan) => loan.status === "Completed");
   const selectedLoan = loanFor(selectedLoanId);
-  const stats = loanStats(CURRENT_CLIENT_ID, loans);
+  const stats = loanStats(getCurrentClientId(), loans);
   const activeLoanPayments = activeLoan
     ? payments.filter((payment) => payment.loanId === activeLoan.id)
     : [];
@@ -120,9 +132,7 @@ export default function ClientPaymentsPage() {
                   : "Selected Loan"}
               </h3>
               {selectedLoan && (
-                <Badge type={selectedLoan.status.toLowerCase()}>
-                  {selectedLoan.status}
-                </Badge>
+                <StatusBadge value={selectedLoan.status} />
               )}
             </div>
 
@@ -166,7 +176,12 @@ export default function ClientPaymentsPage() {
                   <strong>
                     {selectedLoan.status === "Active"
                       ? money(selectedLoan.amount - selectedLoan.repaid)
-                      : date(selectedLoan.endDate)}
+                      : date(
+                          loanEndDate(
+                            selectedLoan.startDate,
+                            selectedLoan.duration,
+                          ),
+                        )}
                   </strong>
                 </div>
               </div>
@@ -203,7 +218,7 @@ export default function ClientPaymentsPage() {
                 >
                   {pageItems.map((payment) => (
                     <tr key={payment.id}>
-                      <td className="mono">{payment.id}</td>
+                      <td className="mono">{payment.reference}</td>
                       <td className="mono">{money(payment.amount)}</td>
                       <td>{date(payment.dueDate)}</td>
                       <td>{payment.date ? date(payment.date) : "—"}</td>

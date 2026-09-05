@@ -5,11 +5,10 @@ import "../../i18n";
 import ClientSidebar from "./ClientSidebar";
 import NotificationCenter from "../notifications/NotificationCenter";
 import { useSidebarCollapsed } from "./useSidebarCollapsed";
-import { notifications as globalNotifications } from "../../data/mock/data";
 import { loanService } from "../../services/loanService";
 import { paymentService } from "../../services/paymentService";
 import { buildPaymentNotifications } from "../../utils/paymentSchedule";
-import { CURRENT_CLIENT_ID } from "../../pages/client/clientShared";
+import { getCurrentClientId } from "../../pages/client/clientShared";
 import {
   ClientThemeProvider,
   useClientTheme,
@@ -26,8 +25,9 @@ function ClientLayoutShell({ children }) {
   useEffect(() => {
     let active = true;
     loanService.list().then(async (allLoans) => {
+      const currentClientId = getCurrentClientId();
       const activeLoan = allLoans.find(
-        (loan) => loan.clientId === CURRENT_CLIENT_ID && loan.status === "Active",
+        (loan) => loan.clientId === currentClientId && loan.status === "Active",
       );
       if (!activeLoan) return;
       const loanPayments = await paymentService.list(activeLoan.id);
@@ -81,7 +81,7 @@ function ClientLayoutShell({ children }) {
             <div className="avatar">CL</div>
             {notificationsOpen && (
               <NotificationCenter
-                notifications={[...paymentNotifications, ...globalNotifications]}
+                notifications={paymentNotifications}
                 onClose={() => setNotificationsOpen(false)}
               />
             )}

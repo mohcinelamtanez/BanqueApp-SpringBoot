@@ -27,9 +27,9 @@ function effectiveDate(payment) {
 }
 
 // Keeps Payment History from ever rendering a full amortization table (a
-// 48-month loan really does have 48 scheduled installments in the mock
-// data) — shows every payment that already happened or matters right now,
-// plus a short, chronologically-nearest preview of what's still upcoming.
+// 48-month loan really does have 48 scheduled installments) — shows every
+// payment that already happened or matters right now, plus a short,
+// chronologically-nearest preview of what's still upcoming.
 // Rows are always ordered most-recent-first (see effectiveDate above).
 export function visiblePaymentRows(payments, { previewUpcoming = 3 } = {}) {
   const withStatus = withDisplayStatus(payments);

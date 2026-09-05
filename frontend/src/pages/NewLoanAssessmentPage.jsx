@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { X } from "lucide-react";
 import { Button, LoadingState } from "../components/ui";
 import ClientSelectionStep from "../components/loans/ClientSelectionStep";
@@ -8,7 +8,7 @@ import RiskAssessmentStep from "../components/loans/RiskAssessmentStep";
 import DecisionStep from "../components/loans/DecisionStep";
 import NewLoanStepper from "../components/loans/NewLoanStepper";
 import { useLoans } from "../hooks/useLoans";
-import { clients } from "../data/mock/data";
+import { useClients } from "../hooks/useClients";
 
 const DEFAULT_LOAN_VALUES = {
   loanType: "Consumer (CONSO)",
@@ -19,13 +19,33 @@ const DEFAULT_LOAN_VALUES = {
 
 export default function NewLoanAssessmentPage() {
   const navigate = useNavigate();
-  const { loading, data: loans = [] } = useLoans();
+  const [searchParams] = useSearchParams();
+  const preselectedClientId = searchParams.get("clientId");
+  const { loading: loansLoading, data: loans = [] } = useLoans();
+  const { loading: clientsLoading, data: clients = [] } = useClients();
   const [step, setStep] = useState(1);
-  const [selectedClient, setSelectedClient] = useState(clients[0] || null);
+  const [selectedClient, setSelectedClient] = useState(null);
   const [loanValues, setLoanValues] = useState(DEFAULT_LOAN_VALUES);
   const [riskResult, setRiskResult] = useState(null);
 
-  if (loading) return <LoadingState />;
+  // Client Details "Add loan" links here with ?clientId=<ref> so the user
+  // isn't asked to search for a client they've already opened — resolve it
+  // against the loaded client list once available and jump straight to
+  // Loan Details. Falls back to normal manual selection if it doesn't
+  // resolve to a known client.
+  useEffect(() => {
+    if (!preselectedClientId || clientsLoading || selectedClient) return;
+    const match = clients.find(
+      (client) => String(client.id) === String(preselectedClientId),
+    );
+    if (match) {
+      setSelectedClient(match);
+      setStep(2);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [preselectedClientId, clientsLoading]);
+
+  if (loansLoading || clientsLoading) return <LoadingState />;
 
   const updateLoanValues = (patch) =>
     setLoanValues((current) => ({ ...current, ...patch }));
@@ -53,6 +73,7 @@ export default function NewLoanAssessmentPage() {
       <NewLoanStepper step={step} />
       {step === 1 && (
         <ClientSelectionStep
+          clients={clients}
           loans={loans}
           selectedClient={selectedClient}
           onSelectClient={setSelectedClient}
