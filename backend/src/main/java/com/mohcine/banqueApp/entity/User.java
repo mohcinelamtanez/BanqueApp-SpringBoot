@@ -26,7 +26,10 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String password;
 
-    @ManyToMany
+    // EAGER: authorities are read by JwtAutorisationFilter on every request
+    // (via UserDetails.getAuthorities()), outside of any transaction/open
+    // session — a LAZY collection throws LazyInitializationException there.
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),

@@ -8,4 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @author USER
  **/
 public interface RiskAssessmentRepository extends JpaRepository<RiskAssessment,Integer> {
+    RiskAssessment findByLoan_Id(Integer loanId);
 }

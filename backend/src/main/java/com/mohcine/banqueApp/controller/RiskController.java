@@ -24,7 +24,7 @@ public class RiskController {
         this.riskService = riskService ;
     }
 
-    @PostMapping("/calculate")
+    @PostMapping("/calculate-risk")
     public RiskPredictionResponseDTO calculateRisk(@RequestBody RiskInputDTO input) {
         return riskService.assessRisk(input) ;
     }

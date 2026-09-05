@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
  **/
 public class LoanResponseDTO {
    private Integer id ;
+   private String clientReference ;
    private LoanType loanType ;
    private BigDecimal loanAmount ;
    private Integer duration ;
@@ -29,6 +30,14 @@ public class LoanResponseDTO {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getClientReference() {
+        return clientReference;
+    }
+
+    public void setClientReference(String clientReference) {
+        this.clientReference = clientReference;
     }
 
     public LoanType getLoanType() {

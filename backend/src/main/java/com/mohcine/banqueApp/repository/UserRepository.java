@@ -11,6 +11,9 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {
-    User findByUsername(String username);
+    // The entity's persistent field is `email` (getUsername()/setUsername()
+    // only exist as UserDetails method overrides delegating to it) — a
+    // derived findByUsername(...) can't resolve to any real JPA attribute.
+    User findByEmail(String email);
 }
 
