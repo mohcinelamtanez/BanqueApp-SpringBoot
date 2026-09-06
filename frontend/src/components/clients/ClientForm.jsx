@@ -18,6 +18,10 @@ const EMPTY = {
   email: "",
 };
 
+// The profile photo is handled separately (ClientAvatar + the dedicated
+// upload/remove endpoints, see ClientProfilePage) — this form only ever
+// covers the text profile fields, for both Admin Client Management and the
+// self-service "My Profile" flow.
 export default function ClientForm({ formId, client, onSubmit }) {
   const [form, setForm] = useState(client || EMPTY);
   const [errors, setErrors] = useState({});
@@ -26,7 +30,7 @@ export default function ClientForm({ formId, client, onSubmit }) {
   const submit = (event) => {
     event.preventDefault();
     const nextErrors = {};
-    ["firstName", "lastName", "city", "postalCode", "income"].forEach(
+    ["firstName", "lastName", "city", "postalCode", "income", "email"].forEach(
       (key) => {
         if (!form[key]) nextErrors[key] = "Required";
       },

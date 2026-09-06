@@ -34,5 +34,28 @@ export const authService = {
     await new Promise((resolve) => setTimeout(resolve, 500));
     return { email };
   },
+  // Public self-registration — always creates a CLIENT-role account (the
+  // backend assigns the role; there is no way to request another one from
+  // here). Does not log the user in — they sign in separately afterward.
+  register: async (email, password) => {
+    try {
+      const { data } = await httpClient.post("/v1/auth/register", {
+        email,
+        password,
+      });
+      return { email: data.email, role: data.role };
+    } catch (error) {
+      if (error.response?.status === 409) {
+        throw new Error(
+          error.response?.data?.message ||
+            "An account with this email already exists.",
+        );
+      }
+      throw new Error(
+        error.response?.data?.message ||
+          "Unable to create your account. Please try again.",
+      );
+    }
+  },
 };
 export default authService;

@@ -5,7 +5,11 @@ import { clientService } from "../../services/clientService";
 
 const FORM_ID = "client-modal-form";
 
-export default function ClientFormModal({ mode, client, onClose, onSaved }) {
+// `own` routes the save through the self-service "/clients/me" endpoint
+// (create-or-update the authenticated user's own Client) instead of the
+// admin reference-keyed endpoints — used only by ClientProfilePage, so a
+// client can never edit another Client's profile through this modal.
+export default function ClientFormModal({ mode, client, onClose, onSaved, own = false }) {
   const editing = mode === "edit";
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
@@ -27,9 +31,11 @@ export default function ClientFormModal({ mode, client, onClose, onSaved }) {
     setError("");
     setSubmitting(true);
     try {
-      const saved = editing
-        ? await clientService.update(client.id, values)
-        : await clientService.create(values);
+      const saved = own
+        ? await clientService.saveMine(values)
+        : editing
+          ? await clientService.update(client.id, values)
+          : await clientService.create(values);
       onSaved(saved);
     } catch (err) {
       setError(

@@ -17,6 +17,19 @@ export default function LoanRequestsPage() {
     error,
   } = useApplications();
   const { loading: clientsLoading, data: clients } = useClients();
+  // Pending first (most actionable), then most recently submitted —
+  // decided applications stay visible here with their final status rather
+  // than disappearing once reviewed. Every hook below (usePagination) must
+  // run unconditionally on every render — computed and called before any
+  // early return, or React throws "Rendered more hooks than during the
+  // previous render" once loading/error resolves.
+  const sorted = [...(applications || [])].sort((a, b) => {
+    if (a.status === "Pending" && b.status !== "Pending") return -1;
+    if (b.status === "Pending" && a.status !== "Pending") return 1;
+    return a.submittedDate < b.submittedDate ? 1 : -1;
+  });
+  const { page, setPage, totalPages, pageItems } = usePagination(sorted, 5);
+
   if (applicationsLoading || clientsLoading) {
     return <LoadingState label="Loading loan applications…" />;
   }
@@ -25,15 +38,6 @@ export default function LoanRequestsPage() {
       <ErrorState detail="Unable to load loan applications right now. Please try again." />
     );
   }
-  // Pending first (most actionable), then most recently submitted —
-  // decided applications stay visible here with their final status rather
-  // than disappearing once reviewed.
-  const sorted = [...(applications || [])].sort((a, b) => {
-    if (a.status === "Pending" && b.status !== "Pending") return -1;
-    if (b.status === "Pending" && a.status !== "Pending") return 1;
-    return a.submittedDate < b.submittedDate ? 1 : -1;
-  });
-  const { page, setPage, totalPages, pageItems } = usePagination(sorted, 5);
   return (
     <>
       <PageHeading

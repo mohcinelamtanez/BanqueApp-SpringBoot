@@ -1,19 +1,19 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Eye, EyeOff, LoaderCircle } from "lucide-react";
+import { CheckCircle2, Eye, EyeOff, LoaderCircle } from "lucide-react";
 import { Button, Input } from "../../components/ui";
 import AuthLayout from "../../components/layout/AuthLayout";
-import { useAuth } from "../../auth/AuthContext";
+import { authService } from "../../auth/authService";
 
-export default function LoginPage() {
+export default function SignUpPage() {
   const navigate = useNavigate();
-  const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [remember, setRemember] = useState(true);
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [created, setCreated] = useState(false);
 
   const submit = async (event) => {
     event.preventDefault();
@@ -21,22 +21,52 @@ export default function LoginPage() {
       setError("Enter your email and password.");
       return;
     }
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters long.");
+      return;
+    }
+    if (password !== confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
     setError("");
     setSubmitting(true);
     try {
-      await login(email, password, remember);
-      navigate("/dashboard", { replace: true });
+      await authService.register(email.trim(), password);
+      setCreated(true);
     } catch (err) {
-      setError(err.message || "Unable to sign in. Please try again.");
+      setError(err.message || "Unable to create your account. Please try again.");
     } finally {
       setSubmitting(false);
     }
   };
 
+  if (created) {
+    return (
+      <AuthLayout>
+        <div className="confirmation">
+          <span className="success-icon">
+            <CheckCircle2 />
+          </span>
+          <h1>Account created</h1>
+          <p>
+            Your account for <b>{email}</b> has been created successfully.
+            You can now sign in.
+          </p>
+          <div className="actions">
+            <Link to="/login" className="btn primary">
+              Continue to Sign In
+            </Link>
+          </div>
+        </div>
+      </AuthLayout>
+    );
+  }
+
   return (
     <AuthLayout>
-      <h1>Sign in to BanqueApp</h1>
-      <p className="auth-subtitle">Access your banking dashboard.</p>
+      <h1>Create your BanqueApp account</h1>
+      <p className="auth-subtitle">Sign up to access your banking dashboard.</p>
       <form className="auth-form" onSubmit={submit} noValidate>
         <Input
           label="Email"
@@ -50,7 +80,7 @@ export default function LoginPage() {
           <div className="password-field">
             <input
               type={showPassword ? "text" : "password"}
-              autoComplete="current-password"
+              autoComplete="new-password"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
             />
@@ -64,17 +94,13 @@ export default function LoginPage() {
             </button>
           </div>
         </label>
-        <div className="auth-form-row">
-          <label className="checkbox-field">
-            <input
-              type="checkbox"
-              checked={remember}
-              onChange={(event) => setRemember(event.target.checked)}
-            />
-            Remember me
-          </label>
-          <Link to="/forgot-password">Forgot password?</Link>
-        </div>
+        <Input
+          label="Confirm password"
+          type={showPassword ? "text" : "password"}
+          autoComplete="new-password"
+          value={confirmPassword}
+          onChange={(event) => setConfirmPassword(event.target.value)}
+        />
         {error && (
           <p className="error" role="alert">
             {error}
@@ -82,10 +108,10 @@ export default function LoginPage() {
         )}
         <Button disabled={submitting}>
           {submitting && <LoaderCircle size={16} className="spin" />}
-          {submitting ? "Signing in…" : "Sign In"}
+          {submitting ? "Creating account…" : "Create account"}
         </Button>
-        <Link className="auth-footer-link" to="/signup">
-          Don't have an account? Create account
+        <Link className="auth-footer-link" to="/login">
+          Already have an account? Sign in
         </Link>
       </form>
     </AuthLayout>

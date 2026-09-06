@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Plus } from "lucide-react";
 import { Button, Card, EmptyState, ErrorState, LoadingState } from "../../components/ui";
 import ApplicationCard from "../../components/loans/ApplicationCard";
@@ -7,6 +7,7 @@ import NewApplicationModal from "../../components/loans/NewApplicationModal";
 import ApplicationDetailsModal from "../../components/loans/ApplicationDetailsModal";
 import { applicationService } from "../../services/applicationService";
 import { loanService } from "../../services/loanService";
+import { clientService, isProfileComplete } from "../../services/clientService";
 import { PageHeading } from "../pageShared";
 
 export default function ClientApplicationsPage() {
@@ -15,6 +16,7 @@ export default function ClientApplicationsPage() {
   const [loading, setLoading] = useState(true);
   const [applications, setApplications] = useState([]);
   const [hasActiveLoan, setHasActiveLoan] = useState(false);
+  const [profileComplete, setProfileComplete] = useState(true);
   const [reloadKey, setReloadKey] = useState(0);
   const [showNew, setShowNew] = useState(false);
   const [error, setError] = useState("");
@@ -23,11 +25,16 @@ export default function ClientApplicationsPage() {
     let active = true;
     setLoading(true);
     setError("");
-    Promise.all([applicationService.listMine(), loanService.listMine()])
-      .then(([applicationsData, loansData]) => {
+    Promise.all([
+      applicationService.listMine(),
+      loanService.listMine(),
+      clientService.getMine(),
+    ])
+      .then(([applicationsData, loansData, profile]) => {
         if (!active) return;
         setApplications(applicationsData);
         setHasActiveLoan(loansData.some((loan) => loan.status === "Active"));
+        setProfileComplete(isProfileComplete(profile));
         setLoading(false);
       })
       .catch(() => {
@@ -50,10 +57,11 @@ export default function ClientApplicationsPage() {
   const hasPending = sortedApplications.some(
     (application) => application.status === "Pending",
   );
-  // Mirrors the backend eligibility rule exactly: no ACTIVE Loan and no
-  // PENDING Application. The backend remains the authoritative check —
-  // this only drives the UX (locked note + disabled action).
-  const canApply = !hasPending && !hasActiveLoan;
+  // Mirrors the backend eligibility rule exactly: no ACTIVE Loan, no
+  // PENDING Application, and a complete Client profile. The backend
+  // remains the authoritative check — this only drives the UX (locked
+  // note + disabled action).
+  const canApply = !hasPending && !hasActiveLoan && profileComplete;
   const viewing = applicationId
     ? sortedApplications.find(
         (application) => String(application.id) === applicationId,
@@ -80,7 +88,16 @@ export default function ClientApplicationsPage() {
         }
       />
 
-      {hasPending && (
+      {!profileComplete && (
+        <Card className="application-locked-note">
+          <p>
+            <b>Complete your profile before applying for a loan.</b>{" "}
+            <Link to="/my-profile">Go to My Profile</Link>.
+          </p>
+        </Card>
+      )}
+
+      {profileComplete && hasPending && (
         <Card className="application-locked-note">
           <p>
             <b>You already have a pending loan application.</b> Please wait
@@ -90,7 +107,7 @@ export default function ClientApplicationsPage() {
         </Card>
       )}
 
-      {!hasPending && hasActiveLoan && (
+      {profileComplete && !hasPending && hasActiveLoan && (
         <Card className="application-locked-note">
           <p>
             <b>You already have an active loan.</b> You can apply for a new
@@ -106,11 +123,13 @@ export default function ClientApplicationsPage() {
             title="No loan applications yet"
             detail="Ready to apply for your first loan?"
           />
-          <div className="application-empty-action">
-            <Button onClick={openNewApplication}>
-              <Plus size={17} /> Start an Application
-            </Button>
-          </div>
+          {canApply && (
+            <div className="application-empty-action">
+              <Button onClick={openNewApplication}>
+                <Plus size={17} /> Start an Application
+              </Button>
+            </div>
+          )}
         </Card>
       ) : (
         <div className="stack-gap">
