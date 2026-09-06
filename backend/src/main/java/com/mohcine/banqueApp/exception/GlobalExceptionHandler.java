@@ -5,9 +5,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.multipart.support.MissingServletRequestPartException;
 
 import java.time.LocalDateTime;
 
@@ -205,6 +207,23 @@ public class GlobalExceptionHandler {
                 status.value() ,
                 status.name() ,
                 "Image must be 5MB or smaller.",
+                request.getRequestURI());
+
+        return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError) ;
+    }
+
+    // A malformed upload request (wrong Content-Type, or a multipart body
+    // missing the "file" part entirely) — left to Spring's own handling,
+    // these surface as this app's usual unhandled-exception 403 instead of
+    // a meaningful error, so they're mapped explicitly here.
+    @ExceptionHandler({HttpMediaTypeNotSupportedException.class, MissingServletRequestPartException.class})
+    public ResponseEntity<ApiError> handleMalformedUpload(Exception exception , HttpServletRequest request) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+
+        ApiError apiError = new ApiError(LocalDateTime.now() ,
+                status.value() ,
+                status.name() ,
+                "Select an image to upload.",
                 request.getRequestURI());
 
         return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError) ;

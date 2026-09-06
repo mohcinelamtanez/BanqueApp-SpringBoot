@@ -70,7 +70,13 @@ public class ClientController {
     @Operation(summary = "uploads or replaces the authenticated user's own profile photo")
     @PostMapping(value = "/me/profile-photo", consumes = "multipart/form-data")
     public ClientResponseDTO uploadMyProfilePhoto(
-            @RequestParam("file") MultipartFile file,
+            // required = false: a genuinely missing part must reach
+            // ClientServiceImpl.validatePhoto()'s null check and come back
+            // as a clean InvalidFileException (400) — Spring's own
+            // MissingServletRequestPartException, left to its default
+            // handling, surfaces as this app's usual unhandled-exception
+            // 403 instead of a meaningful error.
+            @RequestParam(value = "file", required = false) MultipartFile file,
             Authentication authentication) {
         User user = (User) authentication.getPrincipal();
         Client saved = clientService.updateProfilePhoto(user.getId(), file);

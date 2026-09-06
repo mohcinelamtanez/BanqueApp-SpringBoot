@@ -62,9 +62,20 @@ class ApplicationServiceImplTest {
                 applicationRepository, clientRepository, applicationMapper, loanService, loanRepository);
     }
 
+    // A complete profile (all required Client fields filled in) — these
+    // fixtures exist to test the ACTIVE-loan/PENDING-application
+    // eligibility rule, not profile completeness (see the dedicated
+    // ensureProfileComplete tests below), so the client must never be the
+    // reason submitApplication rejects here.
     private Client aClient() {
         Client client = new Client();
         client.setClientReference(CLIENT_REFERENCE);
+        client.setFirstName("Jane");
+        client.setLastName("Doe");
+        client.setCity("Casablanca");
+        client.setPostalCode("20000");
+        client.setAnnualIncome(BigDecimal.valueOf(120000));
+        client.setEmail("jane.doe@example.com");
         return client;
     }
 
@@ -179,6 +190,52 @@ class ApplicationServiceImplTest {
                 .isInstanceOf(ClientNotEligibleException.class);
 
         verify(applicationRepository, never()).save(any());
+    }
+
+    // An incomplete Client profile blocks a new application, independently
+    // of the ACTIVE-loan/PENDING-application rule (checked first, so
+    // neither loanRepository nor applicationRepository is ever consulted).
+    @Test
+    void submitApplication_rejected_whenClientProfileIsIncomplete() {
+        Client incomplete = aClient();
+        incomplete.setCity(null);
+        when(clientRepository.findByClientReference(CLIENT_REFERENCE)).thenReturn(incomplete);
+
+        assertThatThrownBy(() -> applicationService.submitApplication(CLIENT_REFERENCE, aRequest()))
+                .isInstanceOf(ClientNotEligibleException.class)
+                .hasMessageContaining("profile");
+
+        verify(applicationRepository, never()).save(any());
+    }
+
+    // A blank (non-null but empty) required field is treated the same as a
+    // missing one.
+    @Test
+    void submitApplication_rejected_whenClientProfileFieldIsBlank() {
+        Client incomplete = aClient();
+        incomplete.setEmail("   ");
+        when(clientRepository.findByClientReference(CLIENT_REFERENCE)).thenReturn(incomplete);
+
+        assertThatThrownBy(() -> applicationService.submitApplication(CLIENT_REFERENCE, aRequest()))
+                .isInstanceOf(ClientNotEligibleException.class)
+                .hasMessageContaining("profile");
+
+        verify(applicationRepository, never()).save(any());
+    }
+
+    // A complete profile plus a passing eligibility check succeeds — the
+    // two rules are independent and both must pass.
+    @Test
+    void submitApplication_succeeds_whenProfileCompleteAndEligible() {
+        when(clientRepository.findByClientReference(CLIENT_REFERENCE)).thenReturn(aClient());
+        stubNoActiveLoan();
+        stubNoPendingApplication();
+        when(applicationMapper.toEntity(any())).thenReturn(new Application());
+        when(applicationRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        applicationService.submitApplication(CLIENT_REFERENCE, aRequest());
+
+        verify(applicationRepository).save(any());
     }
 
     // Ownership: the eligibility check is always scoped to the
