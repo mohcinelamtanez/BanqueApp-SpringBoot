@@ -283,6 +283,9 @@ textarea:focus {
   font-size: 12px;
   font-weight: 600;
 }
+img.sidebar-profile-avatar {
+  object-fit: cover;
+}
 .sidebar-profile-info {
   display: flex;
   flex-direction: column;
@@ -445,6 +448,9 @@ textarea:focus {
   background: #d8e3fb;
   font-size: 11px;
   font-weight: bold;
+}
+img.avatar {
+  object-fit: cover;
 }
 .notification-center {
   position: absolute;
@@ -2815,6 +2821,27 @@ dd {
 }
 .profile-role {
   margin: 4px 0 0;
+}
+.profile-avatar-upload {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.profile-avatar-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+.profile-avatar-actions .btn {
+  padding: 6px 10px;
+  font-size: 12px;
+}
+.profile-avatar-upload .error {
+  font-size: 12px;
+  text-align: center;
+  max-width: 160px;
 }
 @media (max-width: 650px) {
   .profile-heading {

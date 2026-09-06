@@ -13,8 +13,3 @@ export const useClient = (reference, refreshKey) =>
     reference,
     [refreshKey],
   );
-// "My Profile" — the authenticated user's own Client (or null if they
-// haven't completed their profile yet). `refreshKey` (ignored by
-// clientService.getMine itself) is what forces a refetch after a save.
-export const useMyClient = (refreshKey) =>
-  useResource(clientService.getMine, refreshKey);

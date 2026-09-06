@@ -10,7 +10,7 @@ import {
 import ClientAvatar from "../../components/clients/ClientAvatar";
 import ClientForm from "../../components/clients/ClientForm";
 import ClientFormModal from "../../components/clients/ClientFormModal";
-import { useMyClient } from "../../hooks/useClients";
+import { useClientProfile } from "./ClientProfileContext";
 import { clientService } from "../../services/clientService";
 import { getUser, setUser } from "../../auth/authStore";
 import { money } from "../../utils/finance";
@@ -20,8 +20,10 @@ const ACCEPTED_PHOTO_TYPES = ["image/jpeg", "image/png", "image/webp"];
 const MAX_PHOTO_SIZE_BYTES = 5 * 1024 * 1024;
 
 export default function ClientProfilePage() {
-  const [refreshKey, setRefreshKey] = useState(0);
-  const { loading, data: client } = useMyClient(refreshKey);
+  // Shared with the Sidebar/Navbar (ClientProfileProvider, mounted in
+  // ClientLayout) — calling refresh() here after a save/upload updates the
+  // same state they read, so they pick up the change automatically.
+  const { loading, client, refresh } = useClientProfile();
   const [editOpen, setEditOpen] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [creating, setCreating] = useState(false);
@@ -52,7 +54,7 @@ export default function ClientProfilePage() {
         // Payments, all keyed off authStore's clientReference) working
         // immediately, without requiring the user to log out and back in.
         setUser({ ...getUser(), clientReference: saved.reference });
-        setRefreshKey((value) => value + 1);
+        refresh();
       } catch (err) {
         setCreateError(
           err.response?.data?.message ||
@@ -116,7 +118,7 @@ export default function ClientProfilePage() {
     setUploadingPhoto(true);
     try {
       await clientService.uploadMyPhoto(file);
-      setRefreshKey((value) => value + 1);
+      refresh();
     } catch (err) {
       setPhotoError(
         err.response?.data?.message ||
@@ -134,7 +136,7 @@ export default function ClientProfilePage() {
     setUploadingPhoto(true);
     try {
       await clientService.removeMyPhoto();
-      setRefreshKey((value) => value + 1);
+      refresh();
     } catch (err) {
       setPhotoError(
         err.response?.data?.message ||
@@ -272,7 +274,7 @@ export default function ClientProfilePage() {
           onSaved={() => {
             setEditOpen(false);
             setShowSuccess(true);
-            setRefreshKey((value) => value + 1);
+            refresh();
           }}
         />
       )}

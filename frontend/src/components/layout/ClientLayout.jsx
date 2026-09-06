@@ -3,12 +3,18 @@ import { useTranslation } from "react-i18next";
 import { Bell, Menu, Search } from "lucide-react";
 import "../../i18n";
 import ClientSidebar from "./ClientSidebar";
+import ClientAvatar from "../clients/ClientAvatar";
 import NotificationCenter from "../notifications/NotificationCenter";
 import { useSidebarCollapsed } from "./useSidebarCollapsed";
 import { loanService } from "../../services/loanService";
 import { paymentService } from "../../services/paymentService";
 import { buildPaymentNotifications } from "../../utils/paymentSchedule";
 import { getCurrentClientId } from "../../pages/client/clientShared";
+import { initials } from "../../pages/pageShared";
+import {
+  ClientProfileProvider,
+  useClientProfile,
+} from "../../pages/client/ClientProfileContext";
 import {
   ClientThemeProvider,
   useClientTheme,
@@ -17,6 +23,7 @@ import {
 function ClientLayoutShell({ children }) {
   const { t } = useTranslation();
   const { resolved } = useClientTheme();
+  const { client } = useClientProfile();
   const [drawer, setDrawer] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [collapsed, setCollapsed] = useSidebarCollapsed();
@@ -78,7 +85,11 @@ function ClientLayoutShell({ children }) {
               <Bell size={21} />
               <i />
             </button>
-            <div className="avatar">CL</div>
+            <ClientAvatar
+              profilePhotoUrl={client?.profilePhotoUrl}
+              initials={client ? initials(client.name) : "CL"}
+              className="avatar"
+            />
             {notificationsOpen && (
               <NotificationCenter
                 notifications={paymentNotifications}
@@ -96,7 +107,9 @@ function ClientLayoutShell({ children }) {
 export default function ClientLayout({ children }) {
   return (
     <ClientThemeProvider>
-      <ClientLayoutShell>{children}</ClientLayoutShell>
+      <ClientProfileProvider>
+        <ClientLayoutShell>{children}</ClientLayoutShell>
+      </ClientProfileProvider>
     </ClientThemeProvider>
   );
 }

@@ -2,6 +2,7 @@ import { IdCard, Mail, MapPin, Plus, Wallet } from "lucide-react";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import LoanTable from "../components/loans/LoanTable";
+import ClientAvatar from "../components/clients/ClientAvatar";
 import ClientFormModal from "../components/clients/ClientFormModal";
 import {
   Breadcrumbs,
@@ -16,7 +17,7 @@ import { useLoans } from "../hooks/useLoans";
 import { useClient } from "../hooks/useClients";
 import { clientService } from "../services/clientService";
 import { money } from "../utils/finance";
-import { loanStats } from "./pageShared";
+import { initials, loanStats } from "./pageShared";
 export default function ClientDetailsPage() {
   const navigate = useNavigate();
   const { clientId } = useParams();
@@ -75,28 +76,35 @@ export default function ClientDetailsPage() {
         items={[{ label: "Clients", to: "/clients" }, { label: client.name }]}
       />
       <div className="profile card">
-        <div>
-          <h1>{client.name}</h1>
-          <div className="profile-meta">
-            <div className="profile-meta-row mono">
-              <span className="profile-meta-item">
-                <IdCard size={14} />
-                {client.id}
-              </span>
-              <span className="profile-meta-item">
-                <MapPin size={14} />
-                {client.city}, Morocco
-              </span>
-              <span className="profile-meta-item">
-                <Wallet size={14} />
-                {money(client.income)}/yr
-              </span>
-            </div>
-            <div className="profile-meta-row profile-meta-email mono">
-              <span className="profile-meta-item">
-                <Mail size={14} />
-                {client.email}
-              </span>
+        <div className="profile-heading">
+          <ClientAvatar
+            profilePhotoUrl={client.profilePhotoUrl}
+            initials={initials(client.name)}
+            className="avatar profile-avatar"
+          />
+          <div>
+            <h1>{client.name}</h1>
+            <div className="profile-meta">
+              <div className="profile-meta-row mono">
+                <span className="profile-meta-item">
+                  <IdCard size={14} />
+                  {client.id}
+                </span>
+                <span className="profile-meta-item">
+                  <MapPin size={14} />
+                  {client.city}, Morocco
+                </span>
+                <span className="profile-meta-item">
+                  <Wallet size={14} />
+                  {money(client.income)}/yr
+                </span>
+              </div>
+              <div className="profile-meta-row profile-meta-email mono">
+                <span className="profile-meta-item">
+                  <Mail size={14} />
+                  {client.email}
+                </span>
+              </div>
             </div>
           </div>
         </div>
