@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { IdCard, Mail, MapPin } from "lucide-react";
+import { Camera, Pencil } from "lucide-react";
 import {
   Badge,
   Button,
@@ -66,7 +66,7 @@ export default function ClientProfilePage() {
     };
 
     return (
-      <>
+      <div className="client-profile">
         <PageHeading
           title="My Profile"
           subtitle="Complete your profile to get started."
@@ -85,7 +85,7 @@ export default function ClientProfilePage() {
             </Button>
           </div>
         </Card>
-      </>
+      </div>
     );
   }
 
@@ -148,91 +148,77 @@ export default function ClientProfilePage() {
   };
 
   return (
-    <>
+    <div className="client-profile">
       <PageHeading
         title="My Profile"
         subtitle="View and manage your personal information."
       />
-      <div className="profile card">
-        <div className="profile-heading">
-          <div className="profile-avatar-upload">
-            {localPreview ? (
-              <img
-                src={localPreview}
-                alt=""
-                className="avatar profile-avatar"
-              />
-            ) : (
-              <ClientAvatar
-                profilePhotoUrl={client.profilePhotoUrl}
-                initials={initials(client.name)}
-                className="avatar profile-avatar"
-              />
-            )}
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept={ACCEPTED_PHOTO_TYPES.join(",")}
-              hidden
-              onChange={onPhotoSelected}
+
+      <Card className="profile-identity">
+        <div className="profile-identity-photo">
+          <span className="profile-avatar-eyebrow">Profile Photo</span>
+          {localPreview ? (
+            <img
+              src={localPreview}
+              alt=""
+              className="avatar profile-photo-avatar"
             />
-            <div className="profile-avatar-actions">
+          ) : (
+            <ClientAvatar
+              profilePhotoUrl={client.profilePhotoUrl}
+              initials={initials(client.name)}
+              className="avatar profile-photo-avatar"
+            />
+          )}
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept={ACCEPTED_PHOTO_TYPES.join(",")}
+            hidden
+            onChange={onPhotoSelected}
+          />
+          <div className="profile-avatar-actions">
+            <Button
+              variant="secondary"
+              type="button"
+              onClick={choosePhoto}
+              disabled={uploadingPhoto}
+            >
+              <Camera size={14} />
+              {uploadingPhoto
+                ? "Uploading…"
+                : client.profilePhotoUrl
+                  ? "Change Photo"
+                  : "Upload Photo"}
+            </Button>
+            {client.profilePhotoUrl && (
               <Button
                 variant="secondary"
                 type="button"
-                onClick={choosePhoto}
+                onClick={removePhoto}
                 disabled={uploadingPhoto}
               >
-                {uploadingPhoto
-                  ? "Uploading…"
-                  : client.profilePhotoUrl
-                    ? "Change Photo"
-                    : "Upload Photo"}
+                Remove
               </Button>
-              {client.profilePhotoUrl && (
-                <Button
-                  variant="secondary"
-                  type="button"
-                  onClick={removePhoto}
-                  disabled={uploadingPhoto}
-                >
-                  Remove Photo
-                </Button>
-              )}
-            </div>
-            {photoError && <p className="error">{photoError}</p>}
+            )}
           </div>
-          <div>
+          {photoError && <p className="error">{photoError}</p>}
+        </div>
+
+        <div className="profile-identity-details">
+          <div className="profile-identity-heading">
             <h1>{client.name}</h1>
-            <p className="profile-role">
-              <Badge>Client</Badge>
-            </p>
-            <div className="profile-meta">
-              <div className="profile-meta-row mono">
-                <span className="profile-meta-item">
-                  <IdCard size={14} />
-                  {client.id}
-                </span>
-                <span className="profile-meta-item">
-                  <MapPin size={14} />
-                  {client.city}, Morocco
-                </span>
-              </div>
-              <div className="profile-meta-row profile-meta-email mono">
-                <span className="profile-meta-item">
-                  <Mail size={14} />
-                  {client.email}
-                </span>
-              </div>
-            </div>
+            <Badge>Client</Badge>
           </div>
         </div>
-        <div className="actions">
+
+        <div className="profile-identity-actions">
           <Button variant="secondary" onClick={() => setEditOpen(true)}>
+            <Pencil size={16} />
             Edit Profile
           </Button>
         </div>
-      </div>
+      </Card>
 
       <div className="detail-grid">
         <Card>
@@ -257,7 +243,7 @@ export default function ClientProfilePage() {
         </Card>
       </div>
 
-      <Card>
+      <Card className="profile-financial-card">
         <h2>Financial Information</h2>
         <dl>
           <dt>Annual Revenue</dt>
@@ -285,6 +271,6 @@ export default function ClientProfilePage() {
           onClose={() => setShowSuccess(false)}
         />
       )}
-    </>
+    </div>
   );
 }

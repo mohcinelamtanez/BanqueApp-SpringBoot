@@ -48,9 +48,9 @@ export function PageHeading({ title, subtitle, action }) {
     </div>
   );
 }
-export function Metric({ label, value, icon = <Landmark />, footer }) {
+export function Metric({ label, value, icon = <Landmark />, footer, className = "" }) {
   return (
-    <Card className="metric">
+    <Card className={`metric ${className}`.trim()}>
       <div>
         <small>{label}</small>
         <strong>{value}</strong>
