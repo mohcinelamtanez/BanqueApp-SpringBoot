@@ -7,6 +7,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import java.time.LocalDateTime;
 
@@ -141,6 +142,32 @@ public class GlobalExceptionHandler {
         return  ResponseEntity.status(HttpStatus.CONFLICT).body(apiError) ;
     }
 
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    public ResponseEntity<ApiError> handleUserAlreadyExistsException(UserAlreadyExistsException exception , HttpServletRequest request) {
+        HttpStatus status = HttpStatus.CONFLICT;
+
+        ApiError apiError = new ApiError(LocalDateTime.now() ,
+                status.value() ,
+                status.name() ,
+                exception.getMessage(),
+                request.getRequestURI());
+
+        return  ResponseEntity.status(HttpStatus.CONFLICT).body(apiError) ;
+    }
+
+    @ExceptionHandler(InvalidRegistrationException.class)
+    public ResponseEntity<ApiError> handleInvalidRegistrationException(InvalidRegistrationException exception , HttpServletRequest request) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+
+        ApiError apiError = new ApiError(LocalDateTime.now() ,
+                status.value() ,
+                status.name() ,
+                exception.getMessage(),
+                request.getRequestURI());
+
+        return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError) ;
+    }
+
     @ExceptionHandler(AnnualIncomeException.class)
     public ResponseEntity<ApiError> handleAnnualIncomeException(AnnualIncomeException exception , HttpServletRequest request) {
         HttpStatus status = HttpStatus.CONFLICT;
@@ -152,5 +179,47 @@ public class GlobalExceptionHandler {
                 request.getRequestURI());
 
         return  ResponseEntity.status(HttpStatus.CONFLICT).body(apiError) ;
+    }
+
+    @ExceptionHandler(InvalidFileException.class)
+    public ResponseEntity<ApiError> handleInvalidFileException(InvalidFileException exception , HttpServletRequest request) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+
+        ApiError apiError = new ApiError(LocalDateTime.now() ,
+                status.value() ,
+                status.name() ,
+                exception.getMessage(),
+                request.getRequestURI());
+
+        return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError) ;
+    }
+
+    // Spring rejects an oversized multipart body before it ever reaches the
+    // controller (see spring.servlet.multipart.max-file-size) — surfaced as
+    // the same kind of 400 as any other invalid upload, not a raw 500.
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<ApiError> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException exception , HttpServletRequest request) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+
+        ApiError apiError = new ApiError(LocalDateTime.now() ,
+                status.value() ,
+                status.name() ,
+                "Image must be 5MB or smaller.",
+                request.getRequestURI());
+
+        return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError) ;
+    }
+
+    @ExceptionHandler(StorageException.class)
+    public ResponseEntity<ApiError> handleStorageException(StorageException exception , HttpServletRequest request) {
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+
+        ApiError apiError = new ApiError(LocalDateTime.now() ,
+                status.value() ,
+                status.name() ,
+                "Could not process the uploaded file. Please try again.",
+                request.getRequestURI());
+
+        return  ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(apiError) ;
     }
 }

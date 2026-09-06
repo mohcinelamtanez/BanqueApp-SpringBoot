@@ -57,6 +57,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         if (client == null) {
             throw new ClientNotFoundException(clientReference);
         }
+        ensureProfileComplete(client);
         ensureClientIsEligible(clientReference);
         Application application = applicationMapper.toEntity(dto);
         application.setClient(client);
@@ -77,6 +78,29 @@ public class ApplicationServiceImpl implements ApplicationService {
         if (applicationRepository.existsByClient_ClientReferenceAndStatus(clientReference, ApplicationStatus.PENDING)) {
             throw new ClientNotEligibleException("You already have a pending loan application.");
         }
+    }
+
+    // Profile completeness is derived from the Client's own required
+    // fields (all non-nullable in the schema except profilePhotoUrl) rather
+    // than a separate stored "profileCompleted" flag — there is no such
+    // state to keep in sync. A freshly self-registered User's Client is
+    // null at this point (caught above by ClientNotFoundException); this
+    // guards the case of a legacy/corrupted row missing a required value.
+    private void ensureProfileComplete(Client client) {
+        boolean complete = isFilled(client.getFirstName())
+                && isFilled(client.getLastName())
+                && isFilled(client.getCity())
+                && isFilled(client.getPostalCode())
+                && client.getAnnualIncome() != null
+                && isFilled(client.getEmail());
+        if (!complete) {
+            throw new ClientNotEligibleException(
+                    "Complete your profile before submitting a loan application.");
+        }
+    }
+
+    private static boolean isFilled(String value) {
+        return value != null && !value.isBlank();
     }
 
     @Override

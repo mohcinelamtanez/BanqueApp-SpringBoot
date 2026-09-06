@@ -89,8 +89,18 @@ public class SpringSecurityConfig {
                         .requestMatchers(
                                 "/api/v1/loans/me",
                                 "/api/v1/payments/me",
-                                "/api/v1/applications/me"
+                                "/api/v1/applications/me",
+                                "/api/v1/clients/me",
+                                "/api/v1/clients/me/profile-photo"
                         ).authenticated()
+
+                        // Uploaded Client profile photos — never publicly
+                        // exposed. Any authenticated user (Client, Admin or
+                        // Bank Agent) may view one, since Admin Client
+                        // Management must be able to display any client's
+                        // photo; this is still strictly narrower than the
+                        // fully public /api/v1/clients/** below.
+                        .requestMatchers("/api/uploads/**").authenticated()
 
                         .requestMatchers(HttpMethod.POST, "/api/v1/applications")
                         .hasAuthority("ROLE_CLIENT")

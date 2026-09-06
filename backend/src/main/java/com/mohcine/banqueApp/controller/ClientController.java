@@ -4,11 +4,15 @@ import com.mohcine.banqueApp.dto.ClientCreateDTO;
 import com.mohcine.banqueApp.dto.ClientResponseDTO;
 import com.mohcine.banqueApp.dto.ClientUpdateDTO;
 import com.mohcine.banqueApp.entity.Client;
+import com.mohcine.banqueApp.entity.User;
 import com.mohcine.banqueApp.mapper.ClientMapper;
 import com.mohcine.banqueApp.service.interfaces.ClientService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -29,6 +33,57 @@ public class ClientController {
          this.clientMapper = clientMapper;
     }
 
+
+    // "My Profile" — the Client linked to the authenticated User, never a
+    // client-supplied id/reference. No Client yet (User.client == null)
+    // returns 204 so the frontend can tell "not created yet" apart from a
+    // real error, instead of throwing ClientNotFoundException.
+    @Operation(summary = "returns the authenticated user's own client profile, if any")
+    @GetMapping("/me")
+    public ResponseEntity<ClientResponseDTO> getMyProfile(Authentication authentication) {
+        User user = (User) authentication.getPrincipal();
+        if (user.getClient() == null) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(clientMapper.toDTO(user.getClient()));
+    }
+
+    // Creates the Client and links it to the authenticated User the first
+    // time this is called, or updates the already-linked Client on every
+    // call after that — see ClientServiceImpl.saveMyProfile(). The target
+    // Client is always resolved from the authenticated identity, so a
+    // client can never edit another Client's profile through this endpoint.
+    @Operation(summary = "creates or updates the authenticated user's own client profile")
+    @PutMapping("/me")
+    public ClientResponseDTO saveMyProfile(
+            @RequestBody ClientCreateDTO dto,
+            Authentication authentication) {
+        User user = (User) authentication.getPrincipal();
+        Client saved = clientService.saveMyProfile(user.getId(), dto);
+        return clientMapper.toDTO(saved);
+    }
+
+    // Uploads/replaces the authenticated user's own client's profile photo.
+    // The file is validated and stored centrally (see
+    // ClientServiceImpl.updateProfilePhoto / FileStorageService) — never an
+    // arbitrary client-supplied URL, and never another client's profile.
+    @Operation(summary = "uploads or replaces the authenticated user's own profile photo")
+    @PostMapping(value = "/me/profile-photo", consumes = "multipart/form-data")
+    public ClientResponseDTO uploadMyProfilePhoto(
+            @RequestParam("file") MultipartFile file,
+            Authentication authentication) {
+        User user = (User) authentication.getPrincipal();
+        Client saved = clientService.updateProfilePhoto(user.getId(), file);
+        return clientMapper.toDTO(saved);
+    }
+
+    @Operation(summary = "removes the authenticated user's own profile photo, if any")
+    @DeleteMapping("/me/profile-photo")
+    public ClientResponseDTO removeMyProfilePhoto(Authentication authentication) {
+        User user = (User) authentication.getPrincipal();
+        Client saved = clientService.removeProfilePhoto(user.getId());
+        return clientMapper.toDTO(saved);
+    }
 
     @Operation(summary = "this method returns the client based on the reference")
      @GetMapping("reference/{reference}")
