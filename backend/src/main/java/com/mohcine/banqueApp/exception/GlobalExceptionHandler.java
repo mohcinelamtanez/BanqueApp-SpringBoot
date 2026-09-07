@@ -229,6 +229,32 @@ public class GlobalExceptionHandler {
         return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError) ;
     }
 
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ApiError> handleUserNotFoundException(UserNotFoundException exception , HttpServletRequest request) {
+        HttpStatus status = HttpStatus.NOT_FOUND;
+
+        ApiError apiError = new ApiError(LocalDateTime.now() ,
+                status.value() ,
+                status.name() ,
+                exception.getMessage(),
+                request.getRequestURI());
+
+        return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiError) ;
+    }
+
+    @ExceptionHandler(InvalidRoleException.class)
+    public ResponseEntity<ApiError> handleInvalidRoleException(InvalidRoleException exception , HttpServletRequest request) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+
+        ApiError apiError = new ApiError(LocalDateTime.now() ,
+                status.value() ,
+                status.name() ,
+                exception.getMessage(),
+                request.getRequestURI());
+
+        return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError) ;
+    }
+
     @ExceptionHandler(StorageException.class)
     public ResponseEntity<ApiError> handleStorageException(StorageException exception , HttpServletRequest request) {
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;

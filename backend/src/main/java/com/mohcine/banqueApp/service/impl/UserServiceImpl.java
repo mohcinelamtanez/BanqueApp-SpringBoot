@@ -1,6 +1,9 @@
 package com.mohcine.banqueApp.service.impl;
 
+import com.mohcine.banqueApp.entity.Role;
 import com.mohcine.banqueApp.entity.User;
+import com.mohcine.banqueApp.exception.InvalidRoleException;
+import com.mohcine.banqueApp.exception.UserNotFoundException;
 import com.mohcine.banqueApp.repository.UserRepository;
 import com.mohcine.banqueApp.service.interfaces.RoleService;
 import com.mohcine.banqueApp.service.interfaces.UserService;
@@ -14,7 +17,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author USER
@@ -22,14 +27,27 @@ import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired private RoleService roleService;
-    @Autowired private PasswordEncoder passwordEncoder;
+
+
+    private final UserRepository userRepository;
+
+    private RoleService roleService;
+
+    private final PasswordEncoder passwordEncoder;
+
     @Lazy
-    @Autowired
-    private AuthenticationManager authenticationManager;
-    @Autowired private JwtUtil jwtUtil;
+    private final AuthenticationManager authenticationManager;
+    private final JwtUtil jwtUtil;
+
+     public UserServiceImpl(UserRepository userRepository,
+                            PasswordEncoder passwordEncoder ,
+                            AuthenticationManager authenticationManager ,
+                            JwtUtil jwtUtil) {
+         this.userRepository = userRepository;
+         this.passwordEncoder = passwordEncoder;
+         this.authenticationManager = authenticationManager;
+         this.jwtUtil = jwtUtil;
+     }
 
     @Override
     public String signIn(User user) {
@@ -38,7 +56,7 @@ public class UserServiceImpl implements UserService {
                     user.getUsername(), user.getPassword()
             ));
         } catch (BadCredentialsException e) {
-            throw new BadCredentialsException("bad creditiel for username " + user.getUsername());
+            throw new BadCredentialsException("bad credentiel for username " + user.getUsername());
         }
         User loadUserByUsername = loadUserByUsername(user.getUsername());
         String token = jwtUtil.generateToken(loadUserByUsername);
@@ -61,6 +79,34 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> findAll() {
         return userRepository.findAll();
+    }
+
+    private static final Set<String> ASSIGNABLE_ROLES = Set.of("BANK_AGENT", "CLIENT");
+
+    // Deliberately narrower than the full Role model: ROLE_ADMIN is never
+    // reachable through this method, so promoting a user to Admin is not
+    // something this feature can do — that stays outside self-service admin
+    // user management.
+    @Override
+    public User assignRole(Integer userId, String role) {
+        if (role == null || !ASSIGNABLE_ROLES.contains(role)) {
+            throw new InvalidRoleException("Role must be either BANK_AGENT or CLIENT.");
+        }
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
+
+        Role newRole = new Role();
+        newRole.setAuthority("ROLE_" + role);
+        Role resolvedRole = roleService.save(newRole);
+
+        // Unlike register()'s brand-new (not-yet-persisted) User, this user
+        // was loaded from the DB — its `authorities` collection is a
+        // Hibernate-managed persistent collection. Replacing it with an
+        // immutable List.of(...) throws UnsupportedOperationException once
+        // Hibernate tries to reconcile it against the user_roles join table
+        // on flush; a mutable list works.
+        user.setAuthorities(new ArrayList<>(List.of(resolvedRole)));
+        return userRepository.save(user);
     }
 
     @Override
