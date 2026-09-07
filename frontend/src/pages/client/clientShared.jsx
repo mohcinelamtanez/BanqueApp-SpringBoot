@@ -1,21 +1,12 @@
-// Frontend-only stand-in for the authenticated client until real auth/roles
-// are wired in. Every Client page filters the shared mock loans by this id.
-export const CURRENT_CLIENT_ID = "CLI-9824-A";
+import { getUser } from "../../auth/authStore";
 
-// A loan application only reaches "Active"/"Completed" once an administrator
-// has approved it — there is no separate stored "Approved" status in the
-// data model, so both map to the client-facing APPROVED application state.
-export function applicationStatus(loan) {
-  if (loan.status === "Pending") return "PENDING";
-  if (loan.status === "Rejected") return "REJECTED";
-  return "APPROVED";
+// Resolves to the clientReference of whichever Client the currently
+// logged-in CLIENT-role user is linked to (set by AuthController at login).
+// A function, not a constant, so it always reflects whoever is actually
+// authenticated right now rather than a fixed stand-in.
+export function getCurrentClientId() {
+  return getUser()?.clientReference ?? null;
 }
-
-export const APPLICATION_STATUS_LABEL = {
-  PENDING: "Pending",
-  REJECTED: "Declined",
-  APPROVED: "Approved",
-};
 
 // DUE/OVERDUE are derived (see utils/paymentSchedule.js), never stored —
 // labels below cover every status getPaymentStatus() can return, relabeled

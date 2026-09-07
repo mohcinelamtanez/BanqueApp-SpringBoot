@@ -80,6 +80,15 @@
             <artifactId>jjwt</artifactId>
             <version>0.9.1</version>
         </dependency>
+        <!-- jjwt 0.9.1 calls javax.xml.bind.DatatypeConverter internally,
+             which was removed from the JDK itself in Java 11+ (this project
+             targets Java 21) — without this, JwtUtil.generateToken() fails
+             at runtime with NoClassDefFoundError on every successful login. -->
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.3.1</version>
+        </dependency>
 
     </dependencies>
 

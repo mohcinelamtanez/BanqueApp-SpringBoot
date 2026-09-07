@@ -27,8 +27,10 @@ export default function UserManagementPage() {
   const [formModal, setFormModal] = useState(null);
   const [statusTarget, setStatusTarget] = useState(null);
   const [togglingStatus, setTogglingStatus] = useState(false);
+  const [statusError, setStatusError] = useState("");
   const [resetTarget, setResetTarget] = useState(null);
   const [resettingPassword, setResettingPassword] = useState(false);
+  const [resetError, setResetError] = useState("");
   const [success, setSuccess] = useState(null);
 
   useEffect(() => {
@@ -79,30 +81,34 @@ export default function UserManagementPage() {
   const closeStatusConfirm = () => {
     if (togglingStatus) return;
     setStatusTarget(null);
+    setStatusError("");
   };
   const confirmToggleStatus = async () => {
     setTogglingStatus(true);
+    setStatusError("");
     const nextStatus = statusTarget.status === "Active" ? "Inactive" : "Active";
-    await userService.update(statusTarget.id, { status: nextStatus });
-    setTogglingStatus(false);
-    setStatusTarget(null);
-    reload();
+    try {
+      await userService.update(statusTarget.id, { status: nextStatus });
+      setStatusTarget(null);
+      reload();
+    } catch (error) {
+      setStatusError(
+        error.message || "Something went wrong. Please try again.",
+      );
+    } finally {
+      setTogglingStatus(false);
+    }
   };
 
   const closeResetConfirm = () => {
     if (resettingPassword) return;
     setResetTarget(null);
+    setResetError("");
   };
   const confirmResetPassword = async () => {
-    setResettingPassword(true);
-    // Frontend-only simulation — no real password reset logic/backend call.
-    await new Promise((resolve) => setTimeout(resolve, 400));
-    setResettingPassword(false);
-    setResetTarget(null);
-    setSuccess({
-      title: "Password Reset Successfully",
-      message: `A temporary password has been generated for ${resetTarget.firstName} ${resetTarget.lastName}.`,
-    });
+    // No backend endpoint exists yet for password resets — surface that
+    // honestly instead of simulating a fake success.
+    setResetError("Password reset is not connected to the backend yet.");
   };
 
   return (
@@ -205,6 +211,7 @@ export default function UserManagementPage() {
           confirmLabel={statusTarget.status === "Active" ? "Deactivate" : "Activate"}
           confirmVariant={statusTarget.status === "Active" ? "danger" : "primary"}
           submitting={togglingStatus}
+          error={statusError}
           onClose={closeStatusConfirm}
           onConfirm={confirmToggleStatus}
         />
@@ -215,6 +222,7 @@ export default function UserManagementPage() {
           message="A temporary password will be generated for this user."
           confirmLabel="Reset Password"
           submitting={resettingPassword}
+          error={resetError}
           onClose={closeResetConfirm}
           onConfirm={confirmResetPassword}
         />

@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Button, Input, Modal, Select } from "../ui";
-import { loanService } from "../../services/loanService";
-import { CURRENT_CLIENT_ID } from "../../pages/client/clientShared";
+import { applicationService } from "../../services/applicationService";
 
 const LOAN_TYPES = ["Consumer Loan", "Auto Loan"];
 
@@ -13,6 +12,7 @@ export default function NewApplicationModal({ onClose, onCreated }) {
   });
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
 
   const submit = async (event) => {
     event.preventDefault();
@@ -22,21 +22,26 @@ export default function NewApplicationModal({ onClose, onCreated }) {
       nextErrors.duration = "Enter a valid duration";
     if (Object.keys(nextErrors).length) return setErrors(nextErrors);
     setErrors({});
+    setSubmitError("");
     setSubmitting(true);
-    await loanService.create({
-      id: `LN-${Date.now().toString().slice(-4)}`,
-      clientId: CURRENT_CLIENT_ID,
-      type: form.type,
-      amount: Number(form.amount),
-      duration: Number(form.duration),
-      rate: 0,
-      status: "Pending",
-      startDate: new Date().toISOString().slice(0, 10),
-      endDate: null,
-      repaid: 0,
-    });
-    setSubmitting(false);
-    onCreated();
+    try {
+      // The submitting client, the interest rate, risk assessment and
+      // resulting Loan are all decided by the Admin/Bank Agent when this
+      // application is reviewed — this only records the client's request.
+      await applicationService.create({
+        type: form.type,
+        amount: Number(form.amount),
+        duration: Number(form.duration),
+      });
+      onCreated();
+    } catch (error) {
+      setSubmitError(
+        error.response?.data?.message ||
+          "Something went wrong. Please try again.",
+      );
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -79,6 +84,7 @@ export default function NewApplicationModal({ onClose, onCreated }) {
           will assess your request and notify you once a decision has been
           made.
         </p>
+        {submitError && <p className="error">{submitError}</p>}
         <div className="form-actions">
           <Button
             variant="secondary"

@@ -1,7 +1,10 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../../auth/AuthContext";
+import { useClientProfile } from "../../pages/client/ClientProfileContext";
+import { initials } from "../../pages/pageShared";
 import { ROLES } from "../../auth/currentUser";
+import ClientAvatar from "../clients/ClientAvatar";
 import {
   Banknote,
   CreditCard,
@@ -54,14 +57,22 @@ export default function ClientSidebar({
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { user, logout } = useAuth();
+  // Single shared source (ClientProfileProvider, mounted in ClientLayout) —
+  // the Navbar avatar reads the exact same state, so both always agree and
+  // neither fetches the profile on its own.
+  const { client } = useClientProfile();
   const handleLogout = () => {
     logout();
     navigate("/login", { replace: true });
   };
-  const fullName = user ? `${user.firstName} ${user.lastName}`.trim() : "";
-  const initials = user
-    ? `${user.firstName?.[0] ?? ""}${user.lastName?.[0] ?? ""}`.toUpperCase()
-    : "";
+  // The Client's real name is preferred over the account email. Falling
+  // back to the email only covers the brief bootstrapping window before a
+  // Client profile exists yet (e.g. right after Sign Up, before "My
+  // Profile" has been completed) — there is no name to show at all yet.
+  const fullName = client ? client.name : (user?.email ?? "");
+  const avatarInitials = client
+    ? initials(client.name)
+    : user?.email?.[0]?.toUpperCase() || "";
   const roleLabel = user ? ROLE_LABELS[user.role] ?? user.role : "";
   return (
     <aside
@@ -102,7 +113,11 @@ export default function ClientSidebar({
       </nav>
       <div className="sidebar-footer">
         <div className="sidebar-profile" title={collapsed ? fullName : undefined}>
-          <span className="sidebar-profile-avatar">{initials}</span>
+          <ClientAvatar
+            profilePhotoUrl={client?.profilePhotoUrl}
+            initials={avatarInitials}
+            className="sidebar-profile-avatar"
+          />
           <span className="sidebar-profile-info">
             <span className="sidebar-profile-name">{fullName}</span>
             <span className="sidebar-profile-role">{roleLabel}</span>

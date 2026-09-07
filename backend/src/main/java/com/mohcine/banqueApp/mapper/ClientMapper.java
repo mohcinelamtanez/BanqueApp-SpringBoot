@@ -34,7 +34,8 @@ public class ClientMapper {
                 client.getPostalCode(),
                 client.getAnnualIncome(),
                 client.getEmail(),
-                client.getClientStatus()
+                client.getClientStatus(),
+                client.getProfilePhotoUrl()
         );
     }
 

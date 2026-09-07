@@ -7,45 +7,63 @@ import {
   Card,
   ConfirmationDialog,
   EmptyState,
+  Input,
   LoadingState,
   SuccessModal,
 } from "../components/ui";
-import { useLoan } from "../hooks/useLoans";
-import { loanService } from "../services/loanService";
-import { money, date } from "../utils/finance";
-import { getClient, initials, StatusBadge } from "./pageShared";
-
-const RISK_PROBABILITY = {
-  LOW: "8.4%",
-  MEDIUM: "34.2%",
-  HIGH: "68.5%",
-};
+import { useApplication } from "../hooks/useApplications";
+import { useClient } from "../hooks/useClients";
+import { applicationService } from "../services/applicationService";
+import { riskService } from "../services/riskService";
+import { money, date, loanSummary } from "../utils/finance";
+import { initials, StatusBadge } from "./pageShared";
 
 export default function LoanRequestReviewPage() {
   const navigate = useNavigate();
   const { applicationId } = useParams();
-  const { loading, data: loan } = useLoan(applicationId);
+  const { loading: applicationLoading, data: application } =
+    useApplication(applicationId);
+  const { loading: clientLoading, data: client } = useClient(
+    application?.clientId,
+  );
+  const [rate, setRate] = useState("");
   const [checkingRisk, setCheckingRisk] = useState(false);
-  const [riskChecked, setRiskChecked] = useState(false);
+  const [riskResult, setRiskResult] = useState(null);
+  const [riskError, setRiskError] = useState("");
   const [decision, setDecision] = useState(null); // "approve" | "reject" | null
   const [rejectReason, setRejectReason] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [decisionError, setDecisionError] = useState("");
   const [success, setSuccess] = useState(null);
 
-  if (loading) return <LoadingState />;
-  if (!loan) return <EmptyState title="Loan request not found" />;
+  if (
+    applicationLoading ||
+    (application?.clientId && clientLoading)
+  ) {
+    return <LoadingState />;
+  }
+  if (!application) return <EmptyState title="Loan request not found" />;
 
-  const client = getClient(loan.clientId);
-  const risk = (loan.risk || "LOW").toUpperCase();
-  const probability = RISK_PROBABILITY[risk] || RISK_PROBABILITY.LOW;
+  const summary = loanSummary(application.amount, application.duration, rate);
 
-  const calculateRisk = () => {
+  const calculateRisk = async () => {
     setCheckingRisk(true);
-    setTimeout(() => {
+    setRiskError("");
+    try {
+      const prediction = await riskService.calculate({
+        annualIncome: client?.income || 0,
+        monthlyPayment: summary.monthlyPayment,
+        duration: application.duration,
+        annualInterestRate: Number(rate) || 0,
+      });
+      setRiskResult(prediction);
+    } catch {
+      setRiskError(
+        "The risk model is unavailable right now. Please try again in a moment.",
+      );
+    } finally {
       setCheckingRisk(false);
-      setRiskChecked(true);
-    }, 900);
+    }
   };
 
   const closeDecision = () => {
@@ -59,14 +77,23 @@ export default function LoanRequestReviewPage() {
     setSubmitting(true);
     setDecisionError("");
     try {
-      await loanService.update(loan.id, { status: "Active" });
+      await applicationService.decide(application.id, {
+        status: "Approved",
+        rate,
+        monthlyPayment: summary.monthlyPayment,
+        risk: riskResult?.level,
+        score: riskResult?.probability,
+      });
       setDecision(null);
       setSuccess({
-        title: "Loan Approved Successfully",
-        message: "The loan has been approved and is now active.",
+        title: "Application Approved Successfully",
+        message: "The application has been approved and the loan is now active.",
       });
-    } catch {
-      setDecisionError("Something went wrong. Please try again.");
+    } catch (error) {
+      setDecisionError(
+        error.response?.data?.message ||
+          "Something went wrong. Please try again.",
+      );
     } finally {
       setSubmitting(false);
     }
@@ -76,7 +103,7 @@ export default function LoanRequestReviewPage() {
     setSubmitting(true);
     setDecisionError("");
     try {
-      await loanService.update(loan.id, {
+      await applicationService.decide(application.id, {
         status: "Rejected",
         rejectionReason: rejectReason.trim(),
       });
@@ -85,30 +112,36 @@ export default function LoanRequestReviewPage() {
         title: "Loan Request Rejected",
         message: "The loan request has been rejected.",
       });
-    } catch {
-      setDecisionError("Something went wrong. Please try again.");
+    } catch (error) {
+      setDecisionError(
+        error.response?.data?.message ||
+          "Something went wrong. Please try again.",
+      );
     } finally {
       setSubmitting(false);
     }
   };
+
+  const isDecided = application.status !== "Pending";
+  const canApprove = Boolean(rate) && Number(rate) > 0;
 
   return (
     <>
       <Breadcrumbs
         items={[
           { label: "Loan Applications", to: "/loan-applications" },
-          { label: loan.id },
+          { label: application.reference },
         ]}
       />
       <div className="page-heading">
         <div>
           <h1>Loan Request Review</h1>
           <p>
-            {client ? client.name : "Unknown client"} · {loan.type} ·{" "}
-            {money(loan.amount)}
+            {client ? client.name : "Unknown client"} · {application.type} ·{" "}
+            {money(application.amount)}
           </p>
         </div>
-        <StatusBadge value={loan.status} />
+        <StatusBadge value={application.status} />
       </div>
       <div className="detail-grid">
         <Card>
@@ -119,7 +152,7 @@ export default function LoanRequestReviewPage() {
             </span>
             <div>
               <strong>{client ? client.name : "Unknown client"}</strong>
-              <span className="mono">{loan.clientId}</span>
+              <span className="mono">{application.clientId}</span>
             </div>
           </div>
           <dl>
@@ -133,55 +166,101 @@ export default function LoanRequestReviewPage() {
           <h2>Loan Request</h2>
           <dl>
             <dt>Loan Type</dt>
-            <dd>{loan.type}</dd>
+            <dd>{application.type}</dd>
             <dt>Requested Amount</dt>
-            <dd>{money(loan.amount)}</dd>
+            <dd>{money(application.amount)}</dd>
             <dt>Requested Duration</dt>
-            <dd>{loan.duration} months</dd>
+            <dd>{application.duration} months</dd>
             <dt>Submitted</dt>
-            <dd>{date(loan.startDate)}</dd>
+            <dd>{date(application.submittedDate)}</dd>
           </dl>
         </Card>
       </div>
-      <div className="detail-grid">
-        <Card>
-          <h2>Risk Assessment</h2>
-          {checkingRisk ? (
-            <div className="risk-empty">
-              <LoaderCircle className="spin" />
-              <p>Calculating risk…</p>
-            </div>
-          ) : riskChecked ? (
-            <div className="risk-result">
-              <StatusBadge value={risk} risk />
-              <div className="risk-stat">
-                <small>Probability</small>
-                <strong>{probability}</strong>
-              </div>
-            </div>
-          ) : (
-            <div className="risk-empty">
-              <p>Risk assessment has not been performed yet.</p>
-              <Button onClick={calculateRisk}>Calculate Risk</Button>
-            </div>
-          )}
-        </Card>
+
+      {isDecided ? (
         <Card>
           <h2>Decision</h2>
-          <div className="actions">
-            <Button variant="secondary" onClick={() => setDecision("reject")}>
-              Reject Request
-            </Button>
-            <Button onClick={() => setDecision("approve")}>
-              Approve Loan
-            </Button>
-          </div>
+          <p>
+            This application has already been decided:{" "}
+            <StatusBadge value={application.status} />
+          </p>
+          {application.status === "Rejected" && application.rejectionReason && (
+            <p className="application-decision-reason">
+              <span>Reason: </span>
+              {application.rejectionReason}
+            </p>
+          )}
         </Card>
-      </div>
+      ) : (
+        <>
+          <div className="detail-grid">
+            <Card>
+              <h2>Loan Terms</h2>
+              <div className="form-grid">
+                <Input
+                  label="Annual interest rate (%)"
+                  type="number"
+                  min="0"
+                  step="0.1"
+                  value={rate}
+                  onChange={(event) => setRate(event.target.value)}
+                />
+              </div>
+              {rate && (
+                <div className="finance-preview">
+                  <b>Financial summary</b>
+                  <span>Monthly payment: {money(summary.monthlyPayment)}</span>
+                  <span>Total repayment: {money(summary.totalRepayment)}</span>
+                </div>
+              )}
+            </Card>
+            <Card>
+              <h2>Risk Assessment</h2>
+              {checkingRisk ? (
+                <div className="risk-empty">
+                  <LoaderCircle className="spin" />
+                  <p>Calculating risk…</p>
+                </div>
+              ) : riskResult ? (
+                <div className="risk-result">
+                  <StatusBadge value={riskResult.level} risk />
+                  <div className="risk-stat">
+                    <small>Risk Score</small>
+                    <strong>{riskResult.score}%</strong>
+                  </div>
+                </div>
+              ) : (
+                <div className="risk-empty">
+                  <p>Risk assessment has not been performed yet.</p>
+                  {riskError && <p className="error">{riskError}</p>}
+                  <Button onClick={calculateRisk} disabled={!canApprove}>
+                    Calculate Risk
+                  </Button>
+                </div>
+              )}
+            </Card>
+          </div>
+          <Card>
+            <h2>Decision</h2>
+            <div className="actions">
+              <Button variant="secondary" onClick={() => setDecision("reject")}>
+                Reject Request
+              </Button>
+              <Button
+                disabled={!canApprove}
+                onClick={() => setDecision("approve")}
+              >
+                Approve Loan
+              </Button>
+            </div>
+          </Card>
+        </>
+      )}
+
       {decision === "approve" && (
         <ConfirmationDialog
           title="Approve Loan Request?"
-          message="Are you sure you want to approve this loan request?"
+          message="Are you sure you want to approve this loan request? This will create an active loan for the client."
           confirmLabel="Approve Loan"
           confirmVariant="primary"
           submitting={submitting}

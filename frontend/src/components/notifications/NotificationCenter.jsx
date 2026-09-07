@@ -1,9 +1,5 @@
 import { X } from "lucide-react";
-import { notifications as defaultNotifications } from "../../data/mock/data";
-export default function NotificationCenter({
-  onClose,
-  notifications = defaultNotifications,
-}) {
+export default function NotificationCenter({ onClose, notifications = [] }) {
   return (
     <section className="notification-center">
       <header>
@@ -12,16 +8,20 @@ export default function NotificationCenter({
           <X size={17} />
         </button>
       </header>
-      {notifications.map((notification) => (
-        <article key={notification.id}>
-          <span className={notification.unread ? "dot" : ""} />
-          <div>
-            <b>{notification.title}</b>
-            <p>{notification.text}</p>
-            <small>{notification.time}</small>
-          </div>
-        </article>
-      ))}
+      {notifications.length === 0 ? (
+        <p className="notification-empty">No notifications.</p>
+      ) : (
+        notifications.map((notification) => (
+          <article key={notification.id}>
+            <span className={notification.unread ? "dot" : ""} />
+            <div>
+              <b>{notification.title}</b>
+              <p>{notification.text}</p>
+              <small>{notification.time}</small>
+            </div>
+          </article>
+        ))
+      )}
     </section>
   );
 }

@@ -33,12 +33,25 @@ import java.io.IOException;
             String usernameFromToken = null;
             if (autorization != null && autorization.startsWith(JwtConstant.BEARER)) {
                 token = autorization.substring(JwtConstant.BEARER.length());
-                usernameFromToken = jwtUtil.getUsernameFromToken(token);
+                try {
+                    usernameFromToken = jwtUtil.getUsernameFromToken(token);
+                } catch (Exception e) {
+                    // Malformed/expired/tampered token — treat the request
+                    // as unauthenticated instead of failing the whole
+                    // filter chain, so a stale token on a public endpoint
+                    // doesn't turn a 200 into a 403.
+                    usernameFromToken = null;
+                }
             }
             if (usernameFromToken != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails userDetails = userService.loadUserByUsername(usernameFromToken);
-                if (jwtUtil.validateToken(token, userDetails)) {
-                    jwtUtil.registerAuthenticationTokenInContext(userDetails, httpServletRequest);
+                try {
+                    UserDetails userDetails = userService.loadUserByUsername(usernameFromToken);
+                    if (jwtUtil.validateToken(token, userDetails)) {
+                        jwtUtil.registerAuthenticationTokenInContext(userDetails, httpServletRequest);
+                    }
+                } catch (Exception e) {
+                    // User deleted/disabled since the token was issued, or
+                    // token expired — same graceful fallback as above.
                 }
             }
             filterChain.doFilter(httpServletRequest,httpServletResponse);

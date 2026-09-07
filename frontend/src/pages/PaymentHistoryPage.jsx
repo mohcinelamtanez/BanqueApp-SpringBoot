@@ -17,7 +17,6 @@ import PaymentScheduleModal from "../components/payments/PaymentScheduleModal";
 import { useLoan } from "../hooks/useLoans";
 import { usePayments } from "../hooks/usePayments";
 import { usePagination } from "../hooks/usePagination";
-import { loanService } from "../services/loanService";
 import { paymentService } from "../services/paymentService";
 import { money } from "../utils/finance";
 import { getPaymentStatus, visiblePaymentRows } from "../utils/paymentSchedule";
@@ -49,7 +48,7 @@ export default function PaymentHistoryPage() {
       "Payment ID,Amount,Payment date,Due date,Status",
       ...payments.map((payment) =>
         [
-          payment.id,
+          payment.reference,
           payment.amount,
           payment.date || "",
           payment.dueDate,
@@ -78,15 +77,6 @@ export default function PaymentHistoryPage() {
       );
       setPayments(nextPayments);
       setConfirmAction(null);
-
-      if (loan) {
-        const allPaid = nextPayments.every((p) => p.status === "PAID");
-        if (type === "pay" && allPaid && loan.status === "Active") {
-          await loanService.update(loan.id, { status: "Completed" });
-        } else if (type === "unpay" && !allPaid && loan.status === "Completed") {
-          await loanService.update(loan.id, { status: "Active" });
-        }
-      }
 
       setSuccess(
         type === "pay"
@@ -139,7 +129,7 @@ export default function PaymentHistoryPage() {
             >
               {pageItems.map((payment) => (
                 <tr key={payment.id}>
-                  <td>{payment.id}</td>
+                  <td>{payment.reference}</td>
                   <td>{money(payment.amount)}</td>
                   <td>{payment.date || "—"}</td>
                   <td>{payment.dueDate}</td>
@@ -226,8 +216,8 @@ export default function PaymentHistoryPage() {
           }
           message={
             confirmAction.type === "pay"
-              ? `Confirm that ${confirmAction.payment.id} (${money(confirmAction.payment.amount)}) was paid by the client at the branch. This will mark it as PAID today.`
-              : `Revert ${confirmAction.payment.id} (${money(confirmAction.payment.amount)}) back to unpaid? Use this only to correct a payment confirmed by mistake.`
+              ? `Confirm that ${confirmAction.payment.reference} (${money(confirmAction.payment.amount)}) was paid by the client at the branch. This will mark it as PAID today.`
+              : `Revert ${confirmAction.payment.reference} (${money(confirmAction.payment.amount)}) back to unpaid? Use this only to correct a payment confirmed by mistake.`
           }
           confirmLabel={
             confirmAction.type === "pay" ? "Mark as Paid" : "Mark as Unpaid"

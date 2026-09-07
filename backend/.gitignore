@@ -3,6 +3,9 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+### Uploaded files (LocalFileStorageService — app.upload.dir) ###
+/uploads/
+
 ### STS ###
 .apt_generated
 .classpath

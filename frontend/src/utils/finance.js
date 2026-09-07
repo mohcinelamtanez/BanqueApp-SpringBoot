@@ -12,21 +12,34 @@ export const date = (value) =>
         year: "numeric",
       }).format(new Date(value))
     : "—";
+// Simplified flat-interest business rule (not amortization/reducing-balance):
+// totalInterest = principal × (annualRate / 100) × (months / 12), then the
+// monthly payment is the total repayment spread evenly over the term.
 export function loanSummary(amount = 0, months = 0, annualRate = 0) {
-  const principal = Number(amount) || 0,
-    term = Number(months) || 0,
-    monthlyRate = (Number(annualRate) || 0) / 1200;
-  const monthlyPayment = !term
-    ? 0
-    : !monthlyRate
-      ? principal / term
-      : (principal * monthlyRate * Math.pow(1 + monthlyRate, term)) /
-        (Math.pow(1 + monthlyRate, term) - 1);
-  const totalRepayment = monthlyPayment * term;
+  const principal = Number(amount) || 0;
+  const term = Number(months) || 0;
+  const rate = Number(annualRate) || 0;
+  const durationInYears = term / 12;
+  const totalInterest = principal * (rate / 100) * durationInYears;
+  const totalRepayment = principal + totalInterest;
+  const monthlyPayment = term
+    ? Math.round((totalRepayment / term) * 100) / 100
+    : 0;
   return {
     monthlyPayment,
     principal,
-    estimatedInterest: totalRepayment - principal,
+    estimatedInterest: totalInterest,
     totalRepayment,
   };
+}
+// A Loan's end date is never stored — it's derived from its start date
+// (the Admin/Bank Agent's decision date) plus its duration. A Rejected
+// loan has no repayment period, so callers must not call this for one.
+export function loanEndDate(startDate, months) {
+  if (!startDate) return null;
+  const start = new Date(startDate);
+  if (Number.isNaN(start.getTime())) return null;
+  const end = new Date(start);
+  end.setMonth(end.getMonth() + (Number(months) || 0));
+  return end.toISOString().slice(0, 10);
 }

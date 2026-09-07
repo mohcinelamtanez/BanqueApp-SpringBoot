@@ -1,7 +1,6 @@
-// Role helpers backed by the real (mock, for now) authenticated user in
-// authStore. Every consumer (AdminLayout, AppRoutes, UserManagementPage)
-// only depends on this shape, not on how the role is obtained — when real
-// auth/JWT lands, only authStore/authService need to change.
+// Role helpers backed by the real authenticated user in authStore. Every
+// consumer (AdminLayout, AppRoutes, UserManagementPage) only depends on
+// this shape, not on how the role is obtained.
 import { getUser } from "./authStore";
 
 export const ROLES = {

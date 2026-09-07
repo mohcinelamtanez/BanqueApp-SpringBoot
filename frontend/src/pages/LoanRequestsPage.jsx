@@ -2,27 +2,52 @@ import LoanRequestsTable from "../components/loans/LoanRequestsTable";
 import {
   Card,
   EmptyState,
+  ErrorState,
   LoadingState,
   Pagination,
 } from "../components/ui";
-import { useLoans } from "../hooks/useLoans";
+import { useApplications } from "../hooks/useApplications";
+import { useClients } from "../hooks/useClients";
 import { usePagination } from "../hooks/usePagination";
 import { PageHeading } from "./pageShared";
 export default function LoanRequestsPage() {
-  const { loading, data: loans } = useLoans();
-  const pending = (loans || []).filter((loan) => loan.status === "Pending");
-  const { page, setPage, totalPages, pageItems } = usePagination(pending, 5);
-  if (loading) return <LoadingState label="Loading loan requests…" />;
+  const {
+    loading: applicationsLoading,
+    data: applications,
+    error,
+  } = useApplications();
+  const { loading: clientsLoading, data: clients } = useClients();
+  // Pending first (most actionable), then most recently submitted —
+  // decided applications stay visible here with their final status rather
+  // than disappearing once reviewed. Every hook below (usePagination) must
+  // run unconditionally on every render — computed and called before any
+  // early return, or React throws "Rendered more hooks than during the
+  // previous render" once loading/error resolves.
+  const sorted = [...(applications || [])].sort((a, b) => {
+    if (a.status === "Pending" && b.status !== "Pending") return -1;
+    if (b.status === "Pending" && a.status !== "Pending") return 1;
+    return a.submittedDate < b.submittedDate ? 1 : -1;
+  });
+  const { page, setPage, totalPages, pageItems } = usePagination(sorted, 5);
+
+  if (applicationsLoading || clientsLoading) {
+    return <LoadingState label="Loading loan applications…" />;
+  }
+  if (error) {
+    return (
+      <ErrorState detail="Unable to load loan applications right now. Please try again." />
+    );
+  }
   return (
     <>
       <PageHeading
-        title="Loan Requests"
-        subtitle="Review loan applications waiting for a decision."
+        title="Loan Applications"
+        subtitle="Review submitted loan applications and their decisions."
       />
       <Card>
-        {pending.length ? (
+        {sorted.length ? (
           <>
-            <LoanRequestsTable loans={pageItems} />
+            <LoanRequestsTable applications={pageItems} clients={clients || []} />
             <Pagination
               page={page}
               totalPages={totalPages}
@@ -31,8 +56,8 @@ export default function LoanRequestsPage() {
           </>
         ) : (
           <EmptyState
-            title="No Pending Loan Requests"
-            detail="There are currently no loan requests waiting for review."
+            title="No Loan Applications"
+            detail="Loan applications submitted by clients will appear here."
           />
         )}
       </Card>

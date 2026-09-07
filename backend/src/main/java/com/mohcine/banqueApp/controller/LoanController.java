@@ -4,9 +4,12 @@ import com.mohcine.banqueApp.dto.LoanCreateDto;
 import com.mohcine.banqueApp.dto.LoanResponseDTO;
 import com.mohcine.banqueApp.dto.LoanUpdateDTO;
 import com.mohcine.banqueApp.entity.Loan;
+import com.mohcine.banqueApp.entity.User;
+import com.mohcine.banqueApp.exception.ClientNotFoundException;
 import com.mohcine.banqueApp.mapper.LoanMapper;
 import com.mohcine.banqueApp.service.interfaces.LoanService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -43,6 +46,31 @@ public class LoanController {
                 toList();
    }
 
+   @GetMapping("client/reference/{reference}")
+    public List<LoanResponseDTO> getLoansByClientReference(@PathVariable String reference){
+        List<Loan> loans = loanService.getLoansByClientReference(reference);
+
+        return loans.stream().
+                map(loanMapper::toDTO).
+                toList();
+   }
+
+   // "My Loans" — always the authenticated client's own loans, never a
+   // client-supplied reference, so a client can never read another
+   // client's loan history.
+   @GetMapping("/me")
+    public List<LoanResponseDTO> getMyLoans(Authentication authentication){
+        User user = (User) authentication.getPrincipal();
+        if (user.getClient() == null) {
+            throw new ClientNotFoundException("(current user is not linked to a client)");
+        }
+        List<Loan> loans = loanService.getLoansByClientReference(user.getClient().getClientReference());
+
+        return loans.stream().
+                map(loanMapper::toDTO).
+                toList();
+   }
+
    @GetMapping
    public List<LoanResponseDTO> getLoans(){
         List<Loan> loans = loanService.getAllLoans() ;
@@ -61,8 +89,7 @@ public class LoanController {
     public LoanResponseDTO updateLoan(@PathVariable Integer id ,
                                       @RequestBody LoanUpdateDTO loanUpdateDTO ){
 
-        Loan loan = loanMapper.updateEntity(loanUpdateDTO) ;
-        Loan updatedLoan = loanService.updateLoan(loan) ;
+        Loan updatedLoan = loanService.updateLoan(id, loanUpdateDTO) ;
         return loanMapper.toDTO(updatedLoan) ;
    }
 

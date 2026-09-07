@@ -40,6 +40,12 @@ public class Client {
     @Column(name = "email" , nullable = false, unique = true  )
     private String email ;
 
+    // Optional avatar/profile photo — always a URL/reference, never the raw
+    // image bytes (no BLOB storage), and never required for the profile to
+    // be considered complete.
+    @Column(name = "profile_photo_url")
+    private String profilePhotoUrl;
+
     @OneToMany(mappedBy = "client")
     private List<Loan> loans ;
 
@@ -123,6 +129,14 @@ public class Client {
 
     public void setEmail(String email) {
         this.email = email ;
+    }
+
+    public String getProfilePhotoUrl() {
+        return profilePhotoUrl;
+    }
+
+    public void setProfilePhotoUrl(String profilePhotoUrl) {
+        this.profilePhotoUrl = profilePhotoUrl;
     }
 
     public List<Loan> getLoans() {

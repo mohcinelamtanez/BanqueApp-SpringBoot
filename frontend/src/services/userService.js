@@ -1,19 +1,12 @@
-import { users } from "../data/mock/users";
-
-const wait = (value, delay = 300) =>
-  new Promise((resolve) => setTimeout(() => resolve(value), delay));
-
+// No backend endpoint exists yet for user management (no UserController on
+// the API) — these intentionally resolve to empty/no-op results rather than
+// hitting a nonexistent endpoint or inventing mock data.
 export const userService = {
-  list: () => wait([...users]),
-  get: (id) => wait(users.find((user) => user.id === id)),
-  create: (user) => {
-    users.push(user);
-    return wait(user);
-  },
-  update: (id, values) => {
-    const item = users.find((user) => user.id === id);
-    Object.assign(item, values);
-    return wait(item);
-  },
+  list: () => Promise.resolve([]),
+  get: () => Promise.resolve(null),
+  create: () =>
+    Promise.reject(new Error("User management is not connected to the backend yet.")),
+  update: () =>
+    Promise.reject(new Error("User management is not connected to the backend yet.")),
 };
 export default userService;

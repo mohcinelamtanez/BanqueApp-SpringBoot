@@ -1,9 +1,9 @@
 import { Eye, Pencil, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { DataTable } from "../ui";
-import { money, loanSummary } from "../../utils/finance";
+import { money, loanSummary, loanEndDate } from "../../utils/finance";
 import { StatusBadge } from "../../pages/pageShared";
-export default function LoanTable({ loans, onDelete }) {
+export default function LoanTable({ loans = [], onDelete }) {
   const navigate = useNavigate();
   return(
   <DataTable
@@ -12,14 +12,15 @@ export default function LoanTable({ loans, onDelete }) {
       "Amount",
       "Terms",
       "Risk / status",
-      "Dates",
+      "Start Date",
+      "End Date",
       "Actions",
     ]}
   >
     {loans.map((loan) => (
       <tr key={loan.id}>
         <td>
-          <b className="mono">{loan.id}</b>
+          <b className="mono">{loan.reference}</b>
           <br />
           <span>{loan.type}</span>
         </td>
@@ -36,10 +37,11 @@ export default function LoanTable({ loans, onDelete }) {
           <br />
           <StatusBadge value={loan.status} />
         </td>
+        <td>{loan.startDate || "—"}</td>
         <td>
-          {loan.startDate}
-          <br />
-          {loan.endDate || "—"}
+          {loan.status === "Rejected"
+            ? "—"
+            : loanEndDate(loan.startDate, loan.duration) || "—"}
         </td>
         <td>
           <div className="row-actions">

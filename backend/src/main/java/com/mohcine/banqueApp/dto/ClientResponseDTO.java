@@ -26,7 +26,8 @@ public record ClientResponseDTO(String ClientReference ,
                                 String postalCode,
                                 BigDecimal annualIncome,
                                 String email,
-                                ClientStatus status
+                                ClientStatus status,
+                                String profilePhotoUrl
                                 ) {
 
 }

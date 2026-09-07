@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
+import { CheckCircle2, CircleDot } from "lucide-react";
 import {
   Badge,
   Button,
   Card,
   DataTable,
   EmptyState,
+  ErrorState,
   LoadingState,
   Pagination,
   Select,
@@ -14,10 +16,22 @@ import PaymentScheduleModal from "../../components/payments/PaymentScheduleModal
 import { loanService } from "../../services/loanService";
 import { paymentService } from "../../services/paymentService";
 import { usePagination } from "../../hooks/usePagination";
-import { money, date } from "../../utils/finance";
-import { amountDue, visiblePaymentRows } from "../../utils/paymentSchedule";
-import { loanStats, Metric, PageHeading } from "../pageShared";
-import { CURRENT_CLIENT_ID, PAYMENT_STATUS_LABEL } from "./clientShared";
+import { money, date, loanEndDate } from "../../utils/finance";
+import {
+  amountDue,
+  paymentTotals,
+  visiblePaymentRows,
+} from "../../utils/paymentSchedule";
+import { Metric, PageHeading } from "../pageShared";
+import { PAYMENT_STATUS_LABEL } from "./clientShared";
+
+// Same icon+pill treatment as the "Active Loan" cards on My Loans — this
+// page only ever deals in Active/Completed loans (Rejected is filtered out
+// on fetch below), so Rejected isn't needed here.
+const LOAN_STATUS_META = {
+  Active: { icon: CircleDot, tone: "active" },
+  Completed: { icon: CheckCircle2, tone: "completed" },
+};
 
 export default function ClientPaymentsPage() {
   const [loading, setLoading] = useState(true);
@@ -26,27 +40,37 @@ export default function ClientPaymentsPage() {
   const [selectedLoanId, setSelectedLoanId] = useState(null);
   const [viewing, setViewing] = useState(null);
   const [showSchedule, setShowSchedule] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     let active = true;
     setLoading(true);
-    loanService.list().then(async (allLoans) => {
-      const myLoans = allLoans.filter(
-        (loan) => loan.clientId === CURRENT_CLIENT_ID,
-      );
-      const paymentLists = await Promise.all(
-        myLoans.map((loan) => paymentService.list(loan.id)),
-      );
-      if (!active) return;
-      setLoans(myLoans);
-      setPayments(paymentLists.flat());
-      // MVP assumption: a client has at most one Active loan at a time — it
-      // is what "My Payments" opens on by default.
-      const activeLoan = myLoans.find((loan) => loan.status === "Active");
-      const firstPastLoan = myLoans.find((loan) => loan.status === "Completed");
-      setSelectedLoanId(activeLoan?.id ?? firstPastLoan?.id ?? null);
-      setLoading(false);
-    });
+    setError("");
+    Promise.all([loanService.listMine(), paymentService.listMine()])
+      .then(([allLoans, allPayments]) => {
+        if (!active) return;
+        // A Rejected loan has no repayment period — this page only ever
+        // deals in real, active/completed repayment schedules.
+        const myLoans = allLoans.filter(
+          (loan) => loan.status === "Active" || loan.status === "Completed",
+        );
+        setLoans(myLoans);
+        setPayments(allPayments);
+        // MVP assumption: a client has at most one Active loan at a time —
+        // it is what "My Payments" opens on by default.
+        const activeLoan = myLoans.find((loan) => loan.status === "Active");
+        const firstPastLoan = myLoans.find(
+          (loan) => loan.status === "Completed",
+        );
+        setSelectedLoanId(activeLoan?.id ?? firstPastLoan?.id ?? null);
+        setLoading(false);
+      })
+      .catch(() => {
+        if (active) {
+          setError("Unable to load your payments right now. Please try again.");
+          setLoading(false);
+        }
+      });
     return () => {
       active = false;
     };
@@ -61,19 +85,30 @@ export default function ClientPaymentsPage() {
   const { page, setPage, totalPages, pageItems } = usePagination(visible, 5);
 
   if (loading) return <LoadingState label="Loading your payments…" />;
+  if (error) return <ErrorState detail={error} />;
 
   const loanFor = (loanId) => loans.find((loan) => loan.id === loanId);
   const activeLoan = loans.find((loan) => loan.status === "Active");
   const pastLoans = loans.filter((loan) => loan.status === "Completed");
   const selectedLoan = loanFor(selectedLoanId);
-  const stats = loanStats(CURRENT_CLIENT_ID, loans);
+  // Real payment data, not the Loan-level "repaid"/"outstanding" figures —
+  // Loan.repaid is always 0 on the frontend (never tracked by the Loan API,
+  // see loanService.js), so those were never anything but a stale mock.
+  // Shared with the Dashboard (see utils/paymentSchedule.js) so this exact
+  // calculation only lives in one place.
+  const { totalPaid, remainingBalance } = paymentTotals(payments);
   const activeLoanPayments = activeLoan
     ? payments.filter((payment) => payment.loanId === activeLoan.id)
     : [];
   const due = amountDue(visiblePaymentRows(activeLoanPayments).all);
 
+  // Native <select> onChange always hands back a string, but loan.id /
+  // payment.loanId are numbers — comparing them with === (loanFor,
+  // selectedLoanPayments below) silently matched nothing once a loan was
+  // picked from this dropdown, since the initial default selection (a real
+  // number from activeLoan?.id) was the only one that ever worked.
   const selectLoan = (id) => {
-    setSelectedLoanId(id);
+    setSelectedLoanId(Number(id));
     setPage(1);
   };
 
@@ -94,10 +129,15 @@ export default function ClientPaymentsPage() {
       ) : (
         <>
           <div className="kpis client-payments-kpis">
-            <Metric label="Total Paid" value={money(stats.repaid)} />
+            <Metric
+              label="Total Paid"
+              value={money(totalPaid)}
+              className="metric-gradient-paid"
+            />
             <Metric
               label="Remaining Balance"
-              value={money(stats.outstanding)}
+              value={money(remainingBalance)}
+              className="metric-gradient-balance"
             />
             {activeLoan && (
               <Metric
@@ -112,140 +152,160 @@ export default function ClientPaymentsPage() {
             )}
           </div>
 
-          <Card>
-            <div className="section-head">
-              <h3>
-                {selectedLoan?.status === "Active"
-                  ? "Active Loan"
-                  : "Selected Loan"}
-              </h3>
-              {selectedLoan && (
-                <Badge type={selectedLoan.status.toLowerCase()}>
-                  {selectedLoan.status}
-                </Badge>
-              )}
-            </div>
-
-            {pastLoans.length > 0 && (
-              <Select
-                label="Select Loan"
-                value={selectedLoanId || ""}
-                onChange={(event) => selectLoan(event.target.value)}
-              >
-                {activeLoan && (
-                  <option value={activeLoan.id}>
-                    {activeLoan.type} · {activeLoan.id} (Active)
-                  </option>
+          <div className="stack-gap">
+            <Card
+              className={
+                selectedLoan?.status === "Active" ? "loan-card-active" : ""
+              }
+            >
+              <div className="section-head">
+                <h3>
+                  {selectedLoan?.status === "Active"
+                    ? "Active Loan"
+                    : "Selected Loan"}
+                </h3>
+                {selectedLoan && (
+                  <span
+                    className={`loan-status-pill ${LOAN_STATUS_META[selectedLoan.status]?.tone || ""}`}
+                  >
+                    {(() => {
+                      const StatusIcon =
+                        LOAN_STATUS_META[selectedLoan.status]?.icon;
+                      return StatusIcon && <StatusIcon size={14} />;
+                    })()}
+                    {selectedLoan.status}
+                  </span>
                 )}
-                {pastLoans.map((loan) => (
-                  <option key={loan.id} value={loan.id}>
-                    {loan.type} · {loan.id} (Completed)
-                  </option>
-                ))}
-              </Select>
-            )}
-
-            {selectedLoan ? (
-              <div className="stat-grid-4">
-                <div className="stat-mini">
-                  <small>{selectedLoan.type}</small>
-                  <strong className="mono">{selectedLoan.id}</strong>
-                </div>
-                <div className="stat-mini">
-                  <small>Amount</small>
-                  <strong>{money(selectedLoan.amount)}</strong>
-                </div>
-                <div className="stat-mini">
-                  <small>Duration</small>
-                  <strong>{selectedLoan.duration} months</strong>
-                </div>
-                <div className="stat-mini">
-                  <small>
-                    {selectedLoan.status === "Active" ? "Outstanding" : "Ended"}
-                  </small>
-                  <strong>
-                    {selectedLoan.status === "Active"
-                      ? money(selectedLoan.amount - selectedLoan.repaid)
-                      : date(selectedLoan.endDate)}
-                  </strong>
-                </div>
               </div>
-            ) : (
-              <EmptyState
-                title="No active loan"
-                detail="You don't currently have an active loan."
-              />
-            )}
-          </Card>
 
-          <Card>
-            <h3>Payment History</h3>
-            {pageItems.length === 0 ? (
-              <EmptyState
-                title="No payments found"
-                detail={
-                  selectedLoan
-                    ? `No payment records for ${selectedLoan.id} yet.`
-                    : "Select a loan above to see its payment history."
-                }
-              />
-            ) : (
-              <>
-                <DataTable
-                  columns={[
-                    "Payment ID",
-                    "Amount",
-                    "Due Date",
-                    "Payment Date",
-                    "Status",
-                    "Action",
-                  ]}
-                >
-                  {pageItems.map((payment) => (
-                    <tr key={payment.id}>
-                      <td className="mono">{payment.id}</td>
-                      <td className="mono">{money(payment.amount)}</td>
-                      <td>{date(payment.dueDate)}</td>
-                      <td>{payment.date ? date(payment.date) : "—"}</td>
-                      <td>
-                        <Badge type={payment.displayStatus.toLowerCase()}>
-                          {PAYMENT_STATUS_LABEL[payment.displayStatus] ||
-                            payment.displayStatus}
-                        </Badge>
-                      </td>
-                      <td>
-                        <Button
-                          variant="secondary"
-                          onClick={() => setViewing(payment)}
-                        >
-                          View Details
-                        </Button>
-                      </td>
-                    </tr>
-                  ))}
-                </DataTable>
-                <Pagination
-                  page={page}
-                  totalPages={totalPages}
-                  onChange={setPage}
-                />
-                {hiddenUpcomingCount > 0 && (
-                  <div className="schedule-more">
-                    <span>
-                      {hiddenUpcomingCount} upcoming payment
-                      {hiddenUpcomingCount === 1 ? "" : "s"}
-                    </span>
-                    <Button
-                      variant="secondary"
-                      onClick={() => setShowSchedule(true)}
-                    >
-                      View Schedule
-                    </Button>
+              {pastLoans.length > 0 && (
+                <div className="client-payments-loan-select">
+                  <Select
+                    label="Select Loan"
+                    value={selectedLoanId || ""}
+                    onChange={(event) => selectLoan(event.target.value)}
+                  >
+                    {activeLoan && (
+                      <option value={activeLoan.id}>
+                        {activeLoan.type} · {activeLoan.id} (Active)
+                      </option>
+                    )}
+                    {pastLoans.map((loan) => (
+                      <option key={loan.id} value={loan.id}>
+                        {loan.type} · {loan.id} (Completed)
+                      </option>
+                    ))}
+                  </Select>
+                </div>
+              )}
+
+              {selectedLoan ? (
+                <div className="stat-grid-4">
+                  <div className="stat-mini">
+                    <small>{selectedLoan.type}</small>
+                    <strong className="mono">{selectedLoan.id}</strong>
                   </div>
-                )}
-              </>
-            )}
-          </Card>
+                  <div className="stat-mini">
+                    <small>Amount</small>
+                    <strong>{money(selectedLoan.amount)}</strong>
+                  </div>
+                  <div className="stat-mini">
+                    <small>Duration</small>
+                    <strong>{selectedLoan.duration} months</strong>
+                  </div>
+                  <div className="stat-mini">
+                    <small>
+                      {selectedLoan.status === "Active" ? "Outstanding" : "Ended"}
+                    </small>
+                    <strong>
+                      {selectedLoan.status === "Active"
+                        ? money(selectedLoan.amount - selectedLoan.repaid)
+                        : date(
+                            loanEndDate(
+                              selectedLoan.startDate,
+                              selectedLoan.duration,
+                            ),
+                          )}
+                    </strong>
+                  </div>
+                </div>
+              ) : (
+                <EmptyState
+                  title="No active loan"
+                  detail="You don't currently have an active loan."
+                />
+              )}
+            </Card>
+
+            <Card>
+              <h2>Payment History</h2>
+              {pageItems.length === 0 ? (
+                <EmptyState
+                  title="No payments found"
+                  detail={
+                    selectedLoan
+                      ? `No payment records for ${selectedLoan.id} yet.`
+                      : "Select a loan above to see its payment history."
+                  }
+                />
+              ) : (
+                <>
+                  <DataTable
+                    columns={[
+                      "Payment ID",
+                      "Amount",
+                      "Due Date",
+                      "Payment Date",
+                      "Status",
+                      "Action",
+                    ]}
+                  >
+                    {pageItems.map((payment) => (
+                      <tr key={payment.id}>
+                        <td className="mono">{payment.reference}</td>
+                        <td className="mono">{money(payment.amount)}</td>
+                        <td>{date(payment.dueDate)}</td>
+                        <td>{payment.date ? date(payment.date) : "—"}</td>
+                        <td>
+                          <Badge type={payment.displayStatus.toLowerCase()}>
+                            {PAYMENT_STATUS_LABEL[payment.displayStatus] ||
+                              payment.displayStatus}
+                          </Badge>
+                        </td>
+                        <td>
+                          <Button
+                            variant="secondary"
+                            onClick={() => setViewing(payment)}
+                          >
+                            View Details
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
+                  </DataTable>
+                  <Pagination
+                    page={page}
+                    totalPages={totalPages}
+                    onChange={setPage}
+                  />
+                  {hiddenUpcomingCount > 0 && (
+                    <div className="schedule-more">
+                      <span>
+                        {hiddenUpcomingCount} upcoming payment
+                        {hiddenUpcomingCount === 1 ? "" : "s"}
+                      </span>
+                      <Button
+                        variant="secondary"
+                        onClick={() => setShowSchedule(true)}
+                      >
+                        View Schedule
+                      </Button>
+                    </div>
+                  )}
+                </>
+              )}
+            </Card>
+          </div>
         </>
       )}
 

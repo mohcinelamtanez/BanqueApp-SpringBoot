@@ -27,9 +27,9 @@ function effectiveDate(payment) {
 }
 
 // Keeps Payment History from ever rendering a full amortization table (a
-// 48-month loan really does have 48 scheduled installments in the mock
-// data) — shows every payment that already happened or matters right now,
-// plus a short, chronologically-nearest preview of what's still upcoming.
+// 48-month loan really does have 48 scheduled installments) — shows every
+// payment that already happened or matters right now, plus a short,
+// chronologically-nearest preview of what's still upcoming.
 // Rows are always ordered most-recent-first (see effectiveDate above).
 export function visiblePaymentRows(payments, { previewUpcoming = 3 } = {}) {
   const withStatus = withDisplayStatus(payments);
@@ -56,6 +56,40 @@ export function amountDue(withStatusPayments) {
     total: due.reduce((sum, p) => sum + p.amount, 0),
     count: due.length,
   };
+}
+
+// Total Paid / Remaining Balance — real Payment amounts grouped by their
+// actual backend status. No pre-aggregated figure exists on the backend
+// (Loan.repaid is never tracked — see loanService.js), so this is the one
+// shared place the sum is computed, reused by both My Payments and the
+// Dashboard rather than re-implemented per page.
+export function paymentTotals(payments) {
+  const totalPaid = payments
+    .filter((p) => p.status === "PAID")
+    .reduce((sum, p) => sum + p.amount, 0);
+  const remainingBalance = payments
+    .filter((p) => p.status !== "PAID")
+    .reduce((sum, p) => sum + p.amount, 0);
+  return { totalPaid, remainingBalance };
+}
+
+// Repayment progress for one loan's own payments — paid installments versus
+// every installment ever scheduled for it (PaymentServiceImpl.createPayments
+// generates exactly one row per month of the loan's duration, once, when it
+// becomes Active — a Rejected loan gets none at all).
+export function repaymentProgress(loanPayments) {
+  const paidCount = loanPayments.filter((p) => p.status === "PAID").length;
+  const totalCount = loanPayments.length;
+  const percent = totalCount > 0 ? Math.round((paidCount / totalCount) * 100) : 0;
+  return { paidCount, totalCount, percent };
+}
+
+// The next installment the client still needs to pay, across all of their
+// loans — whichever not-yet-paid payment has the nearest due date.
+export function nextUpcomingPayment(payments) {
+  const unpaid = payments.filter((p) => p.status !== "PAID");
+  if (!unpaid.length) return null;
+  return [...unpaid].sort((a, b) => (a.dueDate < b.dueDate ? -1 : 1))[0];
 }
 
 const DAY_MS = 24 * 60 * 60 * 1000;

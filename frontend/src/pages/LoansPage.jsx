@@ -17,7 +17,11 @@ export default function LoansPage() {
   const navigate = useNavigate();
   const { loading, data = [] } = useLoans();
   const [target, setTarget] = useState(null);
-  const { page, setPage, totalPages, pageItems } = usePagination(data, 5);
+  // Pending loans are applications still awaiting a decision — they belong
+  // exclusively in "Loan Applications" until an Admin/Bank Agent reviews
+  // them; only Active/Rejected loans show up here.
+  const loans = (data || []).filter((loan) => loan.status !== "Pending");
+  const { page, setPage, totalPages, pageItems } = usePagination(loans, 5);
   if (loading) return <LoadingState />;
   return (
     <>
@@ -36,7 +40,7 @@ export default function LoansPage() {
       </Card>
       {target && (
         <ConfirmationDialog
-          message={`Delete loan ${target.id}? This destructive local action cannot be undone.`}
+          message={`Delete loan ${target.reference}? This action cannot be undone.`}
           onClose={() => setTarget(null)}
           onConfirm={async () => {
             await loanService.remove(target.id);

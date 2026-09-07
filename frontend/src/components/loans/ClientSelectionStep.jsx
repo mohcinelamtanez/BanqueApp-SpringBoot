@@ -9,11 +9,11 @@ import {
   Wallet,
 } from "lucide-react";
 import { Button, Card, EmptyState } from "../ui";
-import { clients } from "../../data/mock/data";
 import { money } from "../../utils/finance";
 import { initials, loanStats } from "../../pages/pageShared";
 
 export default function ClientSelectionStep({
+  clients = [],
   loans,
   selectedClient,
   onSelectClient,

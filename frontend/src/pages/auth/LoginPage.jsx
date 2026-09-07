@@ -84,6 +84,9 @@ export default function LoginPage() {
           {submitting && <LoaderCircle size={16} className="spin" />}
           {submitting ? "Signing in…" : "Sign In"}
         </Button>
+        <Link className="auth-footer-link" to="/signup">
+          Don't have an account? Create account
+        </Link>
       </form>
     </AuthLayout>
   );
