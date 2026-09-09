@@ -20,7 +20,7 @@ import java.io.IOException;
  **/
 
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
 
     public JwtAuthenticationFilter(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
@@ -28,13 +28,13 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-        User user=null;
+        User user = null;
         try {
-            user= new ObjectMapper().readValue(request.getInputStream(), User.class);
+            user = new ObjectMapper().readValue(request.getInputStream(), User.class);
             return authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                     user.getUsername(), user.getPassword()));
         } catch (Exception e) {
-            throw new RuntimeException("bad creditiel");
+            throw new RuntimeException("bad credentiels");
         }
     }
 

@@ -24,8 +24,8 @@ public class SpringSecurityConfig {
 
     private final UserService userService;
     private final JwtAutorisationFilter jwtAutorisationFilter;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+
+    private final PasswordEncoder passwordEncoder;
 
     public SpringSecurityConfig(
             UserService userService,
@@ -133,13 +133,16 @@ public class SpringSecurityConfig {
                                 "/api/v1/clients/reference/{reference}"
                         ).permitAll()
 
+                        // Admin-only user management (list accounts, assign
+                        // a Bank Agent/Client role) — never reachable by a
+                        // Bank Agent or Client.
+                        .requestMatchers("/api/v1/users/**")
+                        .hasAuthority("ROLE_ADMIN")
+
                         // ADMIN
                         .requestMatchers("/v1/api/admin/**")
                         .hasAuthority("ROLE_ADMIN")
 
-                        // CHEF
-                        .requestMatchers("/v1/api/chef/**")
-                        .hasAuthority("ROLE_CHEF")
 
                         // Tout le reste nécessite une authentification
                         .anyRequest()
