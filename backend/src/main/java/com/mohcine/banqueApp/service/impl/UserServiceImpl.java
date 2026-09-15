@@ -31,19 +31,19 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
-    private RoleService roleService;
+    private final RoleService roleService;
 
     private final PasswordEncoder passwordEncoder;
-
-    @Lazy
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
 
      public UserServiceImpl(UserRepository userRepository,
+                            RoleService roleService,
                             PasswordEncoder passwordEncoder ,
-                            AuthenticationManager authenticationManager ,
+                            @Lazy AuthenticationManager authenticationManager ,
                             JwtUtil jwtUtil) {
          this.userRepository = userRepository;
+         this.roleService = roleService;
          this.passwordEncoder = passwordEncoder;
          this.authenticationManager = authenticationManager;
          this.jwtUtil = jwtUtil;
