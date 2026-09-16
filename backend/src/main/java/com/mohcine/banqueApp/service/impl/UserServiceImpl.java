@@ -8,7 +8,6 @@ import com.mohcine.banqueApp.repository.UserRepository;
 import com.mohcine.banqueApp.service.interfaces.RoleService;
 import com.mohcine.banqueApp.service.interfaces.UserService;
 import com.mohcine.banqueApp.service.util.JwtUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -31,19 +30,20 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
-    private RoleService roleService;
+    private final RoleService roleService;
 
     private final PasswordEncoder passwordEncoder;
 
-    @Lazy
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
 
      public UserServiceImpl(UserRepository userRepository,
+                            RoleService roleService,
                             PasswordEncoder passwordEncoder ,
-                            AuthenticationManager authenticationManager ,
+                            @Lazy AuthenticationManager authenticationManager ,
                             JwtUtil jwtUtil) {
          this.userRepository = userRepository;
+         this.roleService = roleService;
          this.passwordEncoder = passwordEncoder;
          this.authenticationManager = authenticationManager;
          this.jwtUtil = jwtUtil;
@@ -59,8 +59,8 @@ public class UserServiceImpl implements UserService {
             throw new BadCredentialsException("bad credentiel for username " + user.getUsername());
         }
         User loadUserByUsername = loadUserByUsername(user.getUsername());
-        String token = jwtUtil.generateToken(loadUserByUsername);
-        return token;
+        return jwtUtil.generateToken(loadUserByUsername);
+
     }
 
     @Override

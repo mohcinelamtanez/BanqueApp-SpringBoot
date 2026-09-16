@@ -124,14 +124,47 @@ public class SpringSecurityConfig {
                                 "/api/v1/payments/*/mark-unpaid"
                         ).hasAnyAuthority("ROLE_ADMIN", "ROLE_BANK_AGENT")
 
+                        // Every other Client endpoint (full list, lookup by
+                        // reference, create, update, delete) is Admin/Bank
+                        // Agent only — a Client must only ever see/edit their
+                        // own profile, via /api/v1/clients/me above (matched
+                        // first). This used to be permitAll(), letting
+                        // anyone — unauthenticated — read, modify or delete
+                        // any client's data.
                         .requestMatchers(
                                 "/api/v1/clients/**",
-                                "/api/v1/clients",
-                                "/api/v1/loans/**",
-                                "/api/v1/risk-assesments/**",
-                                "/api/v1/payments/**",
-                                "/api/v1/clients/reference/{reference}"
-                        ).permitAll()
+                                "/api/v1/clients"
+                        ).hasAnyAuthority("ROLE_ADMIN", "ROLE_BANK_AGENT")
+
+                        // Same reasoning as Payments below: no ownership
+                        // check exists on this endpoint, so it must not be
+                        // reachable by an unauthenticated caller. Kept
+                        // Admin/Bank Agent only, same as the underwriting
+                        // flow that consumes it.
+                        .requestMatchers("/api/v1/risk-assesments/**")
+                        .hasAnyAuthority("ROLE_ADMIN", "ROLE_BANK_AGENT")
+
+                        // Every other /api/v1/payments/** endpoint (lookup
+                        // by loanId, mark-paid/unpaid already handled above)
+                        // is Admin/Bank Agent only — a Client must only ever
+                        // see their own payments, via /api/v1/payments/me
+                        // above. This used to be permitAll(), letting anyone
+                        // dump any loan's full payment schedule by
+                        // enumerating loanId, with zero authentication.
+                        .requestMatchers("/api/v1/payments/**")
+                        .hasAnyAuthority("ROLE_ADMIN", "ROLE_BANK_AGENT")
+
+                        // Every other /api/v1/loans/** endpoint (the full
+                        // list, lookup by clientId/reference, create,
+                        // update, delete) is Admin/Bank Agent only — a
+                        // Client must only ever see their own loans, via
+                        // /api/v1/loans/me above (matched first, so it stays
+                        // reachable by an authenticated Client). This used
+                        // to be permitAll(), letting anyone — including a
+                        // Client, or an unauthenticated caller — read (or
+                        // even write) every client's loan data.
+                        .requestMatchers("/api/v1/loans/**")
+                        .hasAnyAuthority("ROLE_ADMIN", "ROLE_BANK_AGENT")
 
                         // Admin-only user management (list accounts, assign
                         // a Bank Agent/Client role) — never reachable by a

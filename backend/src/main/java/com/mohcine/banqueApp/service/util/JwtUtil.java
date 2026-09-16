@@ -7,6 +7,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -29,7 +30,12 @@ public class JwtUtil implements Serializable {
 
 
         private static final long serialVersionUID = 234234523523L;
-        private String secretKey="myScret123";
+
+        // Was hardcoded ("myScret123") — anyone with source access could
+        // forge a valid token for any user/role. Now externalized to
+        // application.properties (jwt.secret).
+        @Value("${jwt.secret}")
+        private String secretKey;
 
 
         //generate token for user
