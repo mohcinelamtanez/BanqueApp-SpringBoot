@@ -3,6 +3,7 @@ import { date } from "../utils/finance";
 export const ROLE_LABEL = {
   ADMIN: "Administrator",
   BANK_AGENT: "Bank Agent",
+  CLIENT: "Client",
 };
 
 export function formatLastLogin(iso) {

@@ -1,16 +1,15 @@
 import { Badge, Modal } from "../ui";
-import { date } from "../../utils/finance";
-import { initials } from "../../pages/pageShared";
 import { ROLE_LABEL, formatLastLogin } from "../../pages/userManagementShared";
 
 export default function UserProfileModal({ user, onClose }) {
-  const fullName = `${user.firstName} ${user.lastName}`;
   return (
     <Modal title="User Profile" onClose={onClose}>
       <div className="profile-heading user-profile-modal-heading">
-        <span className="avatar profile-avatar">{initials(fullName)}</span>
+        <span className="avatar profile-avatar">
+          {user.email?.[0]?.toUpperCase()}
+        </span>
         <div>
-          <h3>{fullName}</h3>
+          <h3 className="mono">{user.email}</h3>
           <Badge type={user.role === "ADMIN" ? "role-admin" : ""}>
             {ROLE_LABEL[user.role] || user.role}
           </Badge>
@@ -20,10 +19,6 @@ export default function UserProfileModal({ user, onClose }) {
         <div className="decision-recap-row">
           <span>Email</span>
           <b>{user.email}</b>
-        </div>
-        <div className="decision-recap-row">
-          <span>Phone</span>
-          <b>{user.phone}</b>
         </div>
         <div className="decision-recap-row">
           <span>Role</span>
@@ -38,10 +33,6 @@ export default function UserProfileModal({ user, onClose }) {
         <div className="decision-recap-row">
           <span>Last Login</span>
           <b>{formatLastLogin(user.lastLogin)}</b>
-        </div>
-        <div className="decision-recap-row">
-          <span>Created</span>
-          <b>{date(user.createdAt)}</b>
         </div>
       </div>
     </Modal>

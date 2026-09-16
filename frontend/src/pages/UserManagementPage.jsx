@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Briefcase, Plus, Search, ShieldCheck, UserCheck, Users } from "lucide-react";
+import { Briefcase, Plus, Search, UserCheck, Users } from "lucide-react";
 import {
   Button,
   Card,
@@ -13,6 +13,7 @@ import {
 import UserTable from "../components/users/UserTable";
 import UserFormModal from "../components/users/UserFormModal";
 import UserProfileModal from "../components/users/UserProfileModal";
+import AssignRoleModal from "../components/users/AssignRoleModal";
 import { userService } from "../services/userService";
 import { usePagination } from "../hooks/usePagination";
 import { Metric, PageHeading } from "./pageShared";
@@ -31,6 +32,7 @@ export default function UserManagementPage() {
   const [resetTarget, setResetTarget] = useState(null);
   const [resettingPassword, setResettingPassword] = useState(false);
   const [resetError, setResetError] = useState("");
+  const [roleTarget, setRoleTarget] = useState(null);
   const [success, setSuccess] = useState(null);
 
   useEffect(() => {
@@ -76,7 +78,6 @@ export default function UserManagementPage() {
   const total = users.length;
   const activeCount = users.filter((user) => user.status === "Active").length;
   const bankAgentCount = users.filter((user) => user.role === "BANK_AGENT").length;
-  const adminCount = users.filter((user) => user.role === "ADMIN").length;
 
   const closeStatusConfirm = () => {
     if (togglingStatus) return;
@@ -123,11 +124,10 @@ export default function UserManagementPage() {
         }
       />
 
-      <div className="stat-grid-4 user-management-kpis">
+      <div className="stat-grid-3 user-management-kpis">
         <Metric label="Total Users" value={total} icon={<Users />} />
         <Metric label="Active Users" value={activeCount} icon={<UserCheck />} />
         <Metric label="Bank Agents" value={bankAgentCount} icon={<Briefcase />} />
-        <Metric label="Administrators" value={adminCount} icon={<ShieldCheck />} />
       </div>
 
       <Card className="table-card">
@@ -154,6 +154,7 @@ export default function UserManagementPage() {
               onEdit={(user) => setFormModal({ mode: "edit", user })}
               onToggleStatus={setStatusTarget}
               onResetPassword={setResetTarget}
+              onAssignRole={setRoleTarget}
             />
             <Pagination
               page={page}
@@ -197,6 +198,20 @@ export default function UserManagementPage() {
       )}
       {viewingUser && (
         <UserProfileModal user={viewingUser} onClose={() => navigate("/users")} />
+      )}
+      {roleTarget && (
+        <AssignRoleModal
+          user={roleTarget}
+          onClose={() => setRoleTarget(null)}
+          onSaved={() => {
+            setRoleTarget(null);
+            reload();
+            setSuccess({
+              title: "Role Updated Successfully",
+              message: "The user's role has been updated.",
+            });
+          }}
+        />
       )}
       {statusTarget && (
         <ConfirmationDialog

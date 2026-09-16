@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Eye, KeyRound, Pencil, Power, MoreVertical } from "lucide-react";
+import { Eye, KeyRound, Pencil, Power, MoreVertical, ShieldCheck } from "lucide-react";
 
 export default function UserActionsMenu({
   user,
@@ -7,6 +7,7 @@ export default function UserActionsMenu({
   onEdit,
   onToggleStatus,
   onResetPassword,
+  onAssignRole,
 }) {
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
@@ -54,6 +55,17 @@ export default function UserActionsMenu({
           >
             <Pencil size={18} />
             Edit User
+          </button>
+          <button
+            type="button"
+            role="menuitem"
+            onClick={() => {
+              setOpen(false);
+              onAssignRole(user);
+            }}
+          >
+            <ShieldCheck size={18} />
+            Assign Role
           </button>
           <div className="actions-menu-divider" />
           <button

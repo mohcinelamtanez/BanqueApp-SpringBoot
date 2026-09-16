@@ -29,16 +29,13 @@ export default function UserFormModal({ mode, user, onClose, onSaved }) {
     try {
       const saved = editing
         ? await userService.update(user.id, values)
-        : await userService.create({
-            id: `USR-${Date.now().toString().slice(-4)}`,
-            lastLogin: null,
-            createdAt: new Date().toISOString().slice(0, 10),
-            status: "Active",
-            ...values,
-          });
+        : await userService.create(values);
       onSaved(saved);
-    } catch {
-      setError("Something went wrong. Please try again.");
+    } catch (err) {
+      setError(
+        err.response?.data?.message ||
+          "Something went wrong. Please try again.",
+      );
       setSubmitting(false);
     }
   };

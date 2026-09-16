@@ -2902,10 +2902,66 @@ dd {
 .dashboard-activity-item small {
   color: #76777d;
 }
+.dashboard-loans-card {
+  margin-bottom: 24px;
+}
+.dashboard-loan-overview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.dashboard-loan-stat {
+  flex: 1 1 160px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px;
+  border-radius: 10px;
+  border: 1px solid #c6c6cd;
+}
+.dashboard-loan-stat strong {
+  display: block;
+  font-size: 24px;
+  font-family: "JetBrains Mono", monospace;
+  line-height: 1.1;
+}
+.dashboard-loan-stat small {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #45464d;
+  margin-top: 2px;
+}
+.dashboard-loan-stat.active {
+  background: linear-gradient(135deg, #ffffff 0%, #dcfce7 100%);
+  border-color: #b7ecc8;
+}
+.dashboard-loan-stat.active svg {
+  color: #166534;
+}
+.dashboard-loan-stat.completed {
+  background: linear-gradient(135deg, #ffffff 0%, #e7eeff 100%);
+  border-color: #b7c4fa;
+}
+.dashboard-loan-stat.completed svg {
+  color: #38485d;
+}
+.dashboard-loan-stat.rejected {
+  background: linear-gradient(135deg, #ffffff 0%, #ffdad6 100%);
+  border-color: #f0aca4;
+}
+.dashboard-loan-stat.rejected svg {
+  color: #93000a;
+}
 @media (max-width: 650px) {
   .dashboard-welcome {
     flex-direction: column;
     text-align: center;
+  }
+  .dashboard-loan-stat {
+    flex: 1 1 100%;
   }
 }
 /* Client — My Loans */

@@ -26,10 +26,7 @@ export default function UserForm({ formId, user, editing, onSubmit }) {
       if (!form[key]) nextErrors[key] = "Required";
     });
     if (Object.keys(nextErrors).length) return setErrors(nextErrors);
-    // The temporary password is never persisted — this is a frontend-only
-    // simulation, not a real credential-issuing flow.
-    const { tempPassword, ...values } = form;
-    onSubmit(values);
+    onSubmit(form);
   };
   return (
     <form className="form-grid" id={formId} onSubmit={submit}>
@@ -64,6 +61,7 @@ export default function UserForm({ formId, user, editing, onSubmit }) {
       />
       <Select name="role" label="Role" value={form.role} onChange={change}>
         <option value="BANK_AGENT">Bank Agent</option>
+        <option value="CLIENT">Client</option>
         <option value="ADMIN">Administrator</option>
       </Select>
       {editing ? (

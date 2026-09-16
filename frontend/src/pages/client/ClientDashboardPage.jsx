@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { CheckCircle2, CircleDot, XCircle } from "lucide-react";
 import { Card, EmptyState, LoadingState } from "../../components/ui";
 import ClientAvatar from "../../components/clients/ClientAvatar";
 import { useClientProfile } from "./ClientProfileContext";
@@ -17,6 +18,12 @@ import { money, date } from "../../utils/finance";
 import { Metric, PageHeading, initials } from "../pageShared";
 
 const APPLICATION_STATUSES = ["Pending", "Approved", "Rejected"];
+const LOAN_STATUSES = ["Active", "Completed", "Rejected"];
+const LOAN_STATUS_META = {
+  Active: { icon: CircleDot, tone: "active" },
+  Completed: { icon: CheckCircle2, tone: "completed" },
+  Rejected: { icon: XCircle, tone: "rejected" },
+};
 
 export default function ClientDashboardPage() {
   const { client, loading: profileLoading } = useClientProfile();
@@ -91,6 +98,10 @@ export default function ClientDashboardPage() {
   const nextPayment = nextUpcomingPayment(payments);
   const applicationCounts = APPLICATION_STATUSES.reduce((acc, status) => {
     acc[status] = applications.filter((a) => a.status === status).length;
+    return acc;
+  }, {});
+  const loanCounts = LOAN_STATUSES.reduce((acc, status) => {
+    acc[status] = loans.filter((loan) => loan.status === status).length;
     return acc;
   }, {});
   // Reuses the exact same real-data-derived reminders already shown in the
@@ -220,6 +231,42 @@ export default function ClientDashboardPage() {
           )}
         </Card>
       </div>
+
+      <Card className="dashboard-loans-card">
+        <div className="section-head">
+          <h2>Loans</h2>
+          <Link to="/my-loans" className="decision-link-btn">
+            View Loans
+          </Link>
+        </div>
+        {failed.loans ? (
+          <EmptyState
+            title="Unable to load your loans"
+            detail="Please try again later."
+          />
+        ) : loans.length === 0 ? (
+          <EmptyState
+            title="No loans yet"
+            detail="Approved loan applications will appear here once activated."
+          />
+        ) : (
+          <div className="dashboard-loan-overview">
+            {LOAN_STATUSES.map((status) => {
+              const meta = LOAN_STATUS_META[status];
+              const StatusIcon = meta.icon;
+              return (
+                <div className={`dashboard-loan-stat ${meta.tone}`} key={status}>
+                  <StatusIcon size={20} />
+                  <div>
+                    <strong>{loanCounts[status]}</strong>
+                    <small>{status}</small>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </Card>
 
       <Card>
         <h2>Recent Activity</h2>
