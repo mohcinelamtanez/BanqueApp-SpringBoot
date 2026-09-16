@@ -517,6 +517,6 @@ No automated frontend tests are present in the repository.
 
 Software Engineering Student | Backend Developer | Java & Spring Boot | Generative AI
 
-- LinkedIn: _add your link here_
-- GitHub: _add your link here_
-- Portfolio: _add your link here_
+- LinkedIn: _https://www.linkedin.com/in/mohcine-lamtanez-dev/_
+- GitHub: _https://github.com/mohcinelamtanez_
+- Portfolio: _Coming soon_
