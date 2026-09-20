@@ -19,6 +19,7 @@ import com.mohcine.banqueApp.repository.ClientRepository;
 import com.mohcine.banqueApp.repository.LoanRepository;
 import com.mohcine.banqueApp.service.interfaces.ApplicationService;
 import com.mohcine.banqueApp.service.interfaces.LoanService;
+import com.mohcine.banqueApp.service.interfaces.NotificationService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -37,18 +38,21 @@ public class ApplicationServiceImpl implements ApplicationService {
     private final ApplicationMapper applicationMapper;
     private final LoanService loanService;
     private final LoanRepository loanRepository;
+    private final NotificationService notificationService;
 
     public ApplicationServiceImpl(
             ApplicationRepository applicationRepository,
             ClientRepository clientRepository,
             ApplicationMapper applicationMapper,
             LoanService loanService,
-            LoanRepository loanRepository) {
+            LoanRepository loanRepository,
+            NotificationService notificationService) {
         this.applicationRepository = applicationRepository;
         this.clientRepository = clientRepository;
         this.applicationMapper = applicationMapper;
         this.loanService = loanService;
         this.loanRepository = loanRepository;
+        this.notificationService = notificationService;
     }
 
     @Override
@@ -62,7 +66,12 @@ public class ApplicationServiceImpl implements ApplicationService {
         ensureClientIsEligible(clientId);
         Application application = applicationMapper.toEntity(dto);
         application.setClient(client);
-        return applicationRepository.save(application);
+        Application saved = applicationRepository.save(application);
+        // Reached only once every check above passed and the application is
+        // saved — same transaction, so a failure here rolls the whole
+        // submission back rather than leaving an unannounced application.
+        notificationService.notifyBackOfficeOfNewApplication(saved);
+        return saved;
     }
 
     // Eligible = no ACTIVE Loan (an ongoing financial obligation) AND no
@@ -183,6 +192,12 @@ public class ApplicationServiceImpl implements ApplicationService {
         Loan createdLoan = loanService.createLoan(loanCreateDto);
         application.setLoan(createdLoan);
 
-        return applicationRepository.save(application);
+        Application savedApplication = applicationRepository.save(application);
+        // Only after the decision, the Loan and its link were all persisted
+        // without error, and only for an approval — same transaction.
+        if (savedApplication.getStatus() == ApplicationStatus.APPROVED) {
+            notificationService.notifyClientOfApplicationApproved(savedApplication);
+        }
+        return savedApplication;
     }
 }

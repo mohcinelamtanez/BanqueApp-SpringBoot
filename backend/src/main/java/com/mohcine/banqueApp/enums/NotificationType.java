@@ -7,5 +7,6 @@ public enum NotificationType {
     LOAN_APPROVED,
     LOAN_REJECTED,
     PAYMENT_DUE,
-    PAYMENT_LATE
+    PAYMENT_LATE,
+    NEW_LOAN_APPLICATION
 }

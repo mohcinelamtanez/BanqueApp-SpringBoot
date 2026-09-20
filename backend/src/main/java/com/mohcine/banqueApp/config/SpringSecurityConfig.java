@@ -101,6 +101,12 @@ public class SpringSecurityConfig {
                         // fully public /api/v1/clients/** below.
                         .requestMatchers("/api/uploads/**").authenticated()
 
+                        // Notifications are personal to whoever is logged in
+                        // (Client, Bank Agent or Admin alike): every endpoint
+                        // under here resolves the user from the JWT principal
+                        // and only ever touches that user's own rows.
+                        .requestMatchers("/api/v1/notifications/**").authenticated()
+
                         .requestMatchers(HttpMethod.POST, "/api/v1/applications")
                         .hasAuthority("ROLE_CLIENT")
 

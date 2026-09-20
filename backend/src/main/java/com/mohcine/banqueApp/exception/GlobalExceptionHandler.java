@@ -64,6 +64,21 @@ public class GlobalExceptionHandler {
 
     }
 
+    @ExceptionHandler(NotificationNotFoundException.class)
+    public ResponseEntity<ApiError> handleNotificationNotFoundException(NotificationNotFoundException exception , HttpServletRequest request) {
+
+        HttpStatus status = HttpStatus.NOT_FOUND;
+
+        ApiError apiError = new ApiError(LocalDateTime.now() ,
+                status.value() ,
+                status.name() ,
+                exception.getMessage(),
+                request.getRequestURI());
+
+        return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiError) ;
+
+    }
+
     @ExceptionHandler(ActiveLoanExistsException.class)
     public ResponseEntity<ApiError> handleActiveLoanExistsException(ActiveLoanExistsException exception , HttpServletRequest request) {
         HttpStatus status = HttpStatus.CONFLICT;
