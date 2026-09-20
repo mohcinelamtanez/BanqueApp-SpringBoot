@@ -44,8 +44,10 @@ public class PaymentController {
     @GetMapping("/me")
     public List<PaymentResponseDTO> getMyPayments(Authentication authentication) {
         User user = (User) authentication.getPrincipal();
+        // No linked Client yet means no loans, hence no payments — an empty
+        // list, not an error.
         if (user.getClient() == null) {
-            throw new ClientNotFoundException("(current user is not linked to a client)");
+            return List.of();
         }
         return paymentService.getPaymentsByClientId(user.getClient().getId()).stream()
                 .map(paymentMapper::toDTO)

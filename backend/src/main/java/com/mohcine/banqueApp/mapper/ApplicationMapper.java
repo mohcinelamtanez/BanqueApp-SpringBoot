@@ -33,7 +33,8 @@ public class ApplicationMapper {
                 application.getRequestedDuration(),
                 application.getApplicationDate(),
                 application.getStatus(),
-                application.getRejectionReason()
+                application.getRejectionReason(),
+                application.getLoan() != null ? application.getLoan().getId() : null
         );
     }
 }

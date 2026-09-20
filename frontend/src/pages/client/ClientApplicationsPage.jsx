@@ -15,6 +15,7 @@ export default function ClientApplicationsPage() {
   const { applicationId } = useParams();
   const [loading, setLoading] = useState(true);
   const [applications, setApplications] = useState([]);
+  const [loans, setLoans] = useState([]);
   const [hasActiveLoan, setHasActiveLoan] = useState(false);
   const [profileComplete, setProfileComplete] = useState(true);
   const [reloadKey, setReloadKey] = useState(0);
@@ -25,24 +26,38 @@ export default function ClientApplicationsPage() {
     let active = true;
     setLoading(true);
     setError("");
-    Promise.all([
+    // allSettled (not all): applications/me and loans/me both 404 for a
+    // user with no linked Client yet (a freshly self-registered or
+    // Admin-created account) — that must still let clientService.getMine()
+    // (which itself never 404s, see ClientController.getMyProfile) resolve
+    // and correctly drive the existing "Complete your profile" note below,
+    // instead of the whole load rejecting before it ever gets there.
+    Promise.allSettled([
       applicationService.listMine(),
       loanService.listMine(),
       clientService.getMine(),
-    ])
-      .then(([applicationsData, loansData, profile]) => {
-        if (!active) return;
-        setApplications(applicationsData);
-        setHasActiveLoan(loansData.some((loan) => loan.status === "Active"));
-        setProfileComplete(isProfileComplete(profile));
-        setLoading(false);
-      })
-      .catch(() => {
-        if (active) {
-          setError("Unable to load your applications right now. Please try again.");
-          setLoading(false);
-        }
-      });
+    ]).then(([applicationsResult, loansResult, profileResult]) => {
+      if (!active) return;
+      const notFound = [applicationsResult, loansResult].some(
+        (result) =>
+          result.status === "rejected" &&
+          result.reason?.response?.status === 404,
+      );
+      const applicationsData =
+        applicationsResult.status === "fulfilled" ? applicationsResult.value : [];
+      const loansData = loansResult.status === "fulfilled" ? loansResult.value : [];
+      setApplications(applicationsData);
+      setLoans(loansData);
+      setHasActiveLoan(loansData.some((loan) => loan.status === "Active"));
+      if (notFound) {
+        setProfileComplete(false);
+      } else if (profileResult.status === "fulfilled") {
+        setProfileComplete(isProfileComplete(profileResult.value));
+      } else {
+        setError("Unable to load your applications right now. Please try again.");
+      }
+      setLoading(false);
+    });
     return () => {
       active = false;
     };
@@ -137,6 +152,7 @@ export default function ClientApplicationsPage() {
             <ApplicationCard
               key={application.id}
               application={application}
+              loan={loans.find((loan) => loan.id === application.loanId) || null}
               canCreateNew={canApply}
               onViewDetails={() =>
                 navigate(`/my-applications/${application.id}`)

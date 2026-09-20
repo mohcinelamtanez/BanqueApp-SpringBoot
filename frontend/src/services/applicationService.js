@@ -30,6 +30,10 @@ function fromDTO(dto) {
     submittedDate: dto.applicationDate,
     status: STATUS_TO_LABEL[dto.status] || dto.status,
     rejectionReason: dto.rejectionReason,
+    // The Loan this application produced once decided (null while
+    // Pending) — lets the UI check whether it's still Active or has since
+    // become Completed.
+    loanId: dto.loanId,
   };
 }
 

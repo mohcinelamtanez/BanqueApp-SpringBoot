@@ -17,6 +17,10 @@ public record ApplicationResponseDTO(
         Integer requestedDuration,
         LocalDate applicationDate,
         ApplicationStatus status,
-        String rejectionReason
+        String rejectionReason,
+        // The Loan this application produced once decided (null while
+        // PENDING) — lets the client UI check whether it's still Active or
+        // has since become Completed.
+        Integer loanId
 ) {
 }

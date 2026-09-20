@@ -46,6 +46,11 @@ public class ApplicationController {
     // authenticated identity, never from a client-supplied id.
     @GetMapping("/me")
     public List<ApplicationResponseDTO> getMyApplications(Authentication authentication) {
+        // No linked Client yet means no applications — an empty list, not
+        // an error (submitting one still requires a Client, see above).
+        if (((User) authentication.getPrincipal()).getClient() == null) {
+            return List.of();
+        }
         Integer clientId = currentClientId(authentication);
         return applicationService.getApplicationsByClientId(clientId).stream()
                 .map(applicationMapper::toDTO)

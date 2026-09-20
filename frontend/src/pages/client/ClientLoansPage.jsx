@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { CheckCircle2, CircleDot, XCircle } from "lucide-react";
 import { Card, EmptyState, ErrorState, LoadingState } from "../../components/ui";
 import { loanService } from "../../services/loanService";
@@ -22,34 +23,67 @@ export default function ClientLoansPage() {
   const [loans, setLoans] = useState([]);
   const [payments, setPayments] = useState([]);
   const [error, setError] = useState("");
+  // The backend returns 404 on /loans/me and /payments/me for a user with
+  // no linked Client yet (a freshly self-registered or Admin-created
+  // account) — that's an expected state, not a real failure, so it's
+  // tracked separately from `error` rather than showing a scary generic
+  // message. The calls are still made unconditionally; this is decided
+  // from their outcome, not a pre-check that would skip them.
+  const [noProfile, setNoProfile] = useState(false);
 
   useEffect(() => {
     let active = true;
     setLoading(true);
     setError("");
+    setNoProfile(false);
     // Payments are fetched alongside Loans purely to compute each ACTIVE
     // loan's real repayment progress below — nothing here changes what
-    // "My Payments" itself does.
-    Promise.all([loanService.listMine(), paymentService.listMine()])
-      .then(([loanData, paymentData]) => {
-        if (active) {
-          setLoans(loanData);
-          setPayments(paymentData);
-          setLoading(false);
-        }
-      })
-      .catch(() => {
-        if (active) {
+    // "My Payments" itself does. allSettled (not all) so one endpoint
+    // 404ing doesn't hide the reason from the other's outcome.
+    Promise.allSettled([loanService.listMine(), paymentService.listMine()]).then(
+      ([loanResult, paymentResult]) => {
+        if (!active) return;
+        const notFound = [loanResult, paymentResult].some(
+          (result) =>
+            result.status === "rejected" &&
+            result.reason?.response?.status === 404,
+        );
+        if (notFound) {
+          setNoProfile(true);
+        } else if (
+          loanResult.status === "rejected" ||
+          paymentResult.status === "rejected"
+        ) {
           setError("Unable to load your loans right now. Please try again.");
-          setLoading(false);
+        } else {
+          setLoans(loanResult.value);
+          setPayments(paymentResult.value);
         }
-      });
+        setLoading(false);
+      },
+    );
     return () => {
       active = false;
     };
   }, []);
 
   if (loading) return <LoadingState label="Loading your loans…" />;
+  if (noProfile) {
+    return (
+      <>
+        <PageHeading
+          title="My Loans"
+          subtitle="Track your active, completed and rejected loans."
+        />
+        <Card className="application-locked-note">
+          <p>
+            <b>Complete your profile to view your loans.</b>{" "}
+            <Link to="/my-profile">Go to My Profile</Link>.
+          </p>
+        </Card>
+      </>
+    );
+  }
   if (error) return <ErrorState detail={error} />;
 
   // Stable sort — loans sharing a status keep the order the backend

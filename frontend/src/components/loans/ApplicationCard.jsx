@@ -11,6 +11,7 @@ const STATUS_META = {
 
 export default function ApplicationCard({
   application,
+  loan = null,
   onViewDetails,
   onCreateNew,
   canCreateNew = true,
@@ -19,6 +20,7 @@ export default function ApplicationCard({
   const status = application.status;
   const meta = STATUS_META[status];
   const Icon = meta.icon;
+  const loanCompleted = status === "Approved" && loan?.status === "Completed";
 
   return (
     <Card className="application-card">
@@ -65,7 +67,17 @@ export default function ApplicationCard({
         </div>
       )}
 
-      {status === "Approved" && (
+      {status === "Approved" && loanCompleted && (
+        <div className="application-decision-panel approved">
+          <h4>Loan Completed</h4>
+          <p>
+            Your loan has been fully repaid and is now completed. You can
+            submit a new loan application whenever you're ready.
+          </p>
+        </div>
+      )}
+
+      {status === "Approved" && !loanCompleted && (
         <div className="application-decision-panel approved">
           <h4>Application Approved</h4>
           <p>Your loan application has been approved. Your loan is now active.</p>
@@ -81,6 +93,9 @@ export default function ApplicationCard({
         )}
         {status === "Approved" && (
           <Button onClick={() => navigate("/my-loans")}>View Loan</Button>
+        )}
+        {loanCompleted && canCreateNew && (
+          <Button onClick={onCreateNew}>Create New Application</Button>
         )}
       </div>
     </Card>

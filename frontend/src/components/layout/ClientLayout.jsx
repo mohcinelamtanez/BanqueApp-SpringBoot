@@ -9,7 +9,6 @@ import { useSidebarCollapsed } from "./useSidebarCollapsed";
 import { loanService } from "../../services/loanService";
 import { paymentService } from "../../services/paymentService";
 import { buildPaymentNotifications } from "../../utils/paymentSchedule";
-import { getCurrentClientId } from "../../pages/client/clientShared";
 import { initials } from "../../pages/pageShared";
 import {
   ClientProfileProvider,
@@ -31,20 +30,30 @@ function ClientLayoutShell({ children }) {
 
   useEffect(() => {
     let active = true;
-    loanService.list().then(async (allLoans) => {
-      const currentClientId = getCurrentClientId();
-      const activeLoan = allLoans.find(
-        (loan) => loan.clientId === currentClientId && loan.status === "Active",
-      );
-      if (!activeLoan) return;
-      const loanPayments = await paymentService.list(activeLoan.id);
-      if (!active) return;
-      // Frontend-only simulation of payment reminder notifications — no
-      // real email/push is ever sent, this just feeds the existing bell.
-      setPaymentNotifications(
-        buildPaymentNotifications(activeLoan, loanPayments),
-      );
-    });
+    // Was loanService.list()/paymentService.list(loanId) — both are now
+    // Admin/Bank Agent-only endpoints (see SpringSecurityConfig), so this
+    // silently 403'd for every client and never populated the bell. .listMine()
+    // is scoped server-side to the authenticated client already, and simply
+    // 404s (caught below) rather than erroring for a user with no linked
+    // Client yet — that's an expected state, not a real failure.
+    Promise.all([loanService.listMine(), paymentService.listMine()])
+      .then(([myLoans, myPayments]) => {
+        if (!active) return;
+        const activeLoan = myLoans.find((loan) => loan.status === "Active");
+        if (!activeLoan) return;
+        const loanPayments = myPayments.filter(
+          (payment) => payment.loanId === activeLoan.id,
+        );
+        // Frontend-only simulation of payment reminder notifications — no
+        // real email/push is ever sent, this just feeds the existing bell.
+        setPaymentNotifications(
+          buildPaymentNotifications(activeLoan, loanPayments),
+        );
+      })
+      .catch(() => {
+        // No Client yet (404) or a transient failure — the bell just stays
+        // empty either way, this is a non-critical enhancement.
+      });
     return () => {
       active = false;
     };

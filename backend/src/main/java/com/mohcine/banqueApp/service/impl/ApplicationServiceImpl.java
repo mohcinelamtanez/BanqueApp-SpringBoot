@@ -5,6 +5,7 @@ import com.mohcine.banqueApp.dto.ApplicationDecisionDto;
 import com.mohcine.banqueApp.dto.LoanCreateDto;
 import com.mohcine.banqueApp.entity.Application;
 import com.mohcine.banqueApp.entity.Client;
+import com.mohcine.banqueApp.entity.Loan;
 import com.mohcine.banqueApp.enums.ApplicationStatus;
 import com.mohcine.banqueApp.enums.LoanStatus;
 import com.mohcine.banqueApp.enums.RiskLevel;
@@ -151,7 +152,6 @@ public class ApplicationServiceImpl implements ApplicationService {
         if (dto.getStatus() == ApplicationStatus.REJECTED) {
             application.setRejectionReason(dto.getRejectionReason());
         }
-        Application savedApplication = applicationRepository.save(application);
 
         LoanCreateDto loanCreateDto = new LoanCreateDto();
         loanCreateDto.setClient(application.getClient().getId());
@@ -180,8 +180,9 @@ public class ApplicationServiceImpl implements ApplicationService {
             loanCreateDto.setRejectionReason(dto.getRejectionReason());
         }
 
-        loanService.createLoan(loanCreateDto);
+        Loan createdLoan = loanService.createLoan(loanCreateDto);
+        application.setLoan(createdLoan);
 
-        return savedApplication;
+        return applicationRepository.save(application);
     }
 }

@@ -52,8 +52,10 @@ public class LoanController {
    @GetMapping("/me")
     public List<LoanResponseDTO> getMyLoans(Authentication authentication){
         User user = (User) authentication.getPrincipal();
+        // A user with no linked Client yet (freshly registered / Admin-created)
+        // simply has no loans — an empty list, not an error.
         if (user.getClient() == null) {
-            throw new ClientNotFoundException("(current user is not linked to a client)");
+            return List.of();
         }
         List<Loan> loans = loanService.getLoansByClientId(user.getClient().getId());
 

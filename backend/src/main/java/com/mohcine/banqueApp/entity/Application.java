@@ -39,6 +39,16 @@ public class Application {
     @Column(name = "rejection_reason")
     private String rejectionReason;
 
+    // The Loan produced by deciding this application (set in
+    // ApplicationServiceImpl.decide(), for both APPROVED and REJECTED
+    // outcomes — a Rejected decision still creates a traceability Loan
+    // row). Null only while the application is still PENDING. This is what
+    // lets the client UI tell whether an approved application's loan is
+    // still active or has since been fully repaid.
+    @OneToOne
+    @JoinColumn(name = "loan_id")
+    private Loan loan;
+
     // Getters & Setters
 
     public Integer getId() {
@@ -103,5 +113,13 @@ public class Application {
 
     public void setRejectionReason(String rejectionReason) {
         this.rejectionReason = rejectionReason;
+    }
+
+    public Loan getLoan() {
+        return loan;
+    }
+
+    public void setLoan(Loan loan) {
+        this.loan = loan;
     }
 }

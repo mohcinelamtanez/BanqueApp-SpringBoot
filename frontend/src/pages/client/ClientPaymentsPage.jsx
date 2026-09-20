@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { CheckCircle2, CircleDot } from "lucide-react";
 import {
   Badge,
@@ -41,14 +42,41 @@ export default function ClientPaymentsPage() {
   const [viewing, setViewing] = useState(null);
   const [showSchedule, setShowSchedule] = useState(false);
   const [error, setError] = useState("");
+  // The backend returns 404 on /loans/me and /payments/me for a user with
+  // no linked Client yet (a freshly self-registered or Admin-created
+  // account) — that's an expected state, not a real failure, so it's
+  // tracked separately from `error` rather than showing a scary generic
+  // message. The calls are still made unconditionally; this is decided
+  // from their outcome, not a pre-check that would skip them.
+  const [noProfile, setNoProfile] = useState(false);
 
   useEffect(() => {
     let active = true;
     setLoading(true);
     setError("");
-    Promise.all([loanService.listMine(), paymentService.listMine()])
-      .then(([allLoans, allPayments]) => {
+    setNoProfile(false);
+    // allSettled (not all) so one endpoint 404ing doesn't hide the reason
+    // from the other's outcome.
+    Promise.allSettled([loanService.listMine(), paymentService.listMine()]).then(
+      ([loanResult, paymentResult]) => {
         if (!active) return;
+        const notFound = [loanResult, paymentResult].some(
+          (result) =>
+            result.status === "rejected" &&
+            result.reason?.response?.status === 404,
+        );
+        if (notFound) {
+          setNoProfile(true);
+          setLoading(false);
+          return;
+        }
+        if (loanResult.status === "rejected" || paymentResult.status === "rejected") {
+          setError("Unable to load your payments right now. Please try again.");
+          setLoading(false);
+          return;
+        }
+        const allLoans = loanResult.value;
+        const allPayments = paymentResult.value;
         // A Rejected loan has no repayment period — this page only ever
         // deals in real, active/completed repayment schedules.
         const myLoans = allLoans.filter(
@@ -64,13 +92,8 @@ export default function ClientPaymentsPage() {
         );
         setSelectedLoanId(activeLoan?.id ?? firstPastLoan?.id ?? null);
         setLoading(false);
-      })
-      .catch(() => {
-        if (active) {
-          setError("Unable to load your payments right now. Please try again.");
-          setLoading(false);
-        }
-      });
+      },
+    );
     return () => {
       active = false;
     };
@@ -85,6 +108,22 @@ export default function ClientPaymentsPage() {
   const { page, setPage, totalPages, pageItems } = usePagination(visible, 5);
 
   if (loading) return <LoadingState label="Loading your payments…" />;
+  if (noProfile) {
+    return (
+      <>
+        <PageHeading
+          title="Payments"
+          subtitle="Track your loan repayments and payment history."
+        />
+        <Card className="application-locked-note">
+          <p>
+            <b>Complete your profile to view your payments.</b>{" "}
+            <Link to="/my-profile">Go to My Profile</Link>.
+          </p>
+        </Card>
+      </>
+    );
+  }
   if (error) return <ErrorState detail={error} />;
 
   const loanFor = (loanId) => loans.find((loan) => loan.id === loanId);
