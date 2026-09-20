@@ -4,8 +4,21 @@ import { money, loanSummary } from "../../utils/finance";
 
 const LOAN_TYPES = ["Consumer (CONSO)", "Automobile (AUTO)"];
 
+// The risk model (ml-model/nn_model.pkl) was trained on interest rates
+// between ~0.9% and ~3.7% (ml-model/data/prets.csv) — a rate submitted far
+// outside that range is an extrapolation the model was never trained for,
+// so its prediction can't be trusted. Keeping the admin's input inside a
+// representative range is what actually makes the risk score meaningful.
+const RATE_RANGE = { min: 1, max: 4 };
+
 export default function LoanDetailsStep({ values, onChange, onBack, onNext }) {
   const summary = loanSummary(values.amount, values.duration, values.rate);
+  const rateValue = Number(values.rate);
+  const isRateValid =
+    values.rate !== "" &&
+    !Number.isNaN(rateValue) &&
+    rateValue >= RATE_RANGE.min &&
+    rateValue <= RATE_RANGE.max;
   return (
     <div className="loan-details-layout">
       <Card className="assessment-card loan-details-form">
@@ -69,14 +82,26 @@ export default function LoanDetailsStep({ values, onChange, onBack, onNext }) {
             <div className="field-suffix">
               <input
                 type="number"
-                step="0.1"
+                step="0.01"
+                min={RATE_RANGE.min}
+                max={RATE_RANGE.max}
                 value={values.rate}
                 onChange={(event) =>
-                  onChange({ rate: Number(event.target.value) })
+                  onChange({ rate: event.target.value === "" ? "" : Number(event.target.value) })
                 }
               />
               <span className="suffix">%</span>
             </div>
+            <p className="field-hint">
+              Representative range: {RATE_RANGE.min}% – {RATE_RANGE.max}%
+              (matches the risk model's training data).
+            </p>
+            {!isRateValid && (
+              <p className="error">
+                Enter a rate between {RATE_RANGE.min}% and {RATE_RANGE.max}%
+                so the risk assessment stays meaningful.
+              </p>
+            )}
           </div>
         </div>
       </Card>
@@ -114,7 +139,7 @@ export default function LoanDetailsStep({ values, onChange, onBack, onNext }) {
         </Button>
         <div className="loan-details-footer-actions">
           <Button variant="secondary">Save Draft</Button>
-          <Button onClick={onNext}>
+          <Button onClick={onNext} disabled={!isRateValid}>
             Next: Calculate Risk <ArrowRight size={16} />
           </Button>
         </div>

@@ -18,6 +18,13 @@ import { riskService } from "../services/riskService";
 import { money, date, loanSummary } from "../utils/finance";
 import { initials, StatusBadge } from "./pageShared";
 
+// The risk model (ml-model/nn_model.pkl) was trained on interest rates
+// between ~0.9% and ~3.7% (ml-model/data/prets.csv) — a rate submitted far
+// outside that range is an extrapolation the model was never trained for,
+// so its prediction can't be trusted. Keeping the agent's input inside a
+// representative range is what actually makes the risk score meaningful.
+const RATE_RANGE = { min: 1, max: 4 };
+
 export default function LoanRequestReviewPage() {
   const navigate = useNavigate();
   const { applicationId } = useParams();
@@ -51,7 +58,9 @@ export default function LoanRequestReviewPage() {
     setRiskError("");
     try {
       const prediction = await riskService.calculate({
-        annualIncome: client?.income || 0,
+        // client.income is the Client's annual revenue — the model expects
+        // a monthly figure (see riskService.calculate).
+        monthlyIncome: (client?.income || 0) / 12,
         monthlyPayment: summary.monthlyPayment,
         duration: application.duration,
         annualInterestRate: Number(rate) || 0,
@@ -123,7 +132,23 @@ export default function LoanRequestReviewPage() {
   };
 
   const isDecided = application.status !== "Pending";
-  const canApprove = Boolean(rate) && Number(rate) > 0;
+  const isRateValid =
+    Boolean(rate) &&
+    Number(rate) >= RATE_RANGE.min &&
+    Number(rate) <= RATE_RANGE.max;
+  // A risk assessment scored against a since-changed rate is worthless —
+  // changeRate() below clears riskResult the moment the rate is edited, so
+  // a non-null riskResult here always matches the currently entered rate.
+  // Approving without ever running the model would otherwise silently fall
+  // back to RiskLevel.LOW on the backend (ApplicationServiceImpl.decide),
+  // masking the fact that no real assessment ever happened.
+  const canApprove = isRateValid && Boolean(riskResult);
+
+  const changeRate = (value) => {
+    setRate(value);
+    setRiskResult(null);
+    setRiskError("");
+  };
 
   return (
     <>
@@ -200,11 +225,21 @@ export default function LoanRequestReviewPage() {
                 <Input
                   label="Annual interest rate (%)"
                   type="number"
-                  min="0"
-                  step="0.1"
+                  min={RATE_RANGE.min}
+                  max={RATE_RANGE.max}
+                  step="0.01"
                   value={rate}
-                  onChange={(event) => setRate(event.target.value)}
+                  onChange={(event) => changeRate(event.target.value)}
+                  error={
+                    rate && !isRateValid
+                      ? `Enter a rate between ${RATE_RANGE.min}% and ${RATE_RANGE.max}% so the risk assessment stays meaningful.`
+                      : undefined
+                  }
                 />
+                <p className="field-hint">
+                  Representative range: {RATE_RANGE.min}% – {RATE_RANGE.max}%
+                  (matches the risk model's training data).
+                </p>
               </div>
               {rate && (
                 <div className="finance-preview">
@@ -233,7 +268,7 @@ export default function LoanRequestReviewPage() {
                 <div className="risk-empty">
                   <p>Risk assessment has not been performed yet.</p>
                   {riskError && <p className="error">{riskError}</p>}
-                  <Button onClick={calculateRisk} disabled={!canApprove}>
+                  <Button onClick={calculateRisk} disabled={!isRateValid}>
                     Calculate Risk
                   </Button>
                 </div>

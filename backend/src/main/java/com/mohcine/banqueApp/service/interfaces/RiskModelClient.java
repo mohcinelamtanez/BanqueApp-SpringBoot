@@ -9,5 +9,5 @@ import java.math.BigDecimal;
  * @author USER
  **/
 public interface RiskModelClient {
-    RiskPredictionResponseDTO predict(BigDecimal annualIncome , BigDecimal monthlyPayment , Integer Duration , BigDecimal annualInterestRate);
+    RiskPredictionResponseDTO predict(BigDecimal monthlyIncome , BigDecimal monthlyPayment , Integer Duration , BigDecimal annualInterestRate);
 }

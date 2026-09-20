@@ -23,13 +23,13 @@ public class FlaskRiskModelClient implements RiskModelClient {
 
     @Override
     public RiskPredictionResponseDTO predict(
-            BigDecimal annualIncome,
+            BigDecimal monthlyIncome,
             BigDecimal monthlyPayment,
             Integer duration,
             BigDecimal annualInterestRate) {
 
         Map<String, Object> request = Map.of(
-                "revenu", annualIncome,
+                "revenu", monthlyIncome,
                 "remboursement", monthlyPayment,
                 "duree", duration,
                 "taux", annualInterestRate

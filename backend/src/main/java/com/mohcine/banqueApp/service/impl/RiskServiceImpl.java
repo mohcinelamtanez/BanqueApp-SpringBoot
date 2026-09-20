@@ -37,7 +37,7 @@ public class RiskServiceImpl implements RiskService {
     public RiskPredictionResponseDTO assessRisk(RiskInputDTO input) {
 
         return riskModelClient.predict(
-                input.getAnnualIncome(),
+                input.getMonthlyIncome(),
                 input.getMonthlyPayment(),
                 input.getDuration(),
                 input.getAnnualInterestRate()

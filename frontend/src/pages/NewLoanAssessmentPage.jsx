@@ -14,7 +14,9 @@ const DEFAULT_LOAN_VALUES = {
   loanType: "Consumer (CONSO)",
   amount: 100000,
   duration: 48,
-  rate: 4.2,
+  // Must stay within RATE_RANGE (LoanDetailsStep) — the risk model was
+  // trained on rates from ~0.9% to ~3.7% (ml-model/data/prets.csv).
+  rate: 2.5,
 };
 
 export default function NewLoanAssessmentPage() {
@@ -47,8 +49,15 @@ export default function NewLoanAssessmentPage() {
 
   if (loansLoading || clientsLoading) return <LoadingState />;
 
-  const updateLoanValues = (patch) =>
+  // Any edit to the loan terms (amount/duration/type/rate) invalidates a
+  // previously computed risk assessment — it was scored against the old
+  // terms, so it must never be carried forward to a decision made on
+  // different ones (e.g. Back to Loan Details, change the rate, then
+  // straight to Decision with a stale score).
+  const updateLoanValues = (patch) => {
     setLoanValues((current) => ({ ...current, ...patch }));
+    setRiskResult(null);
+  };
 
   return (
     <div className="assessment">

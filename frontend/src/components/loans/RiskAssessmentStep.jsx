@@ -28,7 +28,9 @@ export default function RiskAssessmentStep({
     try {
       const summary = loanSummary(values.amount, values.duration, values.rate);
       const prediction = await riskService.calculate({
-        annualIncome: client?.income || 0,
+        // client.income is the Client's annual revenue — the model expects
+        // a monthly figure (see riskService.calculate).
+        monthlyIncome: (client?.income || 0) / 12,
         monthlyPayment: summary.monthlyPayment,
         duration: values.duration,
         annualInterestRate: values.rate,

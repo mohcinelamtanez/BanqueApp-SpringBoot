@@ -11,13 +11,15 @@ function bucketLevel(score) {
 }
 
 export const riskService = {
-  // { amount, duration, rate } are the loan terms; annualIncome is the
+  // { amount, duration, rate } are the loan terms; monthlyIncome is the
   // applicant's — monthlyPayment is computed by the caller via
-  // loanSummary() before calling this.
-  calculate: ({ annualIncome, monthlyPayment, duration, annualInterestRate }) =>
+  // loanSummary() before calling this. The model was trained on a monthly
+  // income figure (see ml-model/app.py), not Client.annualIncome — callers
+  // must divide by 12 before passing it in here.
+  calculate: ({ monthlyIncome, monthlyPayment, duration, annualInterestRate }) =>
     httpClient
       .post("/v1/risk-assesments/calculate-risk", {
-        annualIncome,
+        monthlyIncome,
         monthlyPayment,
         duration,
         annualInterestRate,
