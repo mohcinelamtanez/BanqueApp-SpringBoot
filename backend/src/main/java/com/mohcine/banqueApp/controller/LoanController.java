@@ -46,25 +46,16 @@ public class LoanController {
                 toList();
    }
 
-   @GetMapping("client/reference/{reference}")
-    public List<LoanResponseDTO> getLoansByClientReference(@PathVariable String reference){
-        List<Loan> loans = loanService.getLoansByClientReference(reference);
-
-        return loans.stream().
-                map(loanMapper::toDTO).
-                toList();
-   }
-
    // "My Loans" — always the authenticated client's own loans, never a
-   // client-supplied reference, so a client can never read another
-   // client's loan history.
+   // client-supplied id, so a client can never read another client's loan
+   // history.
    @GetMapping("/me")
     public List<LoanResponseDTO> getMyLoans(Authentication authentication){
         User user = (User) authentication.getPrincipal();
         if (user.getClient() == null) {
             throw new ClientNotFoundException("(current user is not linked to a client)");
         }
-        List<Loan> loans = loanService.getLoansByClientReference(user.getClient().getClientReference());
+        List<Loan> loans = loanService.getLoansByClientId(user.getClient().getId());
 
         return loans.stream().
                 map(loanMapper::toDTO).

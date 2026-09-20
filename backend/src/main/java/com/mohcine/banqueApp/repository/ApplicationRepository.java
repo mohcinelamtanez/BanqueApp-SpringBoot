@@ -14,11 +14,11 @@ import java.util.Optional;
  **/
 public interface ApplicationRepository extends JpaRepository<Application, Integer> {
 
-    List<Application> findByClient_ClientReference(String clientReference);
+    List<Application> findByClient_Id(Integer clientId);
 
     // Backs LoanApplication eligibility ("no PENDING Application") without
     // loading the client's whole application history into memory.
-    boolean existsByClient_ClientReferenceAndStatus(String clientReference, ApplicationStatus status);
+    boolean existsByClient_IdAndStatus(Integer clientId, ApplicationStatus status);
 
     // Locks the row for the duration of the decision transaction so two
     // concurrent decide() calls on the same Application can't both read it

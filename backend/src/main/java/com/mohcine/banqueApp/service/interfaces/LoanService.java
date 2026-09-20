@@ -23,8 +23,6 @@ public interface LoanService {
 
    List<Loan> getLoansByClientId(Integer clientId) ;
 
-   List<Loan> getLoansByClientReference(String clientReference) ;
-
    Loan getLoanById(Integer loanId);
 
 }

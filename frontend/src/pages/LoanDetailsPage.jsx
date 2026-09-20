@@ -28,10 +28,10 @@ export default function LoanDetailsPage() {
   return (
     <>
       <Breadcrumbs
-        items={[{ label: "Loans", to: "/loans" }, { label: loan.reference }]}
+        items={[{ label: "Loans", to: "/loans" }, { label: `#${loan.id}` }]}
       />
       <PageHeading
-        title={`Loan ${loan.reference}`}
+        title={`Loan #${loan.id}`}
         subtitle={`${loan.type} for ${client?.name || "unknown client"}`}
         action={
           <div className="actions">

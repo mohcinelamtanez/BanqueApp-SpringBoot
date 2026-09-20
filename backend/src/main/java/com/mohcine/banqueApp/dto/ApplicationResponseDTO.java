@@ -11,7 +11,7 @@ import java.time.LocalDate;
  **/
 public record ApplicationResponseDTO(
         Integer id,
-        String clientReference,
+        Integer clientId,
         LoanType loanType,
         BigDecimal requestedAmount,
         Integer requestedDuration,

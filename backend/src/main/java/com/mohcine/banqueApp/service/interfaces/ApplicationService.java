@@ -11,9 +11,9 @@ import java.util.List;
  **/
 public interface ApplicationService {
 
-    Application submitApplication(String clientReference, ApplicationCreateDto dto);
+    Application submitApplication(Integer clientId, ApplicationCreateDto dto);
 
-    List<Application> getApplicationsByClientReference(String clientReference);
+    List<Application> getApplicationsByClientId(Integer clientId);
 
     List<Application> getAllApplications();
 

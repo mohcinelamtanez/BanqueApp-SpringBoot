@@ -1,0 +1,81 @@
+import { Landmark } from "lucide-react";
+import { Badge, Card } from "../components/ui";
+
+export function initials(name = "") {
+  return name
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((part) => part[0])
+    .join("")
+    .toUpperCase();
+}
+export function loanStats(clientId, loans) {
+  const list = loans.filter((loan) => loan.clientId === clientId);
+  // "Pending" is a LoanApplication state, not a Loan state — a request
+  // still awaiting a decision was never granted, so it must not count
+  // toward a client's loan totals or amount borrowed.
+  const isLoan = (loan) => loan.status !== "Rejected" && loan.status !== "Pending";
+  return {
+    total: list.filter(isLoan).length,
+    active: list.filter((loan) => loan.status === "Active").length,
+    completed: list.filter((loan) => loan.status === "Completed").length,
+    rejected: list.filter((loan) => loan.status === "Rejected").length,
+    outstanding: list
+      .filter((loan) => loan.status === "Active")
+      .reduce((sum, loan) => sum + loan.amount - loan.repaid, 0),
+    borrowed: list
+      .filter(isLoan)
+      .reduce((sum, loan) => sum + loan.amount, 0),
+    repaid: list.reduce((sum, loan) => sum + loan.repaid, 0),
+  };
+}
+export function StatusBadge({ value, risk = false }) {
+  return (
+    <Badge type={risk ? `risk-${String(value).toLowerCase()}` : ""}>
+      {risk ? `${value} Risk` : value}
+    </Badge>
+  );
+}
+export function PageHeading({ title, subtitle, action }) {
+  return (
+    <div className="page-heading">
+      <div>
+        <h1>{title}</h1>
+        {subtitle && <p>{subtitle}</p>}
+      </div>
+      {action}
+    </div>
+  );
+}
+export function Metric({ label, value, icon = <Landmark />, footer, className = "" }) {
+  return (
+    <Card className={`metric ${className}`.trim()}>
+      <div>
+        <small>{label}</small>
+        <strong>{value}</strong>
+        <p>
+          {footer ?? (
+            <>
+              <span>↑</span> Updated from current portfolio
+            </>
+          )}
+        </p>
+      </div>
+      {icon}
+    </Card>
+  );
+}
+export function csvEscape(value) {
+  const text = String(value ?? "");
+  return /[",\n]/.test(text) ? `"${text.replaceAll('"', '""')}"` : text;
+}
+export function downloadCsv(name, rows) {
+  const anchor = document.createElement("a");
+  anchor.href = URL.createObjectURL(
+    new Blob([rows.join("\n")], { type: "text/csv" }),
+  );
+  anchor.download = name;
+  anchor.click();
+  URL.revokeObjectURL(anchor.href);
+}

@@ -12,17 +12,17 @@ public class LoginResponseDTO {
     private String role;
     // Only set when the authenticated user is linked to a Client row — lets
     // the Client portal know which client's data to load, instead of a
-    // hardcoded placeholder reference.
-    private String clientReference;
+    // hardcoded placeholder id.
+    private Integer clientId;
 
     public LoginResponseDTO() {
     }
 
-    public LoginResponseDTO(String token, String email, String role, String clientReference) {
+    public LoginResponseDTO(String token, String email, String role, Integer clientId) {
         this.token = token;
         this.email = email;
         this.role = role;
-        this.clientReference = clientReference;
+        this.clientId = clientId;
     }
 
     public String getToken() {
@@ -49,11 +49,11 @@ public class LoginResponseDTO {
         this.role = role;
     }
 
-    public String getClientReference() {
-        return clientReference;
+    public Integer getClientId() {
+        return clientId;
     }
 
-    public void setClientReference(String clientReference) {
-        this.clientReference = clientReference;
+    public void setClientId(Integer clientId) {
+        this.clientId = clientId;
     }
 }

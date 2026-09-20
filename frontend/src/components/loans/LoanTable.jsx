@@ -20,7 +20,7 @@ export default function LoanTable({ loans = [], onDelete }) {
     {loans.map((loan) => (
       <tr key={loan.id}>
         <td>
-          <b className="mono">{loan.reference}</b>
+          <b className="mono">#{loan.id}</b>
           <br />
           <span>{loan.type}</span>
         </td>

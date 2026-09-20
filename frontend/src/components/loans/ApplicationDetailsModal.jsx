@@ -9,7 +9,7 @@ export default function ApplicationDetailsModal({ application, onClose }) {
       <div className="decision-recap">
         <div className="decision-recap-row">
           <span>Application ID</span>
-          <b className="mono">{application.reference}</b>
+          <b className="mono">#{application.id}</b>
         </div>
         <div className="decision-recap-row">
           <span>Loan Type</span>

@@ -10,7 +10,7 @@ import java.math.BigDecimal;
  **/
 
 @JsonPropertyOrder({
-        "clientReference",
+        "id",
         "firstName",
         "lastName",
         "city",
@@ -19,7 +19,7 @@ import java.math.BigDecimal;
         "ClientStatus"
 })
 
-public record ClientResponseDTO(String ClientReference ,
+public record ClientResponseDTO(Integer id ,
                                 String firstName ,
                                 String lastName,
                                 String city,

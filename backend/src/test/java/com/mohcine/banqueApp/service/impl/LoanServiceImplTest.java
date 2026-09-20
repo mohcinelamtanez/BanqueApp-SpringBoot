@@ -58,7 +58,7 @@ class LoanServiceImplTest {
 
     private Client aClient() {
         Client client = new Client();
-        client.setClientReference("CLI-1");
+        client.setId(1);
         return client;
     }
 
@@ -68,15 +68,15 @@ class LoanServiceImplTest {
     void createLoan_rejectedLoan_hasNoEndDateAndNoPaymentSchedule() {
         Client client = aClient();
         LoanCreateDto dto = new LoanCreateDto();
-        dto.setClientReference("CLI-1");
+        dto.setClient(1);
 
         Loan loan = new Loan();
         loan.setStatus(LoanStatus.REJECTED);
         loan.setDuration(12);
         loan.setApprovalDate(LocalDateTime.now());
 
-        when(clientRepository.findByClientReference("CLI-1")).thenReturn(client);
-        when(loanRepository.findByClient_ClientReference("CLI-1")).thenReturn(List.of());
+        when(clientRepository.findById(1)).thenReturn(Optional.of(client));
+        when(loanRepository.findByClient_Id(1)).thenReturn(List.of());
         when(loanMapper.toEntity(dto)).thenReturn(loan);
         when(loanRepository.save(loan)).thenReturn(loan);
         when(riskAssessmentMapper.toEntity(dto)).thenReturn(new RiskAssessment());
@@ -94,7 +94,7 @@ class LoanServiceImplTest {
     void createLoan_activeLoan_derivesEndDateAndGeneratesSchedule() {
         Client client = aClient();
         LoanCreateDto dto = new LoanCreateDto();
-        dto.setClientReference("CLI-1");
+        dto.setClient(1);
 
         LocalDateTime approval = LocalDateTime.of(2026, 1, 1, 0, 0);
         Loan loan = new Loan();
@@ -102,8 +102,8 @@ class LoanServiceImplTest {
         loan.setDuration(12);
         loan.setApprovalDate(approval);
 
-        when(clientRepository.findByClientReference("CLI-1")).thenReturn(client);
-        when(loanRepository.findByClient_ClientReference("CLI-1")).thenReturn(List.of());
+        when(clientRepository.findById(1)).thenReturn(Optional.of(client));
+        when(loanRepository.findByClient_Id(1)).thenReturn(List.of());
         when(loanMapper.toEntity(dto)).thenReturn(loan);
         when(loanRepository.save(loan)).thenReturn(loan);
         when(riskAssessmentMapper.toEntity(dto)).thenReturn(new RiskAssessment());

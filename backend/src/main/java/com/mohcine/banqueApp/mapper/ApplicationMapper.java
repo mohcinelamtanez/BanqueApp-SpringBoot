@@ -27,7 +27,7 @@ public class ApplicationMapper {
     public ApplicationResponseDTO toDTO(Application application) {
         return new ApplicationResponseDTO(
                 application.getId(),
-                application.getClient() != null ? application.getClient().getClientReference() : null,
+                application.getClient() != null ? application.getClient().getId() : null,
                 application.getLoanType(),
                 application.getRequestedAmount(),
                 application.getRequestedDuration(),

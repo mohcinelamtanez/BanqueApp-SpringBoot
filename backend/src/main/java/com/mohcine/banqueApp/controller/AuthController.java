@@ -48,11 +48,11 @@ public class AuthController {
                         ? authority.substring("ROLE_".length())
                         : authority)
                 .orElse(null);
-        String clientReference = authenticated.getClient() != null
-                ? authenticated.getClient().getClientReference()
+        Integer clientId = authenticated.getClient() != null
+                ? authenticated.getClient().getId()
                 : null;
 
-        return new LoginResponseDTO(token, authenticated.getUsername(), role, clientReference);
+        return new LoginResponseDTO(token, authenticated.getUsername(), role, clientId);
     }
 
     // Public self-registration always creates a CLIENT-role account — there

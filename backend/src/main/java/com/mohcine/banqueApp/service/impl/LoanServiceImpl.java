@@ -55,10 +55,10 @@ public class LoanServiceImpl implements LoanService {
     @Transactional
     public Loan createLoan(LoanCreateDto dto) {
 
-        Client client = clientRepository.findByClientReference(dto.getClientReference());
+        Client client = clientRepository.findById(dto.getClientId()).orElse(null);
 
         if(client == null) {
-            throw new ClientNotFoundException(dto.getClientReference());
+            throw new ClientNotFoundException(dto.getClientId());
         }else
         {
         // A Rejected loan is a traceability record, not a new repayment
@@ -96,7 +96,7 @@ public class LoanServiceImpl implements LoanService {
     // (Blocking a duplicate application while one is still under review is
     // a LoanApplication-level concern, handled separately.)
     private void ensureClientCanApply(Client client) {
-        List<Loan> existingLoans = loanRepository.findByClient_ClientReference(client.getClientReference());
+        List<Loan> existingLoans = loanRepository.findByClient_Id(client.getId());
         for (Loan existing : existingLoans) {
             if (existing.getStatus() == LoanStatus.ACTIVE
                     && paymentService.hasUnpaidInstallments(existing.getId())) {
@@ -178,11 +178,6 @@ public class LoanServiceImpl implements LoanService {
     @Override
     public List<Loan> getLoansByClientId(Integer clientId) {
         return loanRepository.findByClient_Id(clientId);
-    }
-
-    @Override
-    public List<Loan> getLoansByClientReference(String clientReference) {
-        return loanRepository.findByClient_ClientReference(clientReference);
     }
 
     @Override

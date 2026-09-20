@@ -50,7 +50,7 @@ public class AuthDataSeeder implements CommandLineRunner {
         ensureUser("admin@banqueapp.com", adminRole, null);
         ensureUser("agent@banqueapp.com", agentRole, null);
 
-        Client firstClient = clientRepository.findByClientReference("CLI-1");
+        Client firstClient = clientRepository.findById(1).orElse(null);
         ensureUser("client@banqueapp.com", clientRole, firstClient);
     }
 

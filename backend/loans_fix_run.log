@@ -1,0 +1,2586 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ------------------------< com.mohcine:backend >-------------------------
+[INFO] Building backend 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> spring-boot:4.1.0:run (default-cli) > test-compile @ backend >>>
+[INFO] 
+[INFO] --- resources:3.5.0:resources (default-resources) @ backend ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 0 resource from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.15.0:compile (default-compile) @ backend ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.5.0:testResources (default-testResources) @ backend ---
+[INFO] skip non existing resourceDirectory C:\Projects\BanqueApp-SpringBoot\backend\src\test\resources
+[INFO] 
+[INFO] --- compiler:3.15.0:testCompile (default-testCompile) @ backend ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] <<< spring-boot:4.1.0:run (default-cli) < test-compile @ backend <<<
+[INFO] 
+[INFO] 
+[INFO] --- spring-boot:4.1.0:run (default-cli) @ backend ---
+[INFO] Attaching agents: []
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.1.0)
+
+2026-09-09T17:29:01.897+01:00  INFO 22652 --- [backend] [           main] c.mohcine.banqueApp.BackendApplication   : Starting BackendApplication using Java 21.0.11 with PID 22652 (C:\Projects\BanqueApp-SpringBoot\backend\target\classes started by USER in C:\Projects\BanqueApp-SpringBoot\backend)
+2026-09-09T17:29:01.902+01:00  INFO 22652 --- [backend] [           main] c.mohcine.banqueApp.BackendApplication   : No active profile set, falling back to 1 default profile: "default"
+2026-09-09T17:29:03.390+01:00  INFO 22652 --- [backend] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-09-09T17:29:03.491+01:00  INFO 22652 --- [backend] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 91 ms. Found 8 JPA repository interfaces.
+2026-09-09T17:29:04.305+01:00  INFO 22652 --- [backend] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2026-09-09T17:29:04.338+01:00  INFO 22652 --- [backend] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-09-09T17:29:04.341+01:00  INFO 22652 --- [backend] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.22]
+2026-09-09T17:29:04.454+01:00  INFO 22652 --- [backend] [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 2487 ms
+2026-09-09T17:29:04.743+01:00  INFO 22652 --- [backend] [           main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-09-09T17:29:04.830+01:00  INFO 22652 --- [backend] [           main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.4.1.Final
+2026-09-09T17:29:05.476+01:00  INFO 22652 --- [backend] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-09-09T17:29:05.538+01:00  INFO 22652 --- [backend] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-09-09T17:29:05.982+01:00  INFO 22652 --- [backend] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@3155f190
+2026-09-09T17:29:05.985+01:00  INFO 22652 --- [backend] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-09-09T17:29:06.074+01:00  WARN 22652 --- [backend] [           main] org.hibernate.orm.core                   : HHH000511: The 5.5.5 version for [org.hibernate.dialect.MySQLDialect] is no longer supported, hence certain features may not work properly.The minimum supported version is 8.0.0. Check the community dialects project for available legacy versions.
+2026-09-09T17:29:06.112+01:00  INFO 22652 --- [backend] [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:mysql://localhost:3306/banqueApp]
+	Database driver: MySQL Connector/J
+	Database dialect: MySQLDialect
+	Database version: 5.5.5
+	Default catalog/schema: banqueApp/undefined
+	Autocommit mode: undefined/unknown
+	Isolation level: REPEATABLE_READ [default REPEATABLE_READ]
+	JDBC fetch size: none
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-09-09T17:29:10.305+01:00  INFO 22652 --- [backend] [           main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+Hibernate: 
+    alter table loan 
+       modify column loan_type enum ('AUTO','CONSO')
+Hibernate: 
+    alter table loan 
+       modify column status enum ('ACTIVE','COMPLETED','REJECTED')
+2026-09-09T17:29:11.073+01:00  INFO 22652 --- [backend] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-09-09T17:29:11.322+01:00  INFO 22652 --- [backend] [           main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-09-09T17:29:12.999+01:00  WARN 22652 --- [backend] [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-09-09T17:29:13.141+01:00  INFO 22652 --- [backend] [           main] eAuthenticationProviderManagerConfigurer : Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
+2026-09-09T17:29:13.143+01:00  WARN 22652 --- [backend] [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
+2026-09-09T17:29:14.197+01:00  INFO 22652 --- [backend] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8080 (http) with context path '/'
+2026-09-09T17:29:14.208+01:00  INFO 22652 --- [backend] [           main] c.mohcine.banqueApp.BackendApplication   : Started BackendApplication in 13.14 seconds (process running for 14.325)
+Hibernate: 
+    select
+        r1_0.id,
+        r1_0.authority 
+    from
+        role r1_0 
+    where
+        r1_0.authority=?
+Hibernate: 
+    select
+        r1_0.id,
+        r1_0.authority 
+    from
+        role r1_0 
+    where
+        r1_0.authority=?
+Hibernate: 
+    select
+        r1_0.id,
+        r1_0.authority 
+    from
+        role r1_0 
+    where
+        r1_0.authority=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.account_non_expired,
+        u1_0.account_non_locked,
+        u1_0.client_id,
+        u1_0.credentials_non_expired,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        a1_0.user_id,
+        a1_1.id,
+        a1_1.authority 
+    from
+        user_roles a1_0 
+    join
+        role a1_1 
+            on a1_1.id=a1_0.role_id 
+    where
+        a1_0.user_id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.account_non_expired,
+        u1_0.account_non_locked,
+        u1_0.client_id,
+        u1_0.credentials_non_expired,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        a1_0.user_id,
+        a1_1.id,
+        a1_1.authority 
+    from
+        user_roles a1_0 
+    join
+        role a1_1 
+            on a1_1.id=a1_0.role_id 
+    where
+        a1_0.user_id=?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.revenue,
+        c1_0.ville,
+        c1_0.client_reference,
+        c1_0.status,
+        c1_0.email,
+        c1_0.nom,
+        c1_0.prenom,
+        c1_0.cd_postal,
+        c1_0.profile_photo_url 
+    from
+        client c1_0 
+    where
+        c1_0.client_reference=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.account_non_expired,
+        u1_0.account_non_locked,
+        u1_0.client_id,
+        u1_0.credentials_non_expired,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.revenue,
+        c1_0.ville,
+        c1_0.client_reference,
+        c1_0.status,
+        c1_0.email,
+        c1_0.nom,
+        c1_0.prenom,
+        c1_0.cd_postal,
+        c1_0.profile_photo_url 
+    from
+        client c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    select
+        a1_0.user_id,
+        a1_1.id,
+        a1_1.authority 
+    from
+        user_roles a1_0 
+    join
+        role a1_1 
+            on a1_1.id=a1_0.role_id 
+    where
+        a1_0.user_id=?
+2026-09-09T17:29:14.863+01:00  WARN 22652 --- [backend] [           main] o.s.core.events.SpringDocAppInitializer  : SpringDoc /v3/api-docs endpoint is enabled by default. To disable it in production, set the property 'springdoc.api-docs.enabled=false'
+2026-09-09T17:29:14.863+01:00  WARN 22652 --- [backend] [           main] o.s.core.events.SpringDocAppInitializer  : SpringDoc /swagger-ui.html endpoint is enabled by default. To disable it in production, set the property 'springdoc.swagger-ui.enabled=false'
+2026-09-09T17:29:46.325+01:00  INFO 22652 --- [backend] [nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-09-09T17:29:46.326+01:00  INFO 22652 --- [backend] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-09-09T17:29:46.327+01:00  INFO 22652 --- [backend] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.account_non_expired,
+        u1_0.account_non_locked,
+        u1_0.client_id,
+        u1_0.credentials_non_expired,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.revenue,
+        c1_0.ville,
+        c1_0.client_reference,
+        c1_0.status,
+        c1_0.email,
+        c1_0.nom,
+        c1_0.prenom,
+        c1_0.cd_postal,
+        c1_0.profile_photo_url 
+    from
+        client c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    select
+        a1_0.user_id,
+        a1_1.id,
+        a1_1.authority 
+    from
+        user_roles a1_0 
+    join
+        role a1_1 
+            on a1_1.id=a1_0.role_id 
+    where
+        a1_0.user_id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.account_non_expired,
+        u1_0.account_non_locked,
+        u1_0.client_id,
+        u1_0.credentials_non_expired,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.account_non_expired,
+        u1_0.account_non_locked,
+        u1_0.client_id,
+        u1_0.credentials_non_expired,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.account_non_expired,
+        u1_0.account_non_locked,
+        u1_0.client_id,
+        u1_0.credentials_non_expired,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        r1_0.id,
+        r1_0.authority 
+    from
+        role r1_0 
+    where
+        r1_0.authority=?
+Hibernate: 
+    insert 
+    into
+        users
+        (account_non_expired, account_non_locked, client_id, credentials_non_expired, email, enabled, password) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        user_roles
+        (user_id, role_id) 
+    values
+        (?, ?)
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.account_non_expired,
+        u1_0.account_non_locked,
+        u1_0.client_id,
+        u1_0.credentials_non_expired,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        a1_0.user_id,
+        a1_1.id,
+        a1_1.authority 
+    from
+        user_roles a1_0 
+    join
+        role a1_1 
+            on a1_1.id=a1_0.role_id 
+    where
+        a1_0.user_id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.account_non_expired,
+        u1_0.account_non_locked,
+        u1_0.client_id,
+        u1_0.credentials_non_expired,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.account_non_expired,
+        u1_0.account_non_locked,
+        u1_0.client_id,
+        u1_0.credentials_non_expired,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.account_non_expired,
+        u1_0.account_non_locked,
+        u1_0.client_id,
+        u1_0.credentials_non_expired,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        a1_0.user_id,
+        a1_1.id,
+        a1_1.authority 
+    from
+        user_roles a1_0 
+    join
+        role a1_1 
+            on a1_1.id=a1_0.role_id 
+    where
+        a1_0.user_id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.account_non_expired,
+        u1_0.account_non_locked,
+        c1_0.id,
+        c1_0.revenue,
+        c1_0.ville,
+        c1_0.client_reference,
+        c1_0.status,
+        c1_0.email,
+        c1_0.nom,
+        c1_0.prenom,
+        c1_0.cd_postal,
+        c1_0.profile_photo_url,
+        u1_0.credentials_non_expired,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password,
+        a1_0.user_id,
+        a1_1.id,
+        a1_1.authority 
+    from
+        users u1_0 
+    left join
+        client c1_0 
+            on c1_0.id=u1_0.client_id 
+    left join
+        user_roles a1_0 
+            on u1_0.id=a1_0.user_id 
+    left join
+        role a1_1 
+            on a1_1.id=a1_0.role_id 
+    where
+        u1_0.id=?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.revenue,
+        c1_0.ville,
+        c1_0.client_reference,
+        c1_0.status,
+        c1_0.email,
+        c1_0.nom,
+        c1_0.prenom,
+        c1_0.cd_postal,
+        c1_0.profile_photo_url 
+    from
+        client c1_0
+Hibernate: 
+    insert 
+    into
+        client
+        (revenue, ville, client_reference, status, email, nom, prenom, cd_postal, profile_photo_url) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    update
+        users 
+    set
+        account_non_expired=?,
+        account_non_locked=?,
+        client_id=?,
+        credentials_non_expired=?,
+        email=?,
+        enabled=?,
+        password=? 
+    where
+        id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.account_non_expired,
+        u1_0.account_non_locked,
+        u1_0.client_id,
+        u1_0.credentials_non_expired,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        a1_0.user_id,
+        a1_1.id,
+        a1_1.authority 
+    from
+        user_roles a1_0 
+    join
+        role a1_1 
+            on a1_1.id=a1_0.role_id 
+    where
+        a1_0.user_id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.account_non_expired,
+        u1_0.account_non_locked,
+        u1_0.client_id,
+        u1_0.credentials_non_expired,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.account_non_expired,
+        u1_0.account_non_locked,
+        u1_0.client_id,
+        u1_0.credentials_non_expired,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.account_non_expired,
+        u1_0.account_non_locked,
+        u1_0.client_id,
+        u1_0.credentials_non_expired,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        a1_0.user_id,
+        a1_1.id,
+        a1_1.authority 
+    from
+        user_roles a1_0 
+    join
+        role a1_1 
+            on a1_1.id=a1_0.role_id 
+    where
+        a1_0.user_id=?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.revenue,
+        c1_0.ville,
+        c1_0.client_reference,
+        c1_0.status,
+        c1_0.email,
+        c1_0.nom,
+        c1_0.prenom,
+        c1_0.cd_postal,
+        c1_0.profile_photo_url 
+    from
+        client c1_0 
+    where
+        c1_0.client_reference=?
+Hibernate: 
+    select
+        l1_0.id,
+        l1_0.annual_interest_rate,
+        l1_0.approval_date,
+        l1_0.client_id,
+        l1_0.duration,
+        l1_0.end_date,
+        l1_0.loan_amount,
+        l1_0.loan_reference,
+        l1_0.loan_type,
+        l1_0.monthly_payment,
+        l1_0.rejection_reason,
+        l1_0.status 
+    from
+        loan l1_0 
+    join
+        client c1_0 
+            on c1_0.id=l1_0.client_id 
+    where
+        c1_0.client_reference=?
+Hibernate: 
+    insert 
+    into
+        loan
+        (annual_interest_rate, approval_date, client_id, duration, end_date, loan_amount, loan_reference, loan_type, monthly_payment, rejection_reason, status) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        risk_assessment
+        (risk_level, loan_id, score) 
+    values
+        (?, ?, ?)
+Hibernate: 
+    select
+        p1_0.id 
+    from
+        payment p1_0 
+    where
+        p1_0.loan_id=? 
+    limit
+        ?
+Hibernate: 
+    insert 
+    into
+        payment
+        (amount, description, due_date, installment_number, loan_id, payment_date, payment_reference, status) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        payment
+        (amount, description, due_date, installment_number, loan_id, payment_date, payment_reference, status) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        payment
+        (amount, description, due_date, installment_number, loan_id, payment_date, payment_reference, status) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        payment
+        (amount, description, due_date, installment_number, loan_id, payment_date, payment_reference, status) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        payment
+        (amount, description, due_date, installment_number, loan_id, payment_date, payment_reference, status) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        payment
+        (amount, description, due_date, installment_number, loan_id, payment_date, payment_reference, status) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        payment
+        (amount, description, due_date, installment_number, loan_id, payment_date, payment_reference, status) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        payment
+        (amount, description, due_date, installment_number, loan_id, payment_date, payment_reference, status) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        payment
+        (amount, description, due_date, installment_number, loan_id, payment_date, payment_reference, status) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        payment
+        (amount, description, due_date, installment_number, loan_id, payment_date, payment_reference, status) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        payment
+        (amount, description, due_date, installment_number, loan_id, payment_date, payment_reference, status) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        payment
+        (amount, description, due_date, installment_number, loan_id, payment_date, payment_reference, status) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    select
+        ra1_0.id,
+        ra1_0.risk_level,
+        ra1_0.loan_id,
+        ra1_0.score 
+    from
+        risk_assessment ra1_0 
+    where
+        ra1_0.loan_id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.account_non_expired,
+        u1_0.account_non_locked,
+        u1_0.client_id,
+        u1_0.credentials_non_expired,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.revenue,
+        c1_0.ville,
+        c1_0.client_reference,
+        c1_0.status,
+        c1_0.email,
+        c1_0.nom,
+        c1_0.prenom,
+        c1_0.cd_postal,
+        c1_0.profile_photo_url 
+    from
+        client c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    select
+        a1_0.user_id,
+        a1_1.id,
+        a1_1.authority 
+    from
+        user_roles a1_0 
+    join
+        role a1_1 
+            on a1_1.id=a1_0.role_id 
+    where
+        a1_0.user_id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.account_non_expired,
+        u1_0.account_non_locked,
+        u1_0.client_id,
+        u1_0.credentials_non_expired,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.account_non_expired,
+        u1_0.account_non_locked,
+        u1_0.client_id,
+        u1_0.credentials_non_expired,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.account_non_expired,
+        u1_0.account_non_locked,
+        u1_0.client_id,
+        u1_0.credentials_non_expired,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.revenue,
+        c1_0.ville,
+        c1_0.client_reference,
+        c1_0.status,
+        c1_0.email,
+        c1_0.nom,
+        c1_0.prenom,
+        c1_0.cd_postal,
+        c1_0.profile_photo_url 
+    from
+        client c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    select
+        a1_0.user_id,
+        a1_1.id,
+        a1_1.authority 
+    from
+        user_roles a1_0 
+    join
+        role a1_1 
+            on a1_1.id=a1_0.role_id 
+    where
+        a1_0.user_id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.account_non_expired,
+        u1_0.account_non_locked,
+        u1_0.client_id,
+        u1_0.credentials_non_expired,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.account_non_expired,
+        u1_0.account_non_locked,
+        u1_0.client_id,
+        u1_0.credentials_non_expired,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.account_non_expired,
+        u1_0.account_non_locked,
+        u1_0.client_id,
+        u1_0.credentials_non_expired,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.revenue,
+        c1_0.ville,
+        c1_0.client_reference,
+        c1_0.status,
+        c1_0.email,
+        c1_0.nom,
+        c1_0.prenom,
+        c1_0.cd_postal,
+        c1_0.profile_photo_url 
+    from
+        client c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    select
+        a1_0.user_id,
+        a1_1.id,
+        a1_1.authority 
+    from
+        user_roles a1_0 
+    join
+        role a1_1 
+            on a1_1.id=a1_0.role_id 
+    where
+        a1_0.user_id=?
+Hibernate: 
+    select
+        l1_0.id,
+        l1_0.annual_interest_rate,
+        l1_0.approval_date,
+        l1_0.client_id,
+        l1_0.duration,
+        l1_0.end_date,
+        l1_0.loan_amount,
+        l1_0.loan_reference,
+        l1_0.loan_type,
+        l1_0.monthly_payment,
+        l1_0.rejection_reason,
+        l1_0.status 
+    from
+        loan l1_0 
+    join
+        client c1_0 
+            on c1_0.id=l1_0.client_id 
+    where
+        c1_0.client_reference=?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.revenue,
+        c1_0.ville,
+        c1_0.client_reference,
+        c1_0.status,
+        c1_0.email,
+        c1_0.nom,
+        c1_0.prenom,
+        c1_0.cd_postal,
+        c1_0.profile_photo_url 
+    from
+        client c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    select
+        ra1_0.id,
+        ra1_0.risk_level,
+        ra1_0.loan_id,
+        ra1_0.score 
+    from
+        risk_assessment ra1_0 
+    where
+        ra1_0.loan_id=?
+Hibernate: 
+    select
+        ra1_0.id,
+        ra1_0.risk_level,
+        ra1_0.loan_id,
+        ra1_0.score 
+    from
+        risk_assessment ra1_0 
+    where
+        ra1_0.loan_id=?
+Hibernate: 
+    select
+        ra1_0.id,
+        ra1_0.risk_level,
+        ra1_0.loan_id,
+        ra1_0.score 
+    from
+        risk_assessment ra1_0 
+    where
+        ra1_0.loan_id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.account_non_expired,
+        u1_0.account_non_locked,
+        u1_0.client_id,
+        u1_0.credentials_non_expired,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.revenue,
+        c1_0.ville,
+        c1_0.client_reference,
+        c1_0.status,
+        c1_0.email,
+        c1_0.nom,
+        c1_0.prenom,
+        c1_0.cd_postal,
+        c1_0.profile_photo_url 
+    from
+        client c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    select
+        a1_0.user_id,
+        a1_1.id,
+        a1_1.authority 
+    from
+        user_roles a1_0 
+    join
+        role a1_1 
+            on a1_1.id=a1_0.role_id 
+    where
+        a1_0.user_id=?
+Hibernate: 
+    select
+        l1_0.id,
+        l1_0.annual_interest_rate,
+        l1_0.approval_date,
+        l1_0.client_id,
+        l1_0.duration,
+        l1_0.end_date,
+        l1_0.loan_amount,
+        l1_0.loan_reference,
+        l1_0.loan_type,
+        l1_0.monthly_payment,
+        l1_0.rejection_reason,
+        l1_0.status 
+    from
+        loan l1_0 
+    join
+        client c1_0 
+            on c1_0.id=l1_0.client_id 
+    where
+        c1_0.client_reference=?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.revenue,
+        c1_0.ville,
+        c1_0.client_reference,
+        c1_0.status,
+        c1_0.email,
+        c1_0.nom,
+        c1_0.prenom,
+        c1_0.cd_postal,
+        c1_0.profile_photo_url 
+    from
+        client c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    select
+        ra1_0.id,
+        ra1_0.risk_level,
+        ra1_0.loan_id,
+        ra1_0.score 
+    from
+        risk_assessment ra1_0 
+    where
+        ra1_0.loan_id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.account_non_expired,
+        u1_0.account_non_locked,
+        u1_0.client_id,
+        u1_0.credentials_non_expired,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.revenue,
+        c1_0.ville,
+        c1_0.client_reference,
+        c1_0.status,
+        c1_0.email,
+        c1_0.nom,
+        c1_0.prenom,
+        c1_0.cd_postal,
+        c1_0.profile_photo_url 
+    from
+        client c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    select
+        a1_0.user_id,
+        a1_1.id,
+        a1_1.authority 
+    from
+        user_roles a1_0 
+    join
+        role a1_1 
+            on a1_1.id=a1_0.role_id 
+    where
+        a1_0.user_id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.account_non_expired,
+        u1_0.account_non_locked,
+        u1_0.client_id,
+        u1_0.credentials_non_expired,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.revenue,
+        c1_0.ville,
+        c1_0.client_reference,
+        c1_0.status,
+        c1_0.email,
+        c1_0.nom,
+        c1_0.prenom,
+        c1_0.cd_postal,
+        c1_0.profile_photo_url 
+    from
+        client c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    select
+        a1_0.user_id,
+        a1_1.id,
+        a1_1.authority 
+    from
+        user_roles a1_0 
+    join
+        role a1_1 
+            on a1_1.id=a1_0.role_id 
+    where
+        a1_0.user_id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.account_non_expired,
+        u1_0.account_non_locked,
+        u1_0.client_id,
+        u1_0.credentials_non_expired,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        a1_0.user_id,
+        a1_1.id,
+        a1_1.authority 
+    from
+        user_roles a1_0 
+    join
+        role a1_1 
+            on a1_1.id=a1_0.role_id 
+    where
+        a1_0.user_id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.account_non_expired,
+        u1_0.account_non_locked,
+        u1_0.client_id,
+        u1_0.credentials_non_expired,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.account_non_expired,
+        u1_0.account_non_locked,
+        u1_0.client_id,
+        u1_0.credentials_non_expired,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.account_non_expired,
+        u1_0.account_non_locked,
+        u1_0.client_id,
+        u1_0.credentials_non_expired,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        a1_0.user_id,
+        a1_1.id,
+        a1_1.authority 
+    from
+        user_roles a1_0 
+    join
+        role a1_1 
+            on a1_1.id=a1_0.role_id 
+    where
+        a1_0.user_id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.account_non_expired,
+        u1_0.account_non_locked,
+        u1_0.client_id,
+        u1_0.credentials_non_expired,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.account_non_expired,
+        u1_0.account_non_locked,
+        u1_0.client_id,
+        u1_0.credentials_non_expired,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.account_non_expired,
+        u1_0.account_non_locked,
+        u1_0.client_id,
+        u1_0.credentials_non_expired,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        a1_0.user_id,
+        a1_1.id,
+        a1_1.authority 
+    from
+        user_roles a1_0 
+    join
+        role a1_1 
+            on a1_1.id=a1_0.role_id 
+    where
+        a1_0.user_id=?
+Hibernate: 
+    select
+        l1_0.id,
+        l1_0.annual_interest_rate,
+        l1_0.approval_date,
+        l1_0.client_id,
+        l1_0.duration,
+        l1_0.end_date,
+        l1_0.loan_amount,
+        l1_0.loan_reference,
+        l1_0.loan_type,
+        l1_0.monthly_payment,
+        l1_0.rejection_reason,
+        l1_0.status 
+    from
+        loan l1_0
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.revenue,
+        c1_0.ville,
+        c1_0.client_reference,
+        c1_0.status,
+        c1_0.email,
+        c1_0.nom,
+        c1_0.prenom,
+        c1_0.cd_postal,
+        c1_0.profile_photo_url 
+    from
+        client c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    select
+        ra1_0.id,
+        ra1_0.risk_level,
+        ra1_0.loan_id,
+        ra1_0.score 
+    from
+        risk_assessment ra1_0 
+    where
+        ra1_0.loan_id=?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.revenue,
+        c1_0.ville,
+        c1_0.client_reference,
+        c1_0.status,
+        c1_0.email,
+        c1_0.nom,
+        c1_0.prenom,
+        c1_0.cd_postal,
+        c1_0.profile_photo_url 
+    from
+        client c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    select
+        ra1_0.id,
+        ra1_0.risk_level,
+        ra1_0.loan_id,
+        ra1_0.score 
+    from
+        risk_assessment ra1_0 
+    where
+        ra1_0.loan_id=?
+Hibernate: 
+    select
+        ra1_0.id,
+        ra1_0.risk_level,
+        ra1_0.loan_id,
+        ra1_0.score 
+    from
+        risk_assessment ra1_0 
+    where
+        ra1_0.loan_id=?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.revenue,
+        c1_0.ville,
+        c1_0.client_reference,
+        c1_0.status,
+        c1_0.email,
+        c1_0.nom,
+        c1_0.prenom,
+        c1_0.cd_postal,
+        c1_0.profile_photo_url 
+    from
+        client c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    select
+        ra1_0.id,
+        ra1_0.risk_level,
+        ra1_0.loan_id,
+        ra1_0.score 
+    from
+        risk_assessment ra1_0 
+    where
+        ra1_0.loan_id=?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.revenue,
+        c1_0.ville,
+        c1_0.client_reference,
+        c1_0.status,
+        c1_0.email,
+        c1_0.nom,
+        c1_0.prenom,
+        c1_0.cd_postal,
+        c1_0.profile_photo_url 
+    from
+        client c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    select
+        ra1_0.id,
+        ra1_0.risk_level,
+        ra1_0.loan_id,
+        ra1_0.score 
+    from
+        risk_assessment ra1_0 
+    where
+        ra1_0.loan_id=?
+Hibernate: 
+    select
+        ra1_0.id,
+        ra1_0.risk_level,
+        ra1_0.loan_id,
+        ra1_0.score 
+    from
+        risk_assessment ra1_0 
+    where
+        ra1_0.loan_id=?
+Hibernate: 
+    select
+        ra1_0.id,
+        ra1_0.risk_level,
+        ra1_0.loan_id,
+        ra1_0.score 
+    from
+        risk_assessment ra1_0 
+    where
+        ra1_0.loan_id=?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.revenue,
+        c1_0.ville,
+        c1_0.client_reference,
+        c1_0.status,
+        c1_0.email,
+        c1_0.nom,
+        c1_0.prenom,
+        c1_0.cd_postal,
+        c1_0.profile_photo_url 
+    from
+        client c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    select
+        ra1_0.id,
+        ra1_0.risk_level,
+        ra1_0.loan_id,
+        ra1_0.score 
+    from
+        risk_assessment ra1_0 
+    where
+        ra1_0.loan_id=?
+Hibernate: 
+    select
+        ra1_0.id,
+        ra1_0.risk_level,
+        ra1_0.loan_id,
+        ra1_0.score 
+    from
+        risk_assessment ra1_0 
+    where
+        ra1_0.loan_id=?
+Hibernate: 
+    select
+        ra1_0.id,
+        ra1_0.risk_level,
+        ra1_0.loan_id,
+        ra1_0.score 
+    from
+        risk_assessment ra1_0 
+    where
+        ra1_0.loan_id=?
+Hibernate: 
+    select
+        ra1_0.id,
+        ra1_0.risk_level,
+        ra1_0.loan_id,
+        ra1_0.score 
+    from
+        risk_assessment ra1_0 
+    where
+        ra1_0.loan_id=?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.revenue,
+        c1_0.ville,
+        c1_0.client_reference,
+        c1_0.status,
+        c1_0.email,
+        c1_0.nom,
+        c1_0.prenom,
+        c1_0.cd_postal,
+        c1_0.profile_photo_url 
+    from
+        client c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    select
+        ra1_0.id,
+        ra1_0.risk_level,
+        ra1_0.loan_id,
+        ra1_0.score 
+    from
+        risk_assessment ra1_0 
+    where
+        ra1_0.loan_id=?
+Hibernate: 
+    select
+        ra1_0.id,
+        ra1_0.risk_level,
+        ra1_0.loan_id,
+        ra1_0.score 
+    from
+        risk_assessment ra1_0 
+    where
+        ra1_0.loan_id=?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.revenue,
+        c1_0.ville,
+        c1_0.client_reference,
+        c1_0.status,
+        c1_0.email,
+        c1_0.nom,
+        c1_0.prenom,
+        c1_0.cd_postal,
+        c1_0.profile_photo_url 
+    from
+        client c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    select
+        ra1_0.id,
+        ra1_0.risk_level,
+        ra1_0.loan_id,
+        ra1_0.score 
+    from
+        risk_assessment ra1_0 
+    where
+        ra1_0.loan_id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.account_non_expired,
+        u1_0.account_non_locked,
+        u1_0.client_id,
+        u1_0.credentials_non_expired,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        a1_0.user_id,
+        a1_1.id,
+        a1_1.authority 
+    from
+        user_roles a1_0 
+    join
+        role a1_1 
+            on a1_1.id=a1_0.role_id 
+    where
+        a1_0.user_id=?
+Hibernate: 
+    select
+        l1_0.id,
+        l1_0.annual_interest_rate,
+        l1_0.approval_date,
+        l1_0.client_id,
+        l1_0.duration,
+        l1_0.end_date,
+        l1_0.loan_amount,
+        l1_0.loan_reference,
+        l1_0.loan_type,
+        l1_0.monthly_payment,
+        l1_0.rejection_reason,
+        l1_0.status 
+    from
+        loan l1_0
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.revenue,
+        c1_0.ville,
+        c1_0.client_reference,
+        c1_0.status,
+        c1_0.email,
+        c1_0.nom,
+        c1_0.prenom,
+        c1_0.cd_postal,
+        c1_0.profile_photo_url 
+    from
+        client c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    select
+        ra1_0.id,
+        ra1_0.risk_level,
+        ra1_0.loan_id,
+        ra1_0.score 
+    from
+        risk_assessment ra1_0 
+    where
+        ra1_0.loan_id=?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.revenue,
+        c1_0.ville,
+        c1_0.client_reference,
+        c1_0.status,
+        c1_0.email,
+        c1_0.nom,
+        c1_0.prenom,
+        c1_0.cd_postal,
+        c1_0.profile_photo_url 
+    from
+        client c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    select
+        ra1_0.id,
+        ra1_0.risk_level,
+        ra1_0.loan_id,
+        ra1_0.score 
+    from
+        risk_assessment ra1_0 
+    where
+        ra1_0.loan_id=?
+Hibernate: 
+    select
+        ra1_0.id,
+        ra1_0.risk_level,
+        ra1_0.loan_id,
+        ra1_0.score 
+    from
+        risk_assessment ra1_0 
+    where
+        ra1_0.loan_id=?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.revenue,
+        c1_0.ville,
+        c1_0.client_reference,
+        c1_0.status,
+        c1_0.email,
+        c1_0.nom,
+        c1_0.prenom,
+        c1_0.cd_postal,
+        c1_0.profile_photo_url 
+    from
+        client c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    select
+        ra1_0.id,
+        ra1_0.risk_level,
+        ra1_0.loan_id,
+        ra1_0.score 
+    from
+        risk_assessment ra1_0 
+    where
+        ra1_0.loan_id=?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.revenue,
+        c1_0.ville,
+        c1_0.client_reference,
+        c1_0.status,
+        c1_0.email,
+        c1_0.nom,
+        c1_0.prenom,
+        c1_0.cd_postal,
+        c1_0.profile_photo_url 
+    from
+        client c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    select
+        ra1_0.id,
+        ra1_0.risk_level,
+        ra1_0.loan_id,
+        ra1_0.score 
+    from
+        risk_assessment ra1_0 
+    where
+        ra1_0.loan_id=?
+Hibernate: 
+    select
+        ra1_0.id,
+        ra1_0.risk_level,
+        ra1_0.loan_id,
+        ra1_0.score 
+    from
+        risk_assessment ra1_0 
+    where
+        ra1_0.loan_id=?
+Hibernate: 
+    select
+        ra1_0.id,
+        ra1_0.risk_level,
+        ra1_0.loan_id,
+        ra1_0.score 
+    from
+        risk_assessment ra1_0 
+    where
+        ra1_0.loan_id=?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.revenue,
+        c1_0.ville,
+        c1_0.client_reference,
+        c1_0.status,
+        c1_0.email,
+        c1_0.nom,
+        c1_0.prenom,
+        c1_0.cd_postal,
+        c1_0.profile_photo_url 
+    from
+        client c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    select
+        ra1_0.id,
+        ra1_0.risk_level,
+        ra1_0.loan_id,
+        ra1_0.score 
+    from
+        risk_assessment ra1_0 
+    where
+        ra1_0.loan_id=?
+Hibernate: 
+    select
+        ra1_0.id,
+        ra1_0.risk_level,
+        ra1_0.loan_id,
+        ra1_0.score 
+    from
+        risk_assessment ra1_0 
+    where
+        ra1_0.loan_id=?
+Hibernate: 
+    select
+        ra1_0.id,
+        ra1_0.risk_level,
+        ra1_0.loan_id,
+        ra1_0.score 
+    from
+        risk_assessment ra1_0 
+    where
+        ra1_0.loan_id=?
+Hibernate: 
+    select
+        ra1_0.id,
+        ra1_0.risk_level,
+        ra1_0.loan_id,
+        ra1_0.score 
+    from
+        risk_assessment ra1_0 
+    where
+        ra1_0.loan_id=?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.revenue,
+        c1_0.ville,
+        c1_0.client_reference,
+        c1_0.status,
+        c1_0.email,
+        c1_0.nom,
+        c1_0.prenom,
+        c1_0.cd_postal,
+        c1_0.profile_photo_url 
+    from
+        client c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    select
+        ra1_0.id,
+        ra1_0.risk_level,
+        ra1_0.loan_id,
+        ra1_0.score 
+    from
+        risk_assessment ra1_0 
+    where
+        ra1_0.loan_id=?
+Hibernate: 
+    select
+        ra1_0.id,
+        ra1_0.risk_level,
+        ra1_0.loan_id,
+        ra1_0.score 
+    from
+        risk_assessment ra1_0 
+    where
+        ra1_0.loan_id=?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.revenue,
+        c1_0.ville,
+        c1_0.client_reference,
+        c1_0.status,
+        c1_0.email,
+        c1_0.nom,
+        c1_0.prenom,
+        c1_0.cd_postal,
+        c1_0.profile_photo_url 
+    from
+        client c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    select
+        ra1_0.id,
+        ra1_0.risk_level,
+        ra1_0.loan_id,
+        ra1_0.score 
+    from
+        risk_assessment ra1_0 
+    where
+        ra1_0.loan_id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.account_non_expired,
+        u1_0.account_non_locked,
+        u1_0.client_id,
+        u1_0.credentials_non_expired,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        a1_0.user_id,
+        a1_1.id,
+        a1_1.authority 
+    from
+        user_roles a1_0 
+    join
+        role a1_1 
+            on a1_1.id=a1_0.role_id 
+    where
+        a1_0.user_id=?
+Hibernate: 
+    select
+        l1_0.id,
+        l1_0.annual_interest_rate,
+        l1_0.approval_date,
+        l1_0.client_id,
+        l1_0.duration,
+        l1_0.end_date,
+        l1_0.loan_amount,
+        l1_0.loan_reference,
+        l1_0.loan_type,
+        l1_0.monthly_payment,
+        l1_0.rejection_reason,
+        l1_0.status 
+    from
+        loan l1_0 
+    join
+        client c1_0 
+            on c1_0.id=l1_0.client_id 
+    where
+        c1_0.client_reference=?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.revenue,
+        c1_0.ville,
+        c1_0.client_reference,
+        c1_0.status,
+        c1_0.email,
+        c1_0.nom,
+        c1_0.prenom,
+        c1_0.cd_postal,
+        c1_0.profile_photo_url 
+    from
+        client c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    select
+        ra1_0.id,
+        ra1_0.risk_level,
+        ra1_0.loan_id,
+        ra1_0.score 
+    from
+        risk_assessment ra1_0 
+    where
+        ra1_0.loan_id=?
+Hibernate: 
+    select
+        ra1_0.id,
+        ra1_0.risk_level,
+        ra1_0.loan_id,
+        ra1_0.score 
+    from
+        risk_assessment ra1_0 
+    where
+        ra1_0.loan_id=?
+Hibernate: 
+    select
+        ra1_0.id,
+        ra1_0.risk_level,
+        ra1_0.loan_id,
+        ra1_0.score 
+    from
+        risk_assessment ra1_0 
+    where
+        ra1_0.loan_id=?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.revenue,
+        c1_0.ville,
+        c1_0.client_reference,
+        c1_0.status,
+        c1_0.email,
+        c1_0.nom,
+        c1_0.prenom,
+        c1_0.cd_postal,
+        c1_0.profile_photo_url 
+    from
+        client c1_0
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.account_non_expired,
+        u1_0.account_non_locked,
+        u1_0.client_id,
+        u1_0.credentials_non_expired,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.account_non_expired,
+        u1_0.account_non_locked,
+        u1_0.client_id,
+        u1_0.credentials_non_expired,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.revenue,
+        c1_0.ville,
+        c1_0.client_reference,
+        c1_0.status,
+        c1_0.email,
+        c1_0.nom,
+        c1_0.prenom,
+        c1_0.cd_postal,
+        c1_0.profile_photo_url 
+    from
+        client c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.revenue,
+        c1_0.ville,
+        c1_0.client_reference,
+        c1_0.status,
+        c1_0.email,
+        c1_0.nom,
+        c1_0.prenom,
+        c1_0.cd_postal,
+        c1_0.profile_photo_url 
+    from
+        client c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    select
+        a1_0.user_id,
+        a1_1.id,
+        a1_1.authority 
+    from
+        user_roles a1_0 
+    join
+        role a1_1 
+            on a1_1.id=a1_0.role_id 
+    where
+        a1_0.user_id=?
+Hibernate: 
+    select
+        a1_0.user_id,
+        a1_1.id,
+        a1_1.authority 
+    from
+        user_roles a1_0 
+    join
+        role a1_1 
+            on a1_1.id=a1_0.role_id 
+    where
+        a1_0.user_id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.account_non_expired,
+        u1_0.account_non_locked,
+        u1_0.client_id,
+        u1_0.credentials_non_expired,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.revenue,
+        c1_0.ville,
+        c1_0.client_reference,
+        c1_0.status,
+        c1_0.email,
+        c1_0.nom,
+        c1_0.prenom,
+        c1_0.cd_postal,
+        c1_0.profile_photo_url 
+    from
+        client c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    select
+        a1_0.user_id,
+        a1_1.id,
+        a1_1.authority 
+    from
+        user_roles a1_0 
+    join
+        role a1_1 
+            on a1_1.id=a1_0.role_id 
+    where
+        a1_0.user_id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.account_non_expired,
+        u1_0.account_non_locked,
+        u1_0.client_id,
+        u1_0.credentials_non_expired,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.revenue,
+        c1_0.ville,
+        c1_0.client_reference,
+        c1_0.status,
+        c1_0.email,
+        c1_0.nom,
+        c1_0.prenom,
+        c1_0.cd_postal,
+        c1_0.profile_photo_url 
+    from
+        client c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    select
+        a1_0.user_id,
+        a1_1.id,
+        a1_1.authority 
+    from
+        user_roles a1_0 
+    join
+        role a1_1 
+            on a1_1.id=a1_0.role_id 
+    where
+        a1_0.user_id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.account_non_expired,
+        u1_0.account_non_locked,
+        u1_0.client_id,
+        u1_0.credentials_non_expired,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.account_non_expired,
+        u1_0.account_non_locked,
+        u1_0.client_id,
+        u1_0.credentials_non_expired,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.revenue,
+        c1_0.ville,
+        c1_0.client_reference,
+        c1_0.status,
+        c1_0.email,
+        c1_0.nom,
+        c1_0.prenom,
+        c1_0.cd_postal,
+        c1_0.profile_photo_url 
+    from
+        client c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.revenue,
+        c1_0.ville,
+        c1_0.client_reference,
+        c1_0.status,
+        c1_0.email,
+        c1_0.nom,
+        c1_0.prenom,
+        c1_0.cd_postal,
+        c1_0.profile_photo_url 
+    from
+        client c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    select
+        a1_0.user_id,
+        a1_1.id,
+        a1_1.authority 
+    from
+        user_roles a1_0 
+    join
+        role a1_1 
+            on a1_1.id=a1_0.role_id 
+    where
+        a1_0.user_id=?
+Hibernate: 
+    select
+        a1_0.user_id,
+        a1_1.id,
+        a1_1.authority 
+    from
+        user_roles a1_0 
+    join
+        role a1_1 
+            on a1_1.id=a1_0.role_id 
+    where
+        a1_0.user_id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.account_non_expired,
+        u1_0.account_non_locked,
+        u1_0.client_id,
+        u1_0.credentials_non_expired,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        l1_0.id,
+        l1_0.annual_interest_rate,
+        l1_0.approval_date,
+        l1_0.client_id,
+        l1_0.duration,
+        l1_0.end_date,
+        l1_0.loan_amount,
+        l1_0.loan_reference,
+        l1_0.loan_type,
+        l1_0.monthly_payment,
+        l1_0.rejection_reason,
+        l1_0.status 
+    from
+        loan l1_0 
+    join
+        client c1_0 
+            on c1_0.id=l1_0.client_id 
+    where
+        c1_0.client_reference=?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.revenue,
+        c1_0.ville,
+        c1_0.client_reference,
+        c1_0.status,
+        c1_0.email,
+        c1_0.nom,
+        c1_0.prenom,
+        c1_0.cd_postal,
+        c1_0.profile_photo_url 
+    from
+        client c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    select
+        a1_0.user_id,
+        a1_1.id,
+        a1_1.authority 
+    from
+        user_roles a1_0 
+    join
+        role a1_1 
+            on a1_1.id=a1_0.role_id 
+    where
+        a1_0.user_id=?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.revenue,
+        c1_0.ville,
+        c1_0.client_reference,
+        c1_0.status,
+        c1_0.email,
+        c1_0.nom,
+        c1_0.prenom,
+        c1_0.cd_postal,
+        c1_0.profile_photo_url 
+    from
+        client c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    select
+        ra1_0.id,
+        ra1_0.risk_level,
+        ra1_0.loan_id,
+        ra1_0.score 
+    from
+        risk_assessment ra1_0 
+    where
+        ra1_0.loan_id=?
+Hibernate: 
+    select
+        ra1_0.id,
+        ra1_0.risk_level,
+        ra1_0.loan_id,
+        ra1_0.score 
+    from
+        risk_assessment ra1_0 
+    where
+        ra1_0.loan_id=?
+Hibernate: 
+    select
+        a1_0.id,
+        a1_0.application_date,
+        a1_0.client_id,
+        a1_0.loan_type,
+        a1_0.rejection_reason,
+        a1_0.requested_amount,
+        a1_0.requested_duration,
+        a1_0.status 
+    from
+        applications a1_0 
+    join
+        client c1_0 
+            on c1_0.id=a1_0.client_id 
+    where
+        c1_0.client_reference=?
+Hibernate: 
+    select
+        p1_0.id,
+        p1_0.amount,
+        p1_0.description,
+        p1_0.due_date,
+        p1_0.installment_number,
+        p1_0.loan_id,
+        p1_0.payment_date,
+        p1_0.payment_reference,
+        p1_0.status 
+    from
+        payment p1_0 
+    left join
+        loan l1_0 
+            on l1_0.id=p1_0.loan_id 
+    left join
+        client c1_0 
+            on c1_0.id=l1_0.client_id 
+    where
+        c1_0.client_reference=?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.revenue,
+        c1_0.ville,
+        c1_0.client_reference,
+        c1_0.status,
+        c1_0.email,
+        c1_0.nom,
+        c1_0.prenom,
+        c1_0.cd_postal,
+        c1_0.profile_photo_url 
+    from
+        client c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.account_non_expired,
+        u1_0.account_non_locked,
+        u1_0.client_id,
+        u1_0.credentials_non_expired,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.revenue,
+        c1_0.ville,
+        c1_0.client_reference,
+        c1_0.status,
+        c1_0.email,
+        c1_0.nom,
+        c1_0.prenom,
+        c1_0.cd_postal,
+        c1_0.profile_photo_url 
+    from
+        client c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    select
+        a1_0.user_id,
+        a1_1.id,
+        a1_1.authority 
+    from
+        user_roles a1_0 
+    join
+        role a1_1 
+            on a1_1.id=a1_0.role_id 
+    where
+        a1_0.user_id=?
+Hibernate: 
+    select
+        l1_0.id,
+        l1_0.annual_interest_rate,
+        l1_0.approval_date,
+        l1_0.client_id,
+        l1_0.duration,
+        l1_0.end_date,
+        l1_0.loan_amount,
+        l1_0.loan_reference,
+        l1_0.loan_type,
+        l1_0.monthly_payment,
+        l1_0.rejection_reason,
+        l1_0.status 
+    from
+        loan l1_0 
+    join
+        client c1_0 
+            on c1_0.id=l1_0.client_id 
+    where
+        c1_0.client_reference=?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.revenue,
+        c1_0.ville,
+        c1_0.client_reference,
+        c1_0.status,
+        c1_0.email,
+        c1_0.nom,
+        c1_0.prenom,
+        c1_0.cd_postal,
+        c1_0.profile_photo_url 
+    from
+        client c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    select
+        ra1_0.id,
+        ra1_0.risk_level,
+        ra1_0.loan_id,
+        ra1_0.score 
+    from
+        risk_assessment ra1_0 
+    where
+        ra1_0.loan_id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.account_non_expired,
+        u1_0.account_non_locked,
+        u1_0.client_id,
+        u1_0.credentials_non_expired,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.account_non_expired,
+        u1_0.account_non_locked,
+        u1_0.client_id,
+        u1_0.credentials_non_expired,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        ra1_0.id,
+        ra1_0.risk_level,
+        ra1_0.loan_id,
+        ra1_0.score 
+    from
+        risk_assessment ra1_0 
+    where
+        ra1_0.loan_id=?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.revenue,
+        c1_0.ville,
+        c1_0.client_reference,
+        c1_0.status,
+        c1_0.email,
+        c1_0.nom,
+        c1_0.prenom,
+        c1_0.cd_postal,
+        c1_0.profile_photo_url 
+    from
+        client c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.revenue,
+        c1_0.ville,
+        c1_0.client_reference,
+        c1_0.status,
+        c1_0.email,
+        c1_0.nom,
+        c1_0.prenom,
+        c1_0.cd_postal,
+        c1_0.profile_photo_url 
+    from
+        client c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    select
+        a1_0.user_id,
+        a1_1.id,
+        a1_1.authority 
+    from
+        user_roles a1_0 
+    join
+        role a1_1 
+            on a1_1.id=a1_0.role_id 
+    where
+        a1_0.user_id=?
+Hibernate: 
+    select
+        a1_0.user_id,
+        a1_1.id,
+        a1_1.authority 
+    from
+        user_roles a1_0 
+    join
+        role a1_1 
+            on a1_1.id=a1_0.role_id 
+    where
+        a1_0.user_id=?
+Hibernate: 
+    select
+        a1_0.id,
+        a1_0.application_date,
+        a1_0.client_id,
+        a1_0.loan_type,
+        a1_0.rejection_reason,
+        a1_0.requested_amount,
+        a1_0.requested_duration,
+        a1_0.status 
+    from
+        applications a1_0 
+    join
+        client c1_0 
+            on c1_0.id=a1_0.client_id 
+    where
+        c1_0.client_reference=?
+Hibernate: 
+    select
+        p1_0.id,
+        p1_0.amount,
+        p1_0.description,
+        p1_0.due_date,
+        p1_0.installment_number,
+        p1_0.loan_id,
+        p1_0.payment_date,
+        p1_0.payment_reference,
+        p1_0.status 
+    from
+        payment p1_0 
+    left join
+        loan l1_0 
+            on l1_0.id=p1_0.loan_id 
+    left join
+        client c1_0 
+            on c1_0.id=l1_0.client_id 
+    where
+        c1_0.client_reference=?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.revenue,
+        c1_0.ville,
+        c1_0.client_reference,
+        c1_0.status,
+        c1_0.email,
+        c1_0.nom,
+        c1_0.prenom,
+        c1_0.cd_postal,
+        c1_0.profile_photo_url 
+    from
+        client c1_0 
+    where
+        c1_0.id=?
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  04:56 min
+[INFO] Finished at: 2026-09-09T17:33:53+01:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.springframework.boot:spring-boot-maven-plugin:4.1.0:run (default-cli) on project backend: Process terminated with exit code: 1 -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException

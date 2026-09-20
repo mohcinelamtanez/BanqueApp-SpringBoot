@@ -15,7 +15,7 @@ export const authService = {
       return {
         email: data.email,
         role: data.role,
-        clientReference: data.clientReference,
+        clientId: data.clientId,
         token: data.token,
       };
     } catch (error) {

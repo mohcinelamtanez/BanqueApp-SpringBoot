@@ -68,8 +68,8 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public List<Payment> getPaymentsByClientReference(String clientReference) {
-        return paymentRepository.findByLoan_Client_ClientReference(clientReference);
+    public List<Payment> getPaymentsByClientId(Integer clientId) {
+        return paymentRepository.findByLoan_Client_Id(clientId);
     }
 
     @Override

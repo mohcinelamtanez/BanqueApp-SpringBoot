@@ -78,7 +78,7 @@ public class LocalFileStorageService implements FileStorageService {
 
     // Guards against a sub-directory value ever escaping the upload root
     // (e.g. via "..") — defense in depth, even though callers only ever
-    // pass a clientReference-derived path today.
+    // pass a client-id-derived path today.
     private Path resolveWithinRoot(String subDirectory) {
         Path resolved = rootDirectory.resolve(subDirectory).normalize();
         if (!resolved.startsWith(rootDirectory)) {

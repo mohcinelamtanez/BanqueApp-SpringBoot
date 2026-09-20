@@ -130,7 +130,7 @@ export default function LoanRequestReviewPage() {
       <Breadcrumbs
         items={[
           { label: "Loan Applications", to: "/loan-applications" },
-          { label: application.reference },
+          { label: `Application #${application.id}` },
         ]}
       />
       <div className="page-heading">

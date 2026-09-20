@@ -15,9 +15,6 @@ public class Client {
     @Column(name = "Id")
     private Integer id;
 
-    @Column(name = "client_reference" , nullable = false)
-    private String clientReference;
-
     @Column(name = "Nom", nullable = false, length = 100)
     private String firstName;
 
@@ -69,14 +66,6 @@ public class Client {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public String getClientReference() {
-        return clientReference ;
-    }
-
-    public void setClientReference(String clientReference) {
-        this.clientReference = clientReference;
     }
 
     public String getFirstName() {

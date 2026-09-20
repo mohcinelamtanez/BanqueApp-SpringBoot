@@ -14,7 +14,7 @@ public interface PaymentRepository extends JpaRepository<Payment,Integer> {
 
     // All payments across every Loan belonging to one client — backs "My
     // Payments" without the client ever fetching another client's data.
-    List<Payment> findByLoan_Client_ClientReference(String clientReference);
+    List<Payment> findByLoan_Client_Id(Integer clientId);
 
     boolean existsByLoan_Id(Integer loanId);
 

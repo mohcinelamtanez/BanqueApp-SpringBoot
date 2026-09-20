@@ -2,23 +2,11 @@ import { httpClient } from "./httpClient";
 
 const BASE = "/v1/clients";
 
-// The backend never hands out a technical id for a client — every lookup
-// (get/update/delete) goes through the human-readable clientReference
-// (e.g. "CLI-3"), so the frontend treats that reference as the client's
-// `id` everywhere (routes, tables, forms) instead of a database key.
-//
-// Note: ClientResponseDTO is a Java record whose first component is
-// declared `ClientReference` (capital C, unlike every other lowerCamelCase
-// field on it) — Jackson serializes records using the exact component
-// name, so the JSON key really is "ClientReference". This reads that key
-// as-is rather than "fixing" it, since changing the backend's wire format
-// wasn't asked for here.
 function fromDTO(dto) {
   const firstName = dto.firstName ?? "";
   const lastName = dto.lastName ?? "";
   return {
-    id: dto.ClientReference,
-    reference: dto.ClientReference,
+    id: dto.id,
     firstName,
     lastName,
     name: `${firstName} ${lastName}`.trim(),
@@ -78,20 +66,20 @@ export function isProfileComplete(client) {
 
 export const clientService = {
   list: () => httpClient.get(BASE).then((res) => res.data.map(fromDTO)),
-  get: (reference) =>
+  get: (id) =>
     httpClient
-      .get(`${BASE}/reference/${reference}`)
+      .get(`${BASE}/${id}`)
       .then((res) => fromDTO(res.data)),
   create: (values) =>
     httpClient
       .post(BASE, toCreatePayload(values))
       .then((res) => fromDTO(res.data)),
-  update: (reference, values) =>
+  update: (id, values) =>
     httpClient
-      .put(`${BASE}/reference/${reference}`, toUpdatePayload(values))
+      .put(`${BASE}/${id}`, toUpdatePayload(values))
       .then((res) => fromDTO(res.data)),
-  remove: (reference) =>
-    httpClient.delete(`${BASE}/reference/${reference}`).then(() => undefined),
+  remove: (id) =>
+    httpClient.delete(`${BASE}/${id}`).then(() => undefined),
   // "My Profile" — always the authenticated user's own Client, resolved
   // server-side. No Client yet returns null (backend responds 204) rather
   // than throwing, so the caller can tell "not created yet" apart from a

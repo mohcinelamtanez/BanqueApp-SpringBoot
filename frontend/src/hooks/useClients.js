@@ -5,11 +5,11 @@ import { clientService } from "../services/clientService";
 // to refetch, since useResource only re-runs when its `id` argument changes.
 export const useClients = (refreshKey) =>
   useResource(clientService.list, refreshKey);
-// `reference` is falsy on the "Add Client" form (nothing to load yet) — skip
-// the network call entirely rather than requesting "reference/null".
-export const useClient = (reference, refreshKey) =>
+// `id` is falsy on the "Add Client" form (nothing to load yet) — skip the
+// network call entirely rather than requesting "clients/null".
+export const useClient = (id, refreshKey) =>
   useResource(
-    reference ? clientService.get : () => Promise.resolve(null),
-    reference,
+    id ? clientService.get : () => Promise.resolve(null),
+    id,
     [refreshKey],
   );

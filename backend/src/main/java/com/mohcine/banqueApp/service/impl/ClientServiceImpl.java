@@ -59,13 +59,9 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public Client getClientByRef(String clientReference) {
-
-        Client client = clientRepository.findByClientReference(clientReference) ;
-        if(client == null ) {
-            throw new ClientNotFoundException(clientReference) ;
-        }
-            return client ;
+    public Client getClientById(Integer id) {
+        return clientRepository.findById(id)
+                .orElseThrow(() -> new ClientNotFoundException(id));
     }
 
 
@@ -81,30 +77,9 @@ public class ClientServiceImpl implements ClientService {
         if(client.getAnnualIncome().intValue() < 0) {
              throw new AnnualIncomeException() ;
         }
-            client.setClientReference(nextClientReference(existingClients));
-
             client.setStatus(ClientStatus.ACTIVE);
 
             return clientRepository.save(client);
-    }
-
-    // "CLI-" + count() collided as soon as any client was ever deleted, or
-    // any gap existed in the sequence (self-registration now creates a
-    // Client far more routinely than the old admin-only path ever did,
-    // which is what surfaced this) — derive the next reference from the
-    // highest existing numeric suffix instead, so it's always free.
-    private String nextClientReference(List<Client> existingClients) {
-        int max = 0;
-        for (Client c : existingClients) {
-            String ref = c.getClientReference();
-            if (ref == null || !ref.startsWith("CLI-")) continue;
-            try {
-                max = Math.max(max, Integer.parseInt(ref.substring("CLI-".length())));
-            } catch (NumberFormatException ignored) {
-                // non-numeric suffix — ignore, doesn't affect the sequence
-            }
-        }
-        return "CLI-" + (max + 1);
     }
 
     // The authenticated User's own linked Client is the only thing this
@@ -150,7 +125,7 @@ public class ClientServiceImpl implements ClientService {
 
         String previousUrl = client.getProfilePhotoUrl();
         String newUrl = fileStorageService.store(
-                "clients/" + client.getClientReference() + "/profile", file);
+                "clients/" + client.getId() + "/profile", file);
         client.setProfilePhotoUrl(newUrl);
         Client saved = clientRepository.save(client);
 
@@ -223,20 +198,10 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public void deleteClientByReference(String clientReference) {
-        Client client = clientRepository.findByClientReference(clientReference);
-        if (client == null) {
-            throw new ClientNotFoundException(clientReference);
-        }
-        deleteClient(client.getId());
-    }
+    public Client updateClient(Integer id ,  ClientUpdateDTO dto) {
 
-
-    @Override
-    public Client updateClient(String reference ,  ClientUpdateDTO dto) {
-
-
-        Client client = clientRepository.findByClientReference(reference);
+        Client client = clientRepository.findById(id)
+                .orElseThrow(() -> new ClientNotFoundException(id));
         clientMapper.updateEntity(dto , client);
 
        return clientRepository.save(client) ;

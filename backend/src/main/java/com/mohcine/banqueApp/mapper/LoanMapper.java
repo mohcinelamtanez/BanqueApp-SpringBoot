@@ -58,7 +58,7 @@ public class LoanMapper {
 
             dto.setId(loan.getId());
             if (loan.getClient() != null) {
-                dto.setClientReference(loan.getClient().getClientReference());
+                dto.setClientId(loan.getClient().getId());
             }
             dto.setLoanAmount(loan.getLoanAmount());
             dto.setDuration(loan.getDuration());

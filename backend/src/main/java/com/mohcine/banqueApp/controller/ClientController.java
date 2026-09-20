@@ -91,10 +91,10 @@ public class ClientController {
         return clientMapper.toDTO(saved);
     }
 
-    @Operation(summary = "this method returns the client based on the reference")
-     @GetMapping("reference/{reference}")
-     public ClientResponseDTO getClient(@PathVariable String reference) {
-      Client client  =  clientService.getClientByRef(reference);
+    @Operation(summary = "this method returns the client based on its id")
+     @GetMapping("/{id}")
+     public ClientResponseDTO getClient(@PathVariable Integer id) {
+      Client client  =  clientService.getClientById(id);
       return clientMapper.toDTO(client);
      }
 
@@ -123,19 +123,13 @@ public class ClientController {
         clientService.deleteClient(id);
      }
 
-    @Operation(summary = "this method deletes a client based on the reference")
-    @DeleteMapping("reference/{reference}")
-    public void deleteClientByReference(@PathVariable String reference) {
-        clientService.deleteClientByReference(reference);
-    }
-
-    @PutMapping("reference/{reference}")
+    @PutMapping("/{id}")
     public ClientResponseDTO updateClient(
-            @PathVariable String  reference,
+            @PathVariable Integer id,
             @RequestBody ClientUpdateDTO dto
     ) {
         return   clientMapper.
                   toDTO(clientService.
-                          updateClient(reference , dto)) ;
+                          updateClient(id , dto)) ;
     }
 }

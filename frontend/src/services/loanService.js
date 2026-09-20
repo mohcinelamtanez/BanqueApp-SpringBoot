@@ -24,14 +24,10 @@ const STATUS_FROM_LABEL = {
   Rejected: "REJECTED",
 };
 
-// Loans are identified by their technical id (the API has no loan
-// reference, unlike Client) — `reference` below is a frontend-only display
-// label, not something sent back to the API.
 function fromDTO(dto) {
   return {
     id: dto.id,
-    reference: `LN-${dto.id}`,
-    clientId: dto.clientReference,
+    clientId: dto.clientId,
     type: LOAN_TYPE_TO_LABEL[dto.loanType] || dto.loanType,
     amount: dto.loanAmount,
     duration: dto.duration,
@@ -51,7 +47,7 @@ function fromDTO(dto) {
 
 function toCreatePayload(values) {
   return {
-    clientReference: values.clientId,
+    clientId: Number(values.clientId),
     loanType: LOAN_TYPE_FROM_LABEL[values.type] || values.type,
     loanAmount: Number(values.amount),
     duration: Number(values.duration),
@@ -100,10 +96,6 @@ export const loanService = {
       const match = res.data.find((dto) => String(dto.id) === String(id));
       return match ? fromDTO(match) : null;
     }),
-  listByClientReference: (reference) =>
-    httpClient
-      .get(`${BASE}/client/reference/${reference}`)
-      .then((res) => res.data.map(fromDTO)),
   // The authenticated client's own loans — derived server-side from the
   // JWT, never from a client-supplied reference.
   listMine: () => httpClient.get(`${BASE}/me`).then((res) => res.data.map(fromDTO)),

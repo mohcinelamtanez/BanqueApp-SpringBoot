@@ -19,7 +19,7 @@ public interface PaymentService {
 
     List<Payment> getPaymentsByLoanId(Integer loanId);
 
-    List<Payment> getPaymentsByClientReference(String clientReference);
+    List<Payment> getPaymentsByClientId(Integer clientId);
 
     boolean hasSchedule(Integer loanId);
 

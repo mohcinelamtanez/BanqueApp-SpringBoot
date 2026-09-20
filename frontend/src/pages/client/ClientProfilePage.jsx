@@ -51,9 +51,9 @@ export default function ClientProfilePage() {
       try {
         const saved = await clientService.saveMine(values);
         // Keeps the rest of the Client portal (My Loans/Applications/
-        // Payments, all keyed off authStore's clientReference) working
+        // Payments, all keyed off authStore's clientId) working
         // immediately, without requiring the user to log out and back in.
-        setUser({ ...getUser(), clientReference: saved.reference });
+        setUser({ ...getUser(), clientId: saved.id });
         refresh();
       } catch (err) {
         setCreateError(

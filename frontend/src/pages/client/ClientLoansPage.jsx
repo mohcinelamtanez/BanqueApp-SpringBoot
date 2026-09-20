@@ -99,7 +99,7 @@ export default function ClientLoansPage() {
                   <div>
                     <h3>{loan.type}</h3>
                     <span className="mono loan-card-reference">
-                      {loan.reference}
+                      #{loan.id}
                     </span>
                   </div>
                   <span className={`loan-status-pill ${meta?.tone || ""}`}>

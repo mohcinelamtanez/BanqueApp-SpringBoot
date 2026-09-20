@@ -27,7 +27,7 @@ public class ClientMapper {
     public ClientResponseDTO  toDTO(Client client) {
         return
                 new ClientResponseDTO(
-                client.getClientReference(),
+                client.getId(),
                 client.getFirstName(),
                 client.getLastName(),
                 client.getCity(),

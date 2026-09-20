@@ -40,7 +40,7 @@ export default function LoansPage() {
       </Card>
       {target && (
         <ConfirmationDialog
-          message={`Delete loan ${target.reference}? This action cannot be undone.`}
+          message={`Delete loan #${target.id}? This action cannot be undone.`}
           onClose={() => setTarget(null)}
           onConfirm={async () => {
             await loanService.remove(target.id);

@@ -1,0 +1,254 @@
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { Briefcase, Plus, Search, UserCheck, Users } from "lucide-react";
+import {
+  Button,
+  Card,
+  ConfirmationDialog,
+  EmptyState,
+  LoadingState,
+  Pagination,
+  SuccessModal,
+} from "../components/ui";
+import UserTable from "../components/users/UserTable";
+import UserFormModal from "../components/users/UserFormModal";
+import UserProfileModal from "../components/users/UserProfileModal";
+import AssignRoleModal from "../components/users/AssignRoleModal";
+import { userService } from "../services/userService";
+import { usePagination } from "../hooks/usePagination";
+import { Metric, PageHeading } from "./pageShared";
+
+export default function UserManagementPage() {
+  const navigate = useNavigate();
+  const { userId } = useParams();
+  const [loading, setLoading] = useState(true);
+  const [users, setUsers] = useState([]);
+  const [reloadKey, setReloadKey] = useState(0);
+  const [query, setQuery] = useState("");
+  const [formModal, setFormModal] = useState(null);
+  const [statusTarget, setStatusTarget] = useState(null);
+  const [togglingStatus, setTogglingStatus] = useState(false);
+  const [statusError, setStatusError] = useState("");
+  const [resetTarget, setResetTarget] = useState(null);
+  const [resettingPassword, setResettingPassword] = useState(false);
+  const [resetError, setResetError] = useState("");
+  const [roleTarget, setRoleTarget] = useState(null);
+  const [success, setSuccess] = useState(null);
+
+  useEffect(() => {
+    let active = true;
+    setLoading(true);
+    userService.list().then((data) => {
+      if (active) {
+        setUsers(data);
+        setLoading(false);
+      }
+    });
+    return () => {
+      active = false;
+    };
+  }, [reloadKey]);
+
+  const shown = users.filter((user) =>
+    `${user.firstName} ${user.lastName} ${user.email}`
+      .toLowerCase()
+      .includes(query.toLowerCase()),
+  );
+  const {
+    page,
+    setPage,
+    totalPages,
+    pageItems,
+    rangeStart,
+    rangeEnd,
+  } = usePagination(shown, 5);
+
+  if (loading) return <LoadingState label="Loading users…" />;
+
+  const viewingUser = userId
+    ? users.find((user) => user.id === userId) || null
+    : null;
+
+  const reload = () => setReloadKey((key) => key + 1);
+  const changeQuery = (value) => {
+    setQuery(value);
+    setPage(1);
+  };
+
+  const total = users.length;
+  const activeCount = users.filter((user) => user.status === "Active").length;
+  const bankAgentCount = users.filter((user) => user.role === "BANK_AGENT").length;
+
+  const closeStatusConfirm = () => {
+    if (togglingStatus) return;
+    setStatusTarget(null);
+    setStatusError("");
+  };
+  const confirmToggleStatus = async () => {
+    setTogglingStatus(true);
+    setStatusError("");
+    const nextStatus = statusTarget.status === "Active" ? "Inactive" : "Active";
+    try {
+      await userService.update(statusTarget.id, { status: nextStatus });
+      setStatusTarget(null);
+      reload();
+    } catch (error) {
+      setStatusError(
+        error.message || "Something went wrong. Please try again.",
+      );
+    } finally {
+      setTogglingStatus(false);
+    }
+  };
+
+  const closeResetConfirm = () => {
+    if (resettingPassword) return;
+    setResetTarget(null);
+    setResetError("");
+  };
+  const confirmResetPassword = async () => {
+    // No backend endpoint exists yet for password resets — surface that
+    // honestly instead of simulating a fake success.
+    setResetError("Password reset is not connected to the backend yet.");
+  };
+
+  return (
+    <>
+      <PageHeading
+        title="User Management"
+        subtitle="Manage users who have access to BanqueApp."
+        action={
+          <Button onClick={() => setFormModal({ mode: "create" })}>
+            <Plus size={17} /> Add User
+          </Button>
+        }
+      />
+
+      <div className="stat-grid-3 user-management-kpis">
+        <Metric label="Total Users" value={total} icon={<Users />} />
+        <Metric label="Active Users" value={activeCount} icon={<UserCheck />} />
+        <Metric label="Bank Agents" value={bankAgentCount} icon={<Briefcase />} />
+      </div>
+
+      <Card className="table-card">
+        <div className="ct-toolbar">
+          <div className="search compact">
+            <Search size={16} />
+            <input
+              value={query}
+              onChange={(event) => changeQuery(event.target.value)}
+              placeholder="Search users…"
+            />
+          </div>
+          <span className="results-count">
+            {shown.length
+              ? `Showing ${rangeStart}-${rangeEnd} of ${shown.length} users`
+              : "No users found"}
+          </span>
+        </div>
+        {shown.length ? (
+          <>
+            <UserTable
+              users={pageItems}
+              onView={(user) => navigate(`/users/${user.id}`)}
+              onEdit={(user) => setFormModal({ mode: "edit", user })}
+              onToggleStatus={setStatusTarget}
+              onResetPassword={setResetTarget}
+              onAssignRole={setRoleTarget}
+            />
+            <Pagination
+              page={page}
+              totalPages={totalPages}
+              onChange={setPage}
+              className="ct-pagination"
+            />
+          </>
+        ) : users.length === 0 ? (
+          <EmptyState
+            title="No users found."
+            detail="Create your first internal user to give them access to BanqueApp."
+          />
+        ) : (
+          <EmptyState
+            title="No users found"
+            detail="Try adjusting your search."
+          />
+        )}
+      </Card>
+
+      {formModal && (
+        <UserFormModal
+          mode={formModal.mode}
+          user={formModal.user}
+          onClose={() => setFormModal(null)}
+          onSaved={() => {
+            const wasEditing = formModal.mode === "edit";
+            setFormModal(null);
+            reload();
+            setSuccess({
+              title: wasEditing
+                ? "User Updated Successfully"
+                : "User Created Successfully",
+              message: wasEditing
+                ? "The user's information has been successfully updated."
+                : "The user can now access BanqueApp.",
+            });
+          }}
+        />
+      )}
+      {viewingUser && (
+        <UserProfileModal user={viewingUser} onClose={() => navigate("/users")} />
+      )}
+      {roleTarget && (
+        <AssignRoleModal
+          user={roleTarget}
+          onClose={() => setRoleTarget(null)}
+          onSaved={() => {
+            setRoleTarget(null);
+            reload();
+            setSuccess({
+              title: "Role Updated Successfully",
+              message: "The user's role has been updated.",
+            });
+          }}
+        />
+      )}
+      {statusTarget && (
+        <ConfirmationDialog
+          title={
+            statusTarget.status === "Active" ? "Deactivate User?" : "Activate User?"
+          }
+          message={
+            statusTarget.status === "Active"
+              ? "This user will no longer be able to access BanqueApp until their account is reactivated."
+              : "This user will regain access to BanqueApp."
+          }
+          confirmLabel={statusTarget.status === "Active" ? "Deactivate" : "Activate"}
+          confirmVariant={statusTarget.status === "Active" ? "danger" : "primary"}
+          submitting={togglingStatus}
+          error={statusError}
+          onClose={closeStatusConfirm}
+          onConfirm={confirmToggleStatus}
+        />
+      )}
+      {resetTarget && (
+        <ConfirmationDialog
+          title="Reset Password?"
+          message="A temporary password will be generated for this user."
+          confirmLabel="Reset Password"
+          submitting={resettingPassword}
+          error={resetError}
+          onClose={closeResetConfirm}
+          onConfirm={confirmResetPassword}
+        />
+      )}
+      {success && (
+        <SuccessModal
+          title={success.title}
+          message={success.message}
+          onClose={() => setSuccess(null)}
+        />
+      )}
+    </>
+  );
+}

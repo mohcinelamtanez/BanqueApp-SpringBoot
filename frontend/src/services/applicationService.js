@@ -23,8 +23,7 @@ const STATUS_FROM_LABEL = {
 function fromDTO(dto) {
   return {
     id: dto.id,
-    reference: `APP-${dto.id}`,
-    clientId: dto.clientReference,
+    clientId: dto.clientId,
     type: LOAN_TYPE_TO_LABEL[dto.loanType] || dto.loanType,
     amount: dto.requestedAmount,
     duration: dto.requestedDuration,

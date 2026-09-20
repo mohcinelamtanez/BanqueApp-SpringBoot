@@ -15,7 +15,7 @@ export default function PaymentDetailsModal({ payment, loan, onClose }) {
         <div className="decision-recap-row">
           <span>Loan</span>
           <b>
-            {loan ? `${loan.type} · ${loan.reference}` : payment.loanId}
+            {loan ? `${loan.type} · #${loan.id}` : payment.loanId}
           </b>
         </div>
         <div className="decision-recap-row">

@@ -169,29 +169,6 @@ class ClientServiceImplTest {
         verify(clientRepository, never()).save(any());
     }
 
-    // The new reference must never collide with an existing one, even when
-    // clientRepository.count() would understate it (e.g. after a deletion,
-    // or with a numbering gap) — it's derived from the highest existing
-    // "CLI-N" suffix instead.
-    @Test
-    void saveMyProfile_generatesReference_fromHighestExistingSuffix_notFromCount() {
-        User user = aUserWithNoClient();
-        when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
-        Client mappedEntity = new Client();
-        mappedEntity.setAnnualIncome(BigDecimal.valueOf(120000));
-        mappedEntity.setEmail("jane.doe@example.com");
-        when(clientMapper.toEntity(any())).thenReturn(mappedEntity);
-        Client onlyExisting = new Client();
-        onlyExisting.setEmail("someone.else@example.com");
-        onlyExisting.setClientReference("CLI-7");
-        when(clientRepository.findAll()).thenReturn(List.of(onlyExisting));
-        when(clientRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
-
-        Client saved = clientService.saveMyProfile(USER_ID, aProfile());
-
-        assertThat(saved.getClientReference()).isEqualTo("CLI-8");
-    }
-
     // The avatar URL is optional: a null profilePhotoUrl must not prevent
     // the profile from being created.
     @Test
@@ -219,16 +196,15 @@ class ClientServiceImplTest {
     void updateProfilePhoto_storesFileAndPersistsReturnedUrl() {
         Client client = new Client();
         client.setId(3);
-        client.setClientReference("CLI-3");
         User user = aUserWithClient(client);
         when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
-        when(fileStorageService.store(eq("clients/CLI-3/profile"), any()))
-                .thenReturn("/uploads/clients/CLI-3/profile/new-file.png");
+        when(fileStorageService.store(eq("clients/3/profile"), any()))
+                .thenReturn("/uploads/clients/3/profile/new-file.png");
         when(clientRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
         Client saved = clientService.updateProfilePhoto(USER_ID, aValidImage());
 
-        assertThat(saved.getProfilePhotoUrl()).isEqualTo("/uploads/clients/CLI-3/profile/new-file.png");
+        assertThat(saved.getProfilePhotoUrl()).isEqualTo("/uploads/clients/3/profile/new-file.png");
         verify(clientRepository).save(client);
     }
 
@@ -238,17 +214,16 @@ class ClientServiceImplTest {
     void updateProfilePhoto_deletesOldFile_onlyAfterNewOneIsStored() {
         Client client = new Client();
         client.setId(3);
-        client.setClientReference("CLI-3");
-        client.setProfilePhotoUrl("/uploads/clients/CLI-3/profile/old-file.png");
+        client.setProfilePhotoUrl("/uploads/clients/3/profile/old-file.png");
         User user = aUserWithClient(client);
         when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
         when(fileStorageService.store(anyString(), any()))
-                .thenReturn("/uploads/clients/CLI-3/profile/new-file.png");
+                .thenReturn("/uploads/clients/3/profile/new-file.png");
         when(clientRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
         clientService.updateProfilePhoto(USER_ID, aValidImage());
 
-        verify(fileStorageService).delete("/uploads/clients/CLI-3/profile/old-file.png");
+        verify(fileStorageService).delete("/uploads/clients/3/profile/old-file.png");
     }
 
     @Test

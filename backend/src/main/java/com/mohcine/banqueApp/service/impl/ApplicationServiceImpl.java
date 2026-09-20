@@ -52,13 +52,13 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     @Transactional
-    public Application submitApplication(String clientReference, ApplicationCreateDto dto) {
-        Client client = clientRepository.findByClientReference(clientReference);
+    public Application submitApplication(Integer clientId, ApplicationCreateDto dto) {
+        Client client = clientRepository.findById(clientId).orElse(null);
         if (client == null) {
-            throw new ClientNotFoundException(clientReference);
+            throw new ClientNotFoundException(clientId);
         }
         ensureProfileComplete(client);
-        ensureClientIsEligible(clientReference);
+        ensureClientIsEligible(clientId);
         Application application = applicationMapper.toEntity(dto);
         application.setClient(client);
         return applicationRepository.save(application);
@@ -71,11 +71,11 @@ public class ApplicationServiceImpl implements ApplicationService {
     // it has already produced a Loan, and that Loan's own status (ACTIVE)
     // is what's relevant from here on — checking both would double-block
     // the same real-world condition.
-    private void ensureClientIsEligible(String clientReference) {
-        if (loanRepository.existsByClient_ClientReferenceAndStatus(clientReference, LoanStatus.ACTIVE)) {
+    private void ensureClientIsEligible(Integer clientId) {
+        if (loanRepository.existsByClient_IdAndStatus(clientId, LoanStatus.ACTIVE)) {
             throw new ClientNotEligibleException("You already have an active loan.");
         }
-        if (applicationRepository.existsByClient_ClientReferenceAndStatus(clientReference, ApplicationStatus.PENDING)) {
+        if (applicationRepository.existsByClient_IdAndStatus(clientId, ApplicationStatus.PENDING)) {
             throw new ClientNotEligibleException("You already have a pending loan application.");
         }
     }
@@ -104,8 +104,8 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
-    public List<Application> getApplicationsByClientReference(String clientReference) {
-        return applicationRepository.findByClient_ClientReference(clientReference);
+    public List<Application> getApplicationsByClientId(Integer clientId) {
+        return applicationRepository.findByClient_Id(clientId);
     }
 
     @Override
@@ -132,7 +132,7 @@ public class ApplicationServiceImpl implements ApplicationService {
                     "This application has already been decided.");
         }
 
-        String clientReference = application.getClient().getClientReference();
+        Integer clientId = application.getClient().getId();
 
         if (dto.getStatus() == ApplicationStatus.APPROVED) {
             // Re-check the one-ACTIVE-Loan invariant right before creating
@@ -141,8 +141,8 @@ public class ApplicationServiceImpl implements ApplicationService {
             // this against a concurrent approval of a *different* pending
             // application for the same client, so two approvals can't each
             // pass this check and both create an ACTIVE loan.
-            clientRepository.findByClientReferenceForUpdate(clientReference);
-            if (loanRepository.existsByClient_ClientReferenceAndStatus(clientReference, LoanStatus.ACTIVE)) {
+            clientRepository.findByIdForUpdate(clientId);
+            if (loanRepository.existsByClient_IdAndStatus(clientId, LoanStatus.ACTIVE)) {
                 throw new ClientNotEligibleException("You already have an active loan.");
             }
         }
@@ -154,7 +154,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         Application savedApplication = applicationRepository.save(application);
 
         LoanCreateDto loanCreateDto = new LoanCreateDto();
-        loanCreateDto.setClientReference(application.getClient().getClientReference());
+        loanCreateDto.setClient(application.getClient().getId());
         loanCreateDto.setLoanType(application.getLoanType());
         loanCreateDto.setLoanAmount(application.getRequestedAmount());
         loanCreateDto.setDuration(application.getRequestedDuration());

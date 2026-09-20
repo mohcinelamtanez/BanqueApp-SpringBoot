@@ -31,11 +31,9 @@ public interface ClientService {
 
     void deleteClient(Integer id);
 
-    void deleteClientByReference(String clientReference);
+    public Client updateClient(Integer id , ClientUpdateDTO dto);
 
-    public Client updateClient(String reference , ClientUpdateDTO dto);
-
-    Client getClientByRef(String clientReference);
+    Client getClientById(Integer id);
 
     List<Client> getAllClients();
 

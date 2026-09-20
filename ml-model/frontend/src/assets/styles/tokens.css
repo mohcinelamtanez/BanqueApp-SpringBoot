@@ -1,0 +1,12 @@
+:root {
+  --surface: #f9f9ff;
+  --surface-container: #e7eeff;
+  --on-surface: #111c2d;
+  --primary: #000;
+  --primary-container: #131b2e;
+  --outline: #c6c6cd;
+  --error: #ba1a1a;
+  --radius-card: 12px;
+  --sidebar-width: 280px;
+  --header-height: 64px;
+}

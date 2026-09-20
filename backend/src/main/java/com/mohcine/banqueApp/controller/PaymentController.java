@@ -47,7 +47,7 @@ public class PaymentController {
         if (user.getClient() == null) {
             throw new ClientNotFoundException("(current user is not linked to a client)");
         }
-        return paymentService.getPaymentsByClientReference(user.getClient().getClientReference()).stream()
+        return paymentService.getPaymentsByClientId(user.getClient().getId()).stream()
                 .map(paymentMapper::toDTO)
                 .toList();
     }

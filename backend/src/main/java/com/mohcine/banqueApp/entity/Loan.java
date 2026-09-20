@@ -16,9 +16,6 @@ public class Loan {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "loan_reference")
-    private String loanReference;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "loan_type", length = 50)
     private LoanType loanType;
@@ -80,14 +77,6 @@ public class Loan {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public String getLoanReference() {
-        return this.loanReference;
-    }
-
-    public void setLoanReference(String loanReference){
-        this.loanReference = loanReference ;
     }
 
     public LoanType getLoanType() {

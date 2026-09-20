@@ -41,7 +41,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class ApplicationServiceImplTest {
 
-    private static final String CLIENT_REFERENCE = "CLI-1";
+    private static final Integer CLIENT_ID = 1;
 
     @Mock
     private ApplicationRepository applicationRepository;
@@ -69,7 +69,7 @@ class ApplicationServiceImplTest {
     // reason submitApplication rejects here.
     private Client aClient() {
         Client client = new Client();
-        client.setClientReference(CLIENT_REFERENCE);
+        client.setId(CLIENT_ID);
         client.setFirstName("Jane");
         client.setLastName("Doe");
         client.setCity("Casablanca");
@@ -88,23 +88,23 @@ class ApplicationServiceImplTest {
     }
 
     private void stubNoActiveLoan() {
-        when(loanRepository.existsByClient_ClientReferenceAndStatus(CLIENT_REFERENCE, LoanStatus.ACTIVE))
+        when(loanRepository.existsByClient_IdAndStatus(CLIENT_ID, LoanStatus.ACTIVE))
                 .thenReturn(false);
     }
 
     private void stubActiveLoan() {
-        when(loanRepository.existsByClient_ClientReferenceAndStatus(CLIENT_REFERENCE, LoanStatus.ACTIVE))
+        when(loanRepository.existsByClient_IdAndStatus(CLIENT_ID, LoanStatus.ACTIVE))
                 .thenReturn(true);
     }
 
     private void stubNoPendingApplication() {
         lenient()
-                .when(applicationRepository.existsByClient_ClientReferenceAndStatus(CLIENT_REFERENCE, ApplicationStatus.PENDING))
+                .when(applicationRepository.existsByClient_IdAndStatus(CLIENT_ID, ApplicationStatus.PENDING))
                 .thenReturn(false);
     }
 
     private void stubPendingApplication() {
-        when(applicationRepository.existsByClient_ClientReferenceAndStatus(CLIENT_REFERENCE, ApplicationStatus.PENDING))
+        when(applicationRepository.existsByClient_IdAndStatus(CLIENT_ID, ApplicationStatus.PENDING))
                 .thenReturn(true);
     }
 
@@ -113,13 +113,13 @@ class ApplicationServiceImplTest {
     // ever queried.
     @Test
     void submitApplication_succeeds_whenClientHasOnlyCompletedLoan() {
-        when(clientRepository.findByClientReference(CLIENT_REFERENCE)).thenReturn(aClient());
+        when(clientRepository.findById(CLIENT_ID)).thenReturn(Optional.of(aClient()));
         stubNoActiveLoan();
         stubNoPendingApplication();
         when(applicationMapper.toEntity(any())).thenReturn(new Application());
         when(applicationRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
-        applicationService.submitApplication(CLIENT_REFERENCE, aRequest());
+        applicationService.submitApplication(CLIENT_ID, aRequest());
 
         verify(applicationRepository).save(any());
     }
@@ -127,13 +127,13 @@ class ApplicationServiceImplTest {
     // REJECTED Loan only -> allowed, same reasoning as Completed.
     @Test
     void submitApplication_succeeds_whenClientHasOnlyRejectedLoan() {
-        when(clientRepository.findByClientReference(CLIENT_REFERENCE)).thenReturn(aClient());
+        when(clientRepository.findById(CLIENT_ID)).thenReturn(Optional.of(aClient()));
         stubNoActiveLoan();
         stubNoPendingApplication();
         when(applicationMapper.toEntity(any())).thenReturn(new Application());
         when(applicationRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
-        applicationService.submitApplication(CLIENT_REFERENCE, aRequest());
+        applicationService.submitApplication(CLIENT_ID, aRequest());
 
         verify(applicationRepository).save(any());
     }
@@ -141,13 +141,13 @@ class ApplicationServiceImplTest {
     // Case F: Completed + Rejected Loans, no Pending Application -> allowed.
     @Test
     void submitApplication_succeeds_withCompletedAndRejectedLoans_andNoPendingApplication() {
-        when(clientRepository.findByClientReference(CLIENT_REFERENCE)).thenReturn(aClient());
+        when(clientRepository.findById(CLIENT_ID)).thenReturn(Optional.of(aClient()));
         stubNoActiveLoan();
         stubNoPendingApplication();
         when(applicationMapper.toEntity(any())).thenReturn(new Application());
         when(applicationRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
-        applicationService.submitApplication(CLIENT_REFERENCE, aRequest());
+        applicationService.submitApplication(CLIENT_ID, aRequest());
 
         verify(applicationRepository).save(any());
     }
@@ -155,10 +155,10 @@ class ApplicationServiceImplTest {
     // Rule 1 / Case C: an ACTIVE Loan alone blocks a new application.
     @Test
     void submitApplication_rejected_whenClientHasActiveLoan() {
-        when(clientRepository.findByClientReference(CLIENT_REFERENCE)).thenReturn(aClient());
+        when(clientRepository.findById(CLIENT_ID)).thenReturn(Optional.of(aClient()));
         stubActiveLoan();
 
-        assertThatThrownBy(() -> applicationService.submitApplication(CLIENT_REFERENCE, aRequest()))
+        assertThatThrownBy(() -> applicationService.submitApplication(CLIENT_ID, aRequest()))
                 .isInstanceOf(ClientNotEligibleException.class)
                 .hasMessageContaining("active loan");
 
@@ -168,11 +168,11 @@ class ApplicationServiceImplTest {
     // Rule 4: a PENDING Application alone blocks a new application.
     @Test
     void submitApplication_rejected_whenClientHasPendingApplication() {
-        when(clientRepository.findByClientReference(CLIENT_REFERENCE)).thenReturn(aClient());
+        when(clientRepository.findById(CLIENT_ID)).thenReturn(Optional.of(aClient()));
         stubNoActiveLoan();
         stubPendingApplication();
 
-        assertThatThrownBy(() -> applicationService.submitApplication(CLIENT_REFERENCE, aRequest()))
+        assertThatThrownBy(() -> applicationService.submitApplication(CLIENT_ID, aRequest()))
                 .isInstanceOf(ClientNotEligibleException.class)
                 .hasMessageContaining("pending");
 
@@ -183,10 +183,10 @@ class ApplicationServiceImplTest {
     // (the Active Loan check alone is enough to block).
     @Test
     void submitApplication_rejected_whenClientHasActiveLoanAndPendingApplication() {
-        when(clientRepository.findByClientReference(CLIENT_REFERENCE)).thenReturn(aClient());
+        when(clientRepository.findById(CLIENT_ID)).thenReturn(Optional.of(aClient()));
         stubActiveLoan();
 
-        assertThatThrownBy(() -> applicationService.submitApplication(CLIENT_REFERENCE, aRequest()))
+        assertThatThrownBy(() -> applicationService.submitApplication(CLIENT_ID, aRequest()))
                 .isInstanceOf(ClientNotEligibleException.class);
 
         verify(applicationRepository, never()).save(any());
@@ -199,9 +199,9 @@ class ApplicationServiceImplTest {
     void submitApplication_rejected_whenClientProfileIsIncomplete() {
         Client incomplete = aClient();
         incomplete.setCity(null);
-        when(clientRepository.findByClientReference(CLIENT_REFERENCE)).thenReturn(incomplete);
+        when(clientRepository.findById(CLIENT_ID)).thenReturn(Optional.of(incomplete));
 
-        assertThatThrownBy(() -> applicationService.submitApplication(CLIENT_REFERENCE, aRequest()))
+        assertThatThrownBy(() -> applicationService.submitApplication(CLIENT_ID, aRequest()))
                 .isInstanceOf(ClientNotEligibleException.class)
                 .hasMessageContaining("profile");
 
@@ -214,9 +214,9 @@ class ApplicationServiceImplTest {
     void submitApplication_rejected_whenClientProfileFieldIsBlank() {
         Client incomplete = aClient();
         incomplete.setEmail("   ");
-        when(clientRepository.findByClientReference(CLIENT_REFERENCE)).thenReturn(incomplete);
+        when(clientRepository.findById(CLIENT_ID)).thenReturn(Optional.of(incomplete));
 
-        assertThatThrownBy(() -> applicationService.submitApplication(CLIENT_REFERENCE, aRequest()))
+        assertThatThrownBy(() -> applicationService.submitApplication(CLIENT_ID, aRequest()))
                 .isInstanceOf(ClientNotEligibleException.class)
                 .hasMessageContaining("profile");
 
@@ -227,32 +227,32 @@ class ApplicationServiceImplTest {
     // two rules are independent and both must pass.
     @Test
     void submitApplication_succeeds_whenProfileCompleteAndEligible() {
-        when(clientRepository.findByClientReference(CLIENT_REFERENCE)).thenReturn(aClient());
+        when(clientRepository.findById(CLIENT_ID)).thenReturn(Optional.of(aClient()));
         stubNoActiveLoan();
         stubNoPendingApplication();
         when(applicationMapper.toEntity(any())).thenReturn(new Application());
         when(applicationRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
-        applicationService.submitApplication(CLIENT_REFERENCE, aRequest());
+        applicationService.submitApplication(CLIENT_ID, aRequest());
 
         verify(applicationRepository).save(any());
     }
 
     // Ownership: the eligibility check is always scoped to the
-    // authenticated client's own reference — another client's records can
-    // never be consulted or affect the outcome.
+    // authenticated client's own id — another client's records can never be
+    // consulted or affect the outcome.
     @Test
-    void submitApplication_checksEligibility_onlyForTheGivenClientReference() {
-        when(clientRepository.findByClientReference(CLIENT_REFERENCE)).thenReturn(aClient());
+    void submitApplication_checksEligibility_onlyForTheGivenClientId() {
+        when(clientRepository.findById(CLIENT_ID)).thenReturn(Optional.of(aClient()));
         stubNoActiveLoan();
         stubNoPendingApplication();
         when(applicationMapper.toEntity(any())).thenReturn(new Application());
         when(applicationRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
-        applicationService.submitApplication(CLIENT_REFERENCE, aRequest());
+        applicationService.submitApplication(CLIENT_ID, aRequest());
 
-        verify(loanRepository).existsByClient_ClientReferenceAndStatus(eq(CLIENT_REFERENCE), eq(LoanStatus.ACTIVE));
-        verify(applicationRepository).existsByClient_ClientReferenceAndStatus(eq(CLIENT_REFERENCE), eq(ApplicationStatus.PENDING));
+        verify(loanRepository).existsByClient_IdAndStatus(eq(CLIENT_ID), eq(LoanStatus.ACTIVE));
+        verify(applicationRepository).existsByClient_IdAndStatus(eq(CLIENT_ID), eq(ApplicationStatus.PENDING));
     }
 
     private Application aPendingApplication(int id) {
@@ -290,7 +290,7 @@ class ApplicationServiceImplTest {
         Application application = aPendingApplication(10);
         when(applicationRepository.findByIdForUpdate(10)).thenReturn(Optional.of(application));
         when(applicationRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
-        when(clientRepository.findByClientReferenceForUpdate(CLIENT_REFERENCE))
+        when(clientRepository.findByIdForUpdate(CLIENT_ID))
                 .thenReturn(Optional.of(aClient()));
         stubNoActiveLoan();
 
@@ -307,7 +307,7 @@ class ApplicationServiceImplTest {
     void decide_rejectsApproval_whenClientAlreadyHasActiveLoanAtApprovalTime() {
         Application application = aPendingApplication(11);
         when(applicationRepository.findByIdForUpdate(11)).thenReturn(Optional.of(application));
-        when(clientRepository.findByClientReferenceForUpdate(CLIENT_REFERENCE))
+        when(clientRepository.findByIdForUpdate(CLIENT_ID))
                 .thenReturn(Optional.of(aClient()));
         stubActiveLoan();
 
@@ -331,7 +331,7 @@ class ApplicationServiceImplTest {
 
         assertThat(result.getStatus()).isEqualTo(ApplicationStatus.REJECTED);
         verify(loanService).createLoan(any());
-        verify(loanRepository, never()).existsByClient_ClientReferenceAndStatus(any(), eq(LoanStatus.ACTIVE));
+        verify(loanRepository, never()).existsByClient_IdAndStatus(any(), eq(LoanStatus.ACTIVE));
     }
 
     // Section 11/12: a second decide() call on an already-decided

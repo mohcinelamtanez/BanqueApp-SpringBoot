@@ -30,7 +30,7 @@ public class SpringSecurityConfig {
     public SpringSecurityConfig(
             UserService userService,
             JwtAutorisationFilter jwtAutorisationFilter ,
-            PasswordEncoder passwordEncoder
+            PasswordEncoder  passwordEncoder
     ) {
         this.userService = userService;
         this.jwtAutorisationFilter = jwtAutorisationFilter;
@@ -73,11 +73,10 @@ public class SpringSecurityConfig {
                 .authorizeHttpRequests(auth -> auth
 
                         // Routes publiques
-                        .requestMatchers(
+                        .requestMatchers(HttpMethod.POST , "/api/v1/auth/**" ,
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
                                 "/v3/api-docs/**",
-                                "/api/v1/auth/**",
                                 "/v1/api/pub/**"
                         ).permitAll()
 
@@ -185,7 +184,7 @@ public class SpringSecurityConfig {
                 .authenticationProvider(authenticationProvider())
 
                 .addFilterBefore(
-                        jwtAutorisationFilter,
+                        jwtAutorisationFilter,  //je dois mettre jwtauthenticationFilter
                         UsernamePasswordAuthenticationFilter.class
                 );
 

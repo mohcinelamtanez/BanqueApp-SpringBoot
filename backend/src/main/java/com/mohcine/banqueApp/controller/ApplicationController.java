@@ -37,17 +37,17 @@ public class ApplicationController {
     public ApplicationResponseDTO submitApplication(
             @RequestBody ApplicationCreateDto dto,
             Authentication authentication) {
-        String clientReference = currentClientReference(authentication);
-        Application application = applicationService.submitApplication(clientReference, dto);
+        Integer clientId = currentClientId(authentication);
+        Application application = applicationService.submitApplication(clientId, dto);
         return applicationMapper.toDTO(application);
     }
 
     // Same principle: "my applications" is always derived from the
-    // authenticated identity, never from a client-supplied reference.
+    // authenticated identity, never from a client-supplied id.
     @GetMapping("/me")
     public List<ApplicationResponseDTO> getMyApplications(Authentication authentication) {
-        String clientReference = currentClientReference(authentication);
-        return applicationService.getApplicationsByClientReference(clientReference).stream()
+        Integer clientId = currentClientId(authentication);
+        return applicationService.getApplicationsByClientId(clientId).stream()
                 .map(applicationMapper::toDTO)
                 .toList();
     }
@@ -71,11 +71,11 @@ public class ApplicationController {
         return applicationMapper.toDTO(applicationService.decide(id, dto));
     }
 
-    private String currentClientReference(Authentication authentication) {
+    private Integer currentClientId(Authentication authentication) {
         User user = (User) authentication.getPrincipal();
         if (user.getClient() == null) {
             throw new ClientNotFoundException("(current user is not linked to a client)");
         }
-        return user.getClient().getClientReference();
+        return user.getClient().getId();
     }
 }
