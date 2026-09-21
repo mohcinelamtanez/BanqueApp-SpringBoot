@@ -439,6 +439,49 @@ img.sidebar-profile-avatar {
   background: #ba1a1a;
   border-radius: 50%;
 }
+.nc-bell {
+  display: grid;
+  place-items: center;
+}
+.nc-bell.ringing {
+  animation: nc-ring 0.7s ease;
+  transform-origin: 50% 12%;
+}
+@keyframes nc-ring {
+  0%,
+  100% {
+    transform: rotate(0);
+  }
+  20% {
+    transform: rotate(14deg);
+  }
+  40% {
+    transform: rotate(-12deg);
+  }
+  60% {
+    transform: rotate(8deg);
+  }
+  80% {
+    transform: rotate(-5deg);
+  }
+}
+.nc-badge {
+  position: absolute;
+  top: 1px;
+  right: -1px;
+  min-width: 17px;
+  height: 17px;
+  padding: 0 4px;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  background: #ba1a1a;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  font-style: normal;
+  line-height: 1;
+}
 .avatar {
   width: 34px;
   height: 34px;
@@ -461,28 +504,169 @@ img.avatar {
   border: 1px solid #c6c6cd;
   border-radius: 12px;
   box-shadow: 0 20px 25px -5px #0002;
-  padding: 10px;
+  padding: 0;
+  overflow: hidden;
   z-index: 50;
 }
 .notification-center header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 5px 7px;
+  padding: 12px 14px 6px;
 }
-.notification-center article {
+.notification-center header h3 {
+  margin: 0;
+  font-size: 15px;
+}
+.notification-center header h3 small {
+  margin-left: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #185fa5;
+}
+.nc-actions {
   display: flex;
-  gap: 9px;
-  padding: 12px 8px;
+  align-items: center;
+  gap: 4px;
+}
+.notification-center .nc-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  color: #185fa5;
+  cursor: pointer;
+}
+.notification-center .nc-link:hover {
+  background: #e6f1fb;
+}
+.notification-center .nc-close {
+  border-radius: 6px;
+  cursor: pointer;
+}
+.nc-tabs {
+  display: flex;
+  gap: 6px;
+  padding: 4px 14px 10px;
+}
+.notification-center .nc-tab {
+  padding: 0 12px;
+  height: 28px;
+  border-radius: 14px;
+  border: 1px solid #c6c6cd;
+  font-size: 12px;
+  color: #45464d;
+  cursor: pointer;
+}
+.notification-center .nc-tab.on {
+  background: #e6f1fb;
+  border-color: #85b7eb;
+  color: #0c447c;
+}
+.notification-list {
+  max-height: 360px;
+  overflow-y: auto;
   border-top: 1px solid #e7eeff;
 }
-.notification-center article p {
-  margin: 3px 0;
-  color: #45464d;
-  font-size: 12px;
+.nc-item {
+  display: flex;
+  gap: 11px;
+  padding: 12px 14px;
+  border-bottom: 1px solid #e7eeff;
+  border-left: 3px solid transparent;
+  transition: background-color 0.15s;
 }
-.notification-center small {
+.nc-item.clickable {
+  cursor: pointer;
+}
+.nc-item.clickable:hover {
+  background: #f5f7fb;
+}
+.nc-item.unread {
+  background: var(--nc-tint);
+  border-left-color: var(--nc-accent);
+}
+.nc-icon {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--nc-bg);
+  color: var(--nc-fg);
+  opacity: 0.55;
+}
+.nc-item.unread .nc-icon {
+  opacity: 1;
+}
+.nc-body {
+  flex: 1;
+  min-width: 0;
+}
+.nc-body b {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #5f6470;
+}
+.nc-item.unread .nc-body b {
+  font-weight: 700;
+  color: #111c2d;
+}
+.nc-body p {
+  margin: 2px 0 3px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #45464d;
+}
+.nc-body small {
+  font-size: 11px;
   color: #76777d;
+}
+.nc-dot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  margin-top: 6px;
+  border-radius: 50%;
+  background: var(--nc-accent);
+}
+.nc-empty {
+  padding: 28px 14px;
+  text-align: center;
+  font-size: 13px;
+  color: #76777d;
+  border-top: 1px solid #e7eeff;
+}
+.nc-empty p {
+  margin: 6px 0 0;
+}
+.nc-info {
+  --nc-accent: #378add;
+  --nc-bg: #e6f1fb;
+  --nc-fg: #185fa5;
+  --nc-tint: #f2f8fe;
+}
+.nc-success {
+  --nc-accent: #639922;
+  --nc-bg: #eaf3de;
+  --nc-fg: #3b6d11;
+  --nc-tint: #f5faee;
+}
+.nc-danger {
+  --nc-accent: #e24b4a;
+  --nc-bg: #fcebeb;
+  --nc-fg: #a32d2d;
+  --nc-tint: #fef5f5;
+}
+.nc-warning {
+  --nc-accent: #ba7517;
+  --nc-bg: #faeeda;
+  --nc-fg: #854f0b;
+  --nc-tint: #fdf7ee;
 }
 .dot {
   display: block;
@@ -3260,6 +3444,40 @@ dd {
 }
 .client-shell[data-theme="dark"] .overlay {
   background: #000000aa;
+}
+.client-shell[data-theme="dark"] .notification-list,
+.client-shell[data-theme="dark"] .nc-item,
+.client-shell[data-theme="dark"] .nc-empty {
+  border-color: var(--cs-border);
+}
+.client-shell[data-theme="dark"] .nc-item.unread {
+  background: color-mix(in srgb, var(--nc-accent) 14%, var(--cs-surface));
+}
+.client-shell[data-theme="dark"] .nc-item.clickable:hover {
+  background: var(--cs-surface-alt);
+}
+.client-shell[data-theme="dark"] .nc-icon {
+  background: color-mix(in srgb, var(--nc-accent) 22%, var(--cs-surface));
+  color: var(--nc-accent);
+}
+.client-shell[data-theme="dark"] .nc-body b,
+.client-shell[data-theme="dark"] .nc-body p,
+.client-shell[data-theme="dark"] .nc-body small {
+  color: var(--cs-text-muted);
+}
+.client-shell[data-theme="dark"] .nc-item.unread .nc-body b {
+  color: var(--cs-text);
+}
+.client-shell[data-theme="dark"] .nc-tab {
+  border-color: var(--cs-border);
+  color: var(--cs-text-muted);
+}
+.client-shell[data-theme="dark"] .nc-tab.on {
+  background: var(--cs-surface-alt);
+  color: var(--cs-text);
+}
+.client-shell[data-theme="dark"] .nc-link {
+  color: #85b7eb;
 }
 .client-shell[data-theme="dark"] table {
   color: var(--cs-text);

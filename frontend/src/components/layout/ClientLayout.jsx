@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Bell, Menu, Search } from "lucide-react";
+import { Menu, Search } from "lucide-react";
 import "../../i18n";
 import ClientSidebar from "./ClientSidebar";
 import ClientAvatar from "../clients/ClientAvatar";
 import NotificationCenter from "../notifications/NotificationCenter";
+import NotificationBell from "../notifications/NotificationBell";
 import { useSidebarCollapsed } from "./useSidebarCollapsed";
+import { useNotifications } from "../../hooks/useNotifications";
 import { loanService } from "../../services/loanService";
 import { paymentService } from "../../services/paymentService";
 import { buildPaymentNotifications } from "../../utils/paymentSchedule";
@@ -27,6 +29,13 @@ function ClientLayoutShell({ children }) {
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [collapsed, setCollapsed] = useSidebarCollapsed();
   const [paymentNotifications, setPaymentNotifications] = useState([]);
+  const { items, unread, arrivals, refresh, markAsRead, markAllAsRead } =
+    useNotifications();
+  // Real notifications from the backend first, then the local payment
+  // reminders (which have no backend id and can't be marked as read).
+  const allNotifications = [...items, ...paymentNotifications];
+  const unreadTotal =
+    unread + paymentNotifications.filter((item) => item.unread).length;
 
   useEffect(() => {
     let active = true;
@@ -86,14 +95,15 @@ function ClientLayoutShell({ children }) {
             />
           </div>
           <div className="topbar-actions">
-            <button
-              className="icon-button notification"
-              onClick={() => setNotificationsOpen((value) => !value)}
-              aria-label={t("topbar.notifications")}
-            >
-              <Bell size={21} />
-              <i />
-            </button>
+            <NotificationBell
+              count={unreadTotal}
+              ringKey={arrivals}
+              label={t("topbar.notifications")}
+              onClick={() => {
+                if (!notificationsOpen) refresh();
+                setNotificationsOpen((value) => !value);
+              }}
+            />
             <ClientAvatar
               profilePhotoUrl={client?.profilePhotoUrl}
               initials={client ? initials(client.name) : "CL"}
@@ -101,7 +111,11 @@ function ClientLayoutShell({ children }) {
             />
             {notificationsOpen && (
               <NotificationCenter
-                notifications={paymentNotifications}
+                notifications={allNotifications}
+                onSelect={(item) =>
+                  typeof item.id === "number" && item.unread && markAsRead(item.id)
+                }
+                onMarkAllRead={markAllAsRead}
                 onClose={() => setNotificationsOpen(false)}
               />
             )}

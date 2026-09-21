@@ -1,6 +1,5 @@
 import { useState } from "react";
 import {
-  Bell,
   ChevronDown,
   Menu,
   MoreVertical,
@@ -21,9 +20,11 @@ import {
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { Logo } from "../ui";
 import NotificationCenter from "../notifications/NotificationCenter";
+import NotificationBell from "../notifications/NotificationBell";
 import { isAdmin, ROLES } from "../../auth/currentUser";
 import { useAuth } from "../../auth/AuthContext";
 import { useSidebarCollapsed } from "./useSidebarCollapsed";
+import { useNotifications } from "../../hooks/useNotifications";
 const navGroups = [
   {
     label: "OVERVIEW",
@@ -59,7 +60,9 @@ export default function AdminLayout({ children }) {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
   const [drawer, setDrawer] = useState(false);
-  const [notifications, setNotifications] = useState(false);
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const { items, unread, arrivals, refresh, markAsRead, markAllAsRead } =
+    useNotifications();
   const [collapsed, setCollapsed] = useSidebarCollapsed();
   const location = useLocation();
   const handleLogout = () => {
@@ -209,17 +212,22 @@ export default function AdminLayout({ children }) {
             <span>Analytics</span>
             <span>Management</span>
           </div>
-          <button
-            className="icon-button notification"
-            onClick={() => setNotifications((value) => !value)}
-            aria-label="Notifications"
-          >
-            <Bell size={21} />
-            <i />
-          </button>
+          <NotificationBell
+            count={unread}
+            ringKey={arrivals}
+            onClick={() => {
+              if (!notificationsOpen) refresh();
+              setNotificationsOpen((value) => !value);
+            }}
+          />
           <div className="avatar">BA</div>
-          {notifications && (
-            <NotificationCenter onClose={() => setNotifications(false)} />
+          {notificationsOpen && (
+            <NotificationCenter
+              notifications={items}
+              onSelect={(item) => item.unread && markAsRead(item.id)}
+              onMarkAllRead={markAllAsRead}
+              onClose={() => setNotificationsOpen(false)}
+            />
           )}
         </header>
         <main>{children}</main>
