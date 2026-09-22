@@ -1,13 +1,16 @@
 import { httpClient } from "./httpClient";
 
-// The Flask model only returns a binary decision (RISQUE_ELEVE/FAIBLE) plus
-// a continuous 0..1 risk probability — it has no notion of a LOW/MEDIUM/HIGH
-// tier. These thresholds bucket that probability into the 3-tier RiskLevel
-// the rest of the app (and the backend's RiskAssessment) already expects.
-function bucketLevel(score) {
-  if (score < 30) return "LOW";
-  if (score < 55) return "MEDIUM";
-  return "HIGH";
+// Same rule as the backend's RiskServiceImpl.levelFor(): the model's own
+// "RISQUE_ELEVE" verdict is always HIGH; a "RISQUE_FAIBLE" one is LOW under
+// 30 %, MEDIUM otherwise. Only used when the response carries no riskLevel
+// (e.g. a backend not yet restarted on the version that sends it) — the UI
+// must never show "undefined".
+const HIGH_RISK_DECISION = "RISQUE_ELEVE";
+const MEDIUM_RISK_THRESHOLD = 0.3;
+
+function levelFor(decision, probability) {
+  if (decision === HIGH_RISK_DECISION) return "HIGH";
+  return probability < MEDIUM_RISK_THRESHOLD ? "LOW" : "MEDIUM";
 }
 
 export const riskService = {
@@ -28,13 +31,20 @@ export const riskService = {
         // The backend serializes this field as "score_risque" (see
         // RiskPredictionResponseDTO), not the camelCase "scoreRisk".
         const probability = Number(res.data.score_risque) || 0; // 0..1, kept as-is for submission to the backend
-        // No artificial floor/ceiling — display exactly what the model
-        // returned, even if that's 0% or 100%.
-        const score = Math.round(probability * 100);
+        // Percentage with one decimal — a whole-number round turned every
+        // score under 0.5 % into a misleading "0%".
+        const score = Math.round(probability * 1000) / 10;
         return {
           score,
+          // What the UI shows: a tiny but non-zero probability (the model
+          // often returns values like 5e-13) reads "< 0.1%", not "0%".
+          scoreLabel:
+            probability > 0 && score < 0.1 ? "< 0.1%" : `${score}%`,
           probability,
-          level: bucketLevel(score),
+          // LOW/MEDIUM/HIGH is derived by the backend (RiskServiceImpl)
+          // from the model's decision + score — a "RISQUE_ELEVE" verdict is
+          // always HIGH, so the level can never contradict the decision.
+          level: res.data.riskLevel || levelFor(res.data.decision, probability),
           decision: res.data.decision,
         };
       }),

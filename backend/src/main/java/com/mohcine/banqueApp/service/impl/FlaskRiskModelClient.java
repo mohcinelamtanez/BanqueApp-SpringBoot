@@ -1,10 +1,11 @@
 package com.mohcine.banqueApp.service.impl;
 
 import com.mohcine.banqueApp.dto.RiskPredictionResponseDTO;
-import com.mohcine.banqueApp.entity.RiskAssessment;
+import com.mohcine.banqueApp.exception.RiskModelUnavailableException;
 import com.mohcine.banqueApp.service.interfaces.RiskModelClient;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
+import org.springframework.web.client.RestClientException;
 
 import java.math.BigDecimal;
 import java.util.Map;
@@ -35,11 +36,16 @@ public class FlaskRiskModelClient implements RiskModelClient {
                 "taux", annualInterestRate
         );
 
-        return  restClient.post()
-                .uri("/predict")
-                .body(request)
-                .retrieve()
-                .body(RiskPredictionResponseDTO.class);
+        try {
+            return restClient.post()
+                    .uri("/predict")
+                    .body(request)
+                    .retrieve()
+                    .body(RiskPredictionResponseDTO.class);
+        } catch (RestClientException e) {
+            throw new RiskModelUnavailableException(
+                    "The risk model is unavailable right now. Please try again in a moment.");
+        }
 
     }
 }

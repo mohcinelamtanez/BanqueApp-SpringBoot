@@ -169,10 +169,10 @@ public class ApplicationServiceImpl implements ApplicationService {
         loanCreateDto.setDuration(application.getRequestedDuration());
         loanCreateDto.setApprovalDate(LocalDateTime.now());
 
-        // RiskAssessment.level is non-nullable for every Loan, approved or
-        // not (the existing client self-service flow falls back to LOW the
-        // same way when no real assessment is available — see
-        // NewApplicationModal.jsx) — never leave it null here.
+        // For an APPROVED decision these two are overwritten by
+        // LoanService.createLoan(), which re-scores the risk server-side.
+        // The LOW fallback only remains for a REJECTED record, since
+        // RiskAssessment.level is non-nullable.
         loanCreateDto.setRiskLevel(dto.getRiskLevel() != null ? dto.getRiskLevel() : RiskLevel.LOW);
         loanCreateDto.setScore(dto.getScore());
 

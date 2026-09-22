@@ -66,9 +66,10 @@ export default function LoanRequestReviewPage() {
         annualInterestRate: Number(rate) || 0,
       });
       setRiskResult(prediction);
-    } catch {
+    } catch (error) {
       setRiskError(
-        "The risk model is unavailable right now. Please try again in a moment.",
+        error.response?.data?.message ||
+          "The risk model is unavailable right now. Please try again in a moment.",
       );
     } finally {
       setCheckingRisk(false);
@@ -132,6 +133,8 @@ export default function LoanRequestReviewPage() {
   };
 
   const isDecided = application.status !== "Pending";
+  // Without an income the model would score a 0 MAD salary — meaningless.
+  const hasIncome = Number(client?.income) > 0;
   const isRateValid =
     Boolean(rate) &&
     Number(rate) >= RATE_RANGE.min &&
@@ -261,14 +264,23 @@ export default function LoanRequestReviewPage() {
                   <StatusBadge value={riskResult.level} risk />
                   <div className="risk-stat">
                     <small>Risk Score</small>
-                    <strong>{riskResult.score}%</strong>
+                    <strong>{riskResult.scoreLabel}</strong>
                   </div>
                 </div>
               ) : (
                 <div className="risk-empty">
                   <p>Risk assessment has not been performed yet.</p>
                   {riskError && <p className="error">{riskError}</p>}
-                  <Button onClick={calculateRisk} disabled={!isRateValid}>
+                  {!hasIncome && (
+                    <p className="error">
+                      This client has no annual income on file — complete the
+                      client profile before assessing risk.
+                    </p>
+                  )}
+                  <Button
+                    onClick={calculateRisk}
+                    disabled={!isRateValid || !hasIncome}
+                  >
                     Calculate Risk
                   </Button>
                 </div>

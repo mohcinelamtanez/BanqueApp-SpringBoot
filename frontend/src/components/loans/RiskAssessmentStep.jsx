@@ -22,6 +22,9 @@ export default function RiskAssessmentStep({
   const [checking, setChecking] = useState(false);
   const [error, setError] = useState("");
 
+  // Without an income the model would score a 0 MAD salary — meaningless.
+  const hasIncome = Number(client?.income) > 0;
+
   const calculateRisk = async () => {
     setChecking(true);
     setError("");
@@ -41,9 +44,10 @@ export default function RiskAssessmentStep({
         level: prediction.level,
         decision: prediction.decision,
       });
-    } catch {
+    } catch (err) {
       setError(
-        "The risk model is unavailable right now. Please try again in a moment.",
+        err.response?.data?.message ||
+          "The risk model is unavailable right now. Please try again in a moment.",
       );
     } finally {
       setChecking(false);
@@ -82,7 +86,7 @@ export default function RiskAssessmentStep({
             <div className="risk-result-top">
               <div className="risk-score-block">
                 <small>Risk Score</small>
-                <div className="risk-score-value">{result.score}%</div>
+                <div className="risk-score-value">{result.scoreLabel}</div>
               </div>
               <div className="risk-level-block">
                 <small>Risk Level</small>
@@ -116,7 +120,15 @@ export default function RiskAssessmentStep({
               and the requested loan terms before proceeding.
             </p>
             {error && <p className="error">{error}</p>}
-            <Button onClick={calculateRisk}>Calculate Risk</Button>
+            {!hasIncome && (
+              <p className="error">
+                This client has no annual income on file — complete the client
+                profile before assessing risk.
+              </p>
+            )}
+            <Button onClick={calculateRisk} disabled={!hasIncome}>
+              Calculate Risk
+            </Button>
           </div>
         )}
       </Card>

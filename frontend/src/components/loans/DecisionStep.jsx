@@ -205,7 +205,7 @@ export default function DecisionStep({ client, values, risk, loans, onBack }) {
                       {risk.level} RISK
                     </span>
                     <span className="risk-workspace-confidence">
-                      {risk.score}% Risk Score
+                      {risk.scoreLabel} Risk Score
                     </span>
                   </>
                 ) : (
@@ -216,7 +216,7 @@ export default function DecisionStep({ client, values, risk, loans, onBack }) {
             <div className="stat-grid-2">
               <div className="stat-mini center">
                 <small>Risk Score</small>
-                <strong>{risk ? `${risk.score}%` : "—"}</strong>
+                <strong>{risk ? risk.scoreLabel : "—"}</strong>
               </div>
               <div className="stat-mini center">
                 <small>Model Decision</small>

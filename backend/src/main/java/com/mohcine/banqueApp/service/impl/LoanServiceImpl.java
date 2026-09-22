@@ -1,5 +1,11 @@
 package com.mohcine.banqueApp.service.impl;
 
+import com.mohcine.banqueApp.dto.RiskInputDTO;
+import com.mohcine.banqueApp.dto.RiskPredictionResponseDTO;
+import com.mohcine.banqueApp.exception.InvalidRiskInputException;
+import com.mohcine.banqueApp.service.interfaces.RiskService;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import com.mohcine.banqueApp.dto.LoanCreateDto;
 import com.mohcine.banqueApp.dto.LoanUpdateDTO;
 import com.mohcine.banqueApp.entity.Client;
@@ -33,13 +39,15 @@ public class LoanServiceImpl implements LoanService {
     private final RiskAssessmentMapper riskAssessmentMapper ;
     private final RiskAssessmentRepository riskAssessmentRepository ;
     private final PaymentService paymentService ;
+    private final RiskService riskService ;
 
     public LoanServiceImpl(LoanRepository loanRepository ,
                            ClientRepository clientRepository ,
                            LoanMapper loanMapper,
                            RiskAssessmentMapper riskAssessmentMapper,
                            RiskAssessmentRepository riskAssessmentRepository,
-                           PaymentService paymentService
+                           PaymentService paymentService,
+                           RiskService riskService
     ) {
 
         this.loanRepository = loanRepository;
@@ -48,6 +56,7 @@ public class LoanServiceImpl implements LoanService {
         this.riskAssessmentMapper = riskAssessmentMapper ;
         this.riskAssessmentRepository = riskAssessmentRepository;
         this.paymentService = paymentService ;
+        this.riskService = riskService ;
 
     }
 
@@ -67,6 +76,14 @@ public class LoanServiceImpl implements LoanService {
         // actually be Active.
         if (dto.getStatus() != LoanStatus.REJECTED) {
             ensureClientCanApply(client);
+        }
+
+        // An Active loan's risk is always scored here, server-side, from the
+        // client's real income and the granted terms — never taken from the
+        // request, so a client the model flags as risky can't be recorded
+        // as LOW (or with no assessment at all) by whatever the caller sent.
+        if (dto.getStatus() == LoanStatus.ACTIVE) {
+            applyServerSideRiskAssessment(client, dto);
         }
 
         Loan loan = loanMapper.toEntity(dto);
@@ -89,6 +106,23 @@ public class LoanServiceImpl implements LoanService {
 
         return savedLoan;
         }
+    }
+
+    private void applyServerSideRiskAssessment(Client client, LoanCreateDto dto) {
+        if (client.getAnnualIncome() == null) {
+            throw new InvalidRiskInputException(
+                    "The client's income is missing — complete the client profile before approving a loan.");
+        }
+        RiskInputDTO input = new RiskInputDTO();
+        // Same conversion as the frontend: the model expects a monthly income.
+        input.setMonthlyIncome(client.getAnnualIncome().divide(BigDecimal.valueOf(12), 2, RoundingMode.HALF_UP));
+        input.setMonthlyPayment(dto.getMonthlyPayment());
+        input.setDuration(dto.getDuration());
+        input.setAnnualInterestRate(dto.getAnnualInterestRate());
+
+        RiskPredictionResponseDTO prediction = riskService.assessRisk(input);
+        dto.setRiskLevel(prediction.getRiskLevel());
+        dto.setScore(prediction.getScoreRisk());
     }
 
     // A client may only have one Active loan with unpaid installments at a

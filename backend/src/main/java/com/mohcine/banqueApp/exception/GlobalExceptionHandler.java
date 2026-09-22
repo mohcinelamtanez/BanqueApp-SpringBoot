@@ -282,4 +282,34 @@ public class GlobalExceptionHandler {
 
         return  ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(apiError) ;
     }
+
+    // Risk model input the model can't score meaningfully (missing field,
+    // client without an income) — refused instead of sending 0/null to it.
+    @ExceptionHandler(InvalidRiskInputException.class)
+    public ResponseEntity<ApiError> handleInvalidRiskInputException(InvalidRiskInputException exception , HttpServletRequest request) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+
+        ApiError apiError = new ApiError(LocalDateTime.now() ,
+                status.value() ,
+                status.name() ,
+                exception.getMessage(),
+                request.getRequestURI());
+
+        return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError) ;
+    }
+
+    // The Flask risk model is down/unreachable — an external dependency
+    // failure, not a bug in the request.
+    @ExceptionHandler(RiskModelUnavailableException.class)
+    public ResponseEntity<ApiError> handleRiskModelUnavailableException(RiskModelUnavailableException exception , HttpServletRequest request) {
+        HttpStatus status = HttpStatus.SERVICE_UNAVAILABLE;
+
+        ApiError apiError = new ApiError(LocalDateTime.now() ,
+                status.value() ,
+                status.name() ,
+                exception.getMessage(),
+                request.getRequestURI());
+
+        return  ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(apiError) ;
+    }
 }

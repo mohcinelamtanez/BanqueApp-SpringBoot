@@ -33,7 +33,7 @@ export default function LoanTable({ loans = [], onDelete }) {
           / mo
         </td>
         <td>
-          <StatusBadge value={loan.risk} risk />
+          {loan.risk ? <StatusBadge value={loan.risk} risk /> : "—"}
           <br />
           <StatusBadge value={loan.status} />
         </td>

@@ -16,6 +16,7 @@ import com.mohcine.banqueApp.repository.ApplicationRepository;
 import com.mohcine.banqueApp.repository.ClientRepository;
 import com.mohcine.banqueApp.repository.LoanRepository;
 import com.mohcine.banqueApp.service.interfaces.LoanService;
+import com.mohcine.banqueApp.service.interfaces.NotificationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -53,13 +54,16 @@ class ApplicationServiceImplTest {
     private LoanService loanService;
     @Mock
     private LoanRepository loanRepository;
+    @Mock
+    private NotificationService notificationService;
 
     private ApplicationServiceImpl applicationService;
 
     @BeforeEach
     void setUp() {
         applicationService = new ApplicationServiceImpl(
-                applicationRepository, clientRepository, applicationMapper, loanService, loanRepository);
+                applicationRepository, clientRepository, applicationMapper, loanService, loanRepository,
+                notificationService);
     }
 
     // A complete profile (all required Client fields filled in) — these
